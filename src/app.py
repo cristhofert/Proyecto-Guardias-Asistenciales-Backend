@@ -4,7 +4,7 @@ from flask_marshmallow import Marshmallow
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://app_user:app098user@localhost:3306/sggdb?charset=utf8mb4"
+app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://app_user:app0987user@localhost:3306/sggdb?charset=utf8mb4"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -45,7 +45,7 @@ def add_service():
 def get_services():
     all_services = Service.query.all()
     result = services_schema.dump(all_services)
-    return jsonify(result.data)     
+    return jsonify(result)     
 
 @app.route("/services/<id>", methods=["GET"])
 def get_service(id):
