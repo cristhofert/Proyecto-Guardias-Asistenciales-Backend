@@ -1,9 +1,9 @@
 from db import db
 from sqlalchemy.orm import relationship
 
-service_medical_doctor_table = Table('association', Base.metadata,
-    Column('service_id', ForeignKey('service.id'), primary_key=True),
-    Column('medical_doctor_id', ForeignKey('medical_doctor.id'), primary_key=True)
+service_medical_doctor_table = db.Table('association', db.Model.metadata,
+    db.Column('service_id', db.ForeignKey('service.id'), primary_key=True),
+    db.Column('medical_doctor_id', db.ForeignKey('medical_doctor.id'), primary_key=True)
 )
 
 class ServiceModel(db.Model):
@@ -16,7 +16,7 @@ class ServiceModel(db.Model):
     #M.D. list
     list = relationship(
         "MedicalDoctorModel",
-        secondary=association_table,
+        secondary=service_medical_doctor_table,
         back_populates="list")
 
     def __init__(self, name, code, color):

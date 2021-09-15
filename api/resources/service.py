@@ -66,7 +66,7 @@ class Service(Resource):
         if service is None:
             service = ServiceModel(name, data['code'])
         else:
-            service.code = data['code']
+            if data['code'] is not None: service.code = data['code']
 
         service.save_to_db()
 

@@ -4,10 +4,10 @@ from models.user import UserModel
 class AdministratorModel(UserModel):
     __tablename__ = 'administrator'
     
-    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
     def __init__(self, id, password):
-        super().__init__(id, password)
+        super().__init__(id, name, password)
 
     def json(self):
         return {'id': self.id, 'password': self.password}

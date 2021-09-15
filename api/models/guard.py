@@ -8,7 +8,7 @@ class GuardModel(db.Model):
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
     assigned_at = db.Column(db.DateTime)
-    service_id = db.Column(Integer, ForeignKey('service.id'))
+    service_id = db.Column(db.Integer, db.ForeignKey('service.id'))
     service = relationship("ServiceModel", back_populates="guards")
     zone = relationship('ZoneModel')#?
     medical_doctor = relationship('MedicalDoctorModel')

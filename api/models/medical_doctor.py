@@ -1,16 +1,16 @@
 from db import db
-from user import UserModel
-from service import association_table
+from models.user import UserModel
+from models.service import service_medical_doctor_table
 from sqlalchemy.orm import relationship
 
 class MedicalDoctorModel(UserModel):
     __tablename__ = 'medical_doctor'
 
-    id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     speciality = db.Column(db.String(80))
     service = relationship(
         "ServiceModel",
-        secondary=association_table,
+        secondary=service_medical_doctor_table,
         back_populates="service")
 
     def __init__(self, id, password, speciality):
