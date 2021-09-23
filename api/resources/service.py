@@ -18,7 +18,11 @@ class Service(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
-
+    parser.add_argument('color',
+        type=str,
+        required=True,
+        help="This field cannot be left blank!"
+    )
 
     def __init__(self):
         pass
@@ -40,7 +44,7 @@ class Service(Resource):
             return {'message': "An service with name '{}' already exists.".format(
                 name)}, 400
         data = Service.parser.parse_args()
-        service = ServiceModel(data['name'], data['code'])
+        service = ServiceModel(data['name'], data['code'], data['color'])
 
         try:
             service.save_to_db()
@@ -64,9 +68,10 @@ class Service(Resource):
         service = ServiceModel.find_by_name(name)
 
         if service is None:
-            service = ServiceModel(name, data['code'])
+            service = ServiceModel(name, data['code'], date['color'])	
         else:
             if data['code'] is not None: service.code = data['code']
+            if data['color'] is not None: service.color = data['color']
 
         service.save_to_db()
 

@@ -8,17 +8,12 @@ from models.zone import ZoneModel
 
 class Zone(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('id',
+    parser.add_argument('name',
         type=str,
         required=True,
         help="This field cannot be left blank!"
     )
-    parser.add_argument('id',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
-
+    #self.args = parser.parse_args(strict=True)
 
     def __init__(self):
         pass
@@ -26,6 +21,7 @@ class Zone(Resource):
 
     #@jwt_required()  # Requires dat token
     def get(self, id):
+        print(f'GetZone args: {self.args}')
         zone = ZoneModel.find_by_id(id)
         #self.logger.info(f'returning zone: {zone.json()}')
         if zone:
@@ -40,7 +36,7 @@ class Zone(Resource):
             return {'message': "An zone with id '{}' already exists.".format(
                 id)}, 400
         data = Zone.parser.parse_args()
-        zone = ZoneModel(data['id'], data['code'])
+        zone = ZoneModel(data['name'])
 
         try:
             zone.save_to_db()

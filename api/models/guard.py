@@ -7,15 +7,21 @@ class GuardModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-    assigned_at = db.Column(db.DateTime)
-    service_id = db.Column(db.Integer, db.ForeignKey('service.id'))
-    service = relationship("ServiceModel", back_populates="guards")
+    date = db.Column(db.Date)
+    start_time = db.Column(db.Time)
+    end_time = db.Column(db.Time)
+    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
     zone = relationship('ZoneModel')#?
     medical_doctor = relationship('MedicalDoctorModel')
+    medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'))
+    subscription = db.relationship('SubscriptionModel', lazy='dynamic')
+    subscription_id = db.Column(db.Integer, db.ForeignKey('subscription.id'))
     
-    def __init__(self, id, service, zone=None):
-        self.id = id
+    def __init__(self, service, date, start_time, end_time, zone=None):
         self.service = service
+        self.date = date
+        self.start_time = start_time
+        self.end_time = end_time
         if zone:
             self.zone = zone
             

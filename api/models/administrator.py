@@ -6,11 +6,11 @@ class AdministratorModel(UserModel):
     
     id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
 
-    def __init__(self, id, password):
-        super().__init__(id, name, password)
+    def __init__(self, id, name, password):
+        super().__init__(id, name, password, 'administrator')
 
     def json(self):
-        return {'id': self.id, 'password': self.password}
+        return {'id': self.id, 'name': self.name, 'password': self.password}
     
     @classmethod
     def find_by_id(cls, _id):

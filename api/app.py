@@ -5,11 +5,13 @@ from flask import Flask
 from flask_restful import Api
 from config import mariadbConfig
 
-from resources.user import User, UserList
 from resources.administrator import Administrator, AdministratorList
+from resources.audit import Audit, AuditList
 from resources.guard import Guard, GuardList
 from resources.medical_doctor import MedicalDoctor, MedicalDoctorList
+from resources.notification import Notification, NotificationList
 from resources.service import Service, ServiceList
+from resources.subscription import Subscription, SubscriptionList
 from resources.zone import Zone, ZoneList
 
 app = Flask(__name__)
@@ -25,18 +27,22 @@ def create_tables():
     db.init_app(app)
     db.create_all()
 
-api.add_resource(User, '/user/<int:id>')
-api.add_resource(UserList, '/users')
 api.add_resource(Administrator, '/administrator/<int:id>')
-api.add_resource(AdministratorList, '/administrators')
+api.add_resource(AdministratorList, '/administrator')
+api.add_resource(Audit, '/audit/<int:id>')
+api.add_resource(AuditList, '/audit')   
 api.add_resource(Guard, '/guard/<int:id>')
-api.add_resource(GuardList, '/guards')
-api.add_resource(MedicalDoctor, '/medicaldoctor/<int:id>')
-api.add_resource(MedicalDoctorList, '/medicaldoctors')
-api.add_resource(Service, '/service/<string:name>')
-api.add_resource(ServiceList, '/services')
-api.add_resource(Zone, '/zone/<int:id>')
-api.add_resource(ZoneList, '/zones')
+api.add_resource(GuardList, '/guard')
+api.add_resource(MedicalDoctor, '/medical_doctor/<int:id>')
+api.add_resource(MedicalDoctorList, '/medical_doctor')
+api.add_resource(Notification, '/notification/<int:id>')
+api.add_resource(NotificationList, '/notification')
+api.add_resource(Service, '/service/<int:id>')
+api.add_resource(ServiceList, '/service')
+api.add_resource(Subscription, '/subscription/<int:id>')
+api.add_resource(SubscriptionList, '/subscription')
+api.add_resource(Zone, '/zone/<string:name>')
+api.add_resource(ZoneList, '/zone')
 
 if __name__ == "__main__":
     app.run(debug=True)

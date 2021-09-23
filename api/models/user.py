@@ -13,13 +13,14 @@ class UserModel(db.Model):
         'polymorphic_on': type
     }
 
-    def __init__(self, id, name, password):
+    def __init__(self, id, name, password, type):
         self.id = id
         self.name = name
         self.password = password
+        self.type = type
 
     def json(self):
-        return {'id': self.id, 'name': self.name}   
+        return {'id': self.id, 'name': self.name, 'password': self.password}   
 
     @classmethod
     def find_by_id(cls, id):
