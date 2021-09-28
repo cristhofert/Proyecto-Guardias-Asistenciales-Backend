@@ -10,13 +10,9 @@ class MedicalDoctorModel(UserModel):
     speciality = db.Column(db.String(80))
     phone = db.Column(db.String(9))
     email = db.Column(db.String(80))
-    service = relationship(
-        "ServiceModel",
-        secondary=service_medical_doctor_table,
-        back_populates="service")
     residence_zone = db.Column(db.Integer, db.ForeignKey('zone.id'),
-        nullable=False)
-    zones = db.relationship('ZoneModel', back_populates='medical_doctors')	
+        nullable=True)
+    #zones = db.relationship('ZoneModel', back_populates='medical_doctors')	
 
     def __init__(self, id, password, speciality, phone, email):
         super().__init__(id, password)

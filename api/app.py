@@ -25,6 +25,7 @@ api = Api(app)
 def create_tables():
     from db import db
     db.init_app(app)
+    #db.drop_all()
     db.create_all()
 
 api.add_resource(Administrator, '/administrator/<int:id>')

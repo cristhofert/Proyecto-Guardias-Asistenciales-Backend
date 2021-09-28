@@ -14,8 +14,8 @@ class GuardModel(db.Model):
     zone = relationship('ZoneModel')#?
     medical_doctor = relationship('MedicalDoctorModel')
     medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'))
-    subscription = db.relationship('SubscriptionModel', lazy='dynamic')
-    subscription_id = db.Column(db.Integer, db.ForeignKey('subscription.id'))
+    #subscription = db.relationship('SubscriptionModel', lazy='dynamic')
+    #subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
     
     def __init__(self, service, date, start_time, end_time, zone=None):
         self.service = service
