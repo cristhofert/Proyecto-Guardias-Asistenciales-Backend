@@ -3,18 +3,18 @@
 download mariadb desde mariabd.org and install
 add C:\Program Files\MariaDB 10.6\bin to PATH in system environment variable 
 create database sggbd character set utf8mb4 collate utf8mb4_spanish_ci;
-CREATE USER app_user@localhost IDENTIFIED BY 'app0987user' ;
+CREATE USER 'app_user'@'localhost' IDENTIFIED BY 'app0987user';
 GREAT ALL on sggdb.* to app_user@localhost;
 
-comands:
+Comands:
+
+Build:
 pip install pipenv
-pipenv shell
 pipenv install
 pipenv install -dev
 
 Run:
-pipenv shell
-python api/app.py
+ pipenv run python .\api\app.py
 
 Routes:
 [GET/PUT/DELETE/POST]  /administrator/<int:id>  

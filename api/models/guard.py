@@ -1,5 +1,6 @@
 from db import db
 from sqlalchemy.orm import relationship
+from pprint import pprint
 
 class GuardModel(db.Model):
     __tablename__ = 'guard'
@@ -26,12 +27,15 @@ class GuardModel(db.Model):
             self.zone = zone
             
     def json(self):
+
         return {
             'id': self.id,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at,
-            'assigned_at': self.assigned_at,
-            'service_id': self.service_id
+            'created_at': str(self.created_at.strftime('%Y-%m-%d %H:%M:%S')),
+            'updated_at': str(self.updated_at.strftime('%Y-%m-%d %H:%M:%S')),
+            'date': str(self.date.strftime('%Y-%m-%d')),
+            'start_time': str(self.start_time.strftime('%H:%M')),
+            'end_time': str(self.end_time.strftime('%H:%M')),
+            'zone': self.zone.json() if self.zone else None,
         }
 
     @classmethod
