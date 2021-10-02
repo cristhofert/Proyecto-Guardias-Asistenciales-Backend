@@ -6,6 +6,7 @@ from flask_restful import Resource, reqparse, inputs
 from models.guard import GuardModel
 #from app.util.logz import create_logger
 import calendar
+from datetime import datetime
 
 class Guard(Resource):
     parser = reqparse.RequestParser()
@@ -101,25 +102,23 @@ class GuardList(Resource):
             'guards': [guard.json() for guard in GuardModel.query.all()]}  # More pythonic
 
     def post(self):
-        pass
-        print('post')
-        #{
-        # service: '',
-        # time: '',
-        # end_time: '',
-        # repeat: '', # Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
-        # }
-        #repeat = data['repeat'].capitalize()
-        #guards = []
+        guards = []
+        today = date.today()
+        for tuple in calendar.Calendar().monthdays2calendar(today.year, today.month):
+            for week in tuple:
+                day, weekday = week
+                if(day != 0):
+                    for wday in data['repeat']:
+                        if wday == calendar.day_name[weekday]:
+                            date_guard = date(today.year, today.month, day)
+                            if date_guard > today:
+                                guards.append(GuardModel(data['service'], date_guard, data['start_time'], date['end_time'], data['zone']))
+                                #pued e que falte guardar cada guardia
 
-        #cal = calendar.monthcalendar(time.gmtime().tm_year, time.gmtime().tm_month)
-        #for week in cal:
-        #    for wday in repeat:
-        #        if week[calendar[wday]] != 0:
-        #            guard = GuardModel(data['id'], data['service'], data['zone'])
-        #            guards.append(guard)
-        #            guard.save_to_db()
+        group = GuardsGroupModel(0, guards)
 
-        #group = GuardsGroupModel(0, guards)
-        #group.save_to_db()
-        #return {'message': 'guards created'}
+        try:
+            group.save_to_db()
+        except:
+            return {"message": "An error occurred inserting the guard."}, 500
+        return guard.json(), 201

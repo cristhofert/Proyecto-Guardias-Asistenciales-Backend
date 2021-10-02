@@ -3,6 +3,7 @@
 # standard python imports
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 from config import mariadbConfig
 
 from resources.administrator import Administrator, AdministratorList
@@ -20,6 +21,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = mariadbConfig
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 api = Api(app)
+CORS(api)# CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
 
 @app.before_first_request
 def create_tables():
