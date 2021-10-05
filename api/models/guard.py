@@ -1,6 +1,13 @@
 from db import db
 from sqlalchemy.orm import relationship
 from pprint import pprint
+from datetime import datetime
+
+assignment_table = db.Table('assignment', db.Model.metadata,
+    db.Column('guard_id', db.ForeignKey('guard.id'), primary_key=True),
+    db.Column('medical_doctor_id', db.ForeignKey('medical_doctor.id'), primary_key=True),
+    db.Column('assignment_date', db.DateTime, default=db.func.current_timestamp())
+)
 
 class GuardModel(db.Model):
     __tablename__ = 'guard'
@@ -13,13 +20,13 @@ class GuardModel(db.Model):
     end_time = db.Column(db.Time)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
     zone = relationship('ZoneModel')#?
-    medical_doctor = relationship('MedicalDoctorModel')
+    medical_doctor = relationship('medical_doctor', secondary=assignment_table, backref='guard')
     medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'))
-    #subscription = db.relationship('SubscriptionModel', lazy='dynamic')
-    #subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
+    subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
+    subscription = db.relationship('SubscriptionModel')
     
-    def __init__(self, service, date, start_time, end_time, zone=None):
-        self.service = service
+    def __init__(self, subscription_id, date, start_time, end_time, zone=None):
+        self.subscription_id = subscription_id
         self.date = date
         self.start_time = start_time
         self.end_time = end_time
@@ -36,6 +43,9 @@ class GuardModel(db.Model):
             'start_time': str(self.start_time.strftime('%H:%M')),
             'end_time': str(self.end_time.strftime('%H:%M')),
             'zone': self.zone.json() if self.zone else None,
+            'start': datetime.combine(self.date, self.start_time),
+            'end': datetime.combine(self.date, self.end_time),
+
         }
 
     @classmethod

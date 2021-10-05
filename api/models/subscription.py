@@ -1,6 +1,11 @@
 from db import db
 from sqlalchemy.orm import relationship
 
+subscription_medical_doctor_table = db.Table('subscription_medical_doctor_table', db.Model.metadata,
+    db.Column('subscription_id', db.ForeignKey('subscriptions.id'), primary_key=True),
+    db.Column('medical_doctor_id', db.ForeignKey('medical_doctor.id'), primary_key=True)
+)
+
 class SubscriptionModel(db.Model):
     __tablename__ = 'subscriptions'
 
@@ -8,6 +13,7 @@ class SubscriptionModel(db.Model):
     type = db.Column(db.String(80))
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
     service = relationship('ServiceModel')
+    medical_doctor = relationship('medical_doctor', secondary=subscription_medical_doctor_table, backref='subscription')
 
     def __init__(self, type, service_id):
         self.type = type
@@ -17,7 +23,8 @@ class SubscriptionModel(db.Model):
         return {
             'id': self.id,
             'type': self.type,
-            'service_id': self.service_id
+            'service_id': self.service_id,
+            'name': self.service.name + ' - ' + self.type
         }
 
     @classmethod

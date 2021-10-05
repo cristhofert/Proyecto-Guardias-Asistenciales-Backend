@@ -22,7 +22,7 @@ Routes:
 [GET/PUT/DELETE/POST] /audit/<int:id>  
 [GET]  /audits     
 [GET/PUT/DELETE/POST]   /guard/<int:id>  
-[GET]   /guards  
+[GET/POST] /guards  
 [GET/PUT/DELETE/POST]   /medical_doctor/<int:id>  
 [GET]   /medical_doctors  
 [GET/PUT/DELETE/POST]   /notification/<int:id>  

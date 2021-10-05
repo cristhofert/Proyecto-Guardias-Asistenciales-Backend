@@ -3,6 +3,7 @@
 # standard python imports
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 from config import mariadbConfig
 
 from resources.administrator import Administrator, AdministratorList
@@ -13,6 +14,7 @@ from resources.notification import Notification, NotificationList
 from resources.service import Service, ServiceList
 from resources.subscription import Subscription, SubscriptionList
 from resources.zone import Zone, ZoneList
+from resources.assignment import assignment
 
 app = Flask(__name__)
 
@@ -20,6 +22,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = mariadbConfig
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 api = Api(app)
+CORS(api)# CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
 
 @app.before_first_request
 def create_tables():
@@ -44,6 +47,7 @@ api.add_resource(Subscription, '/subscription/<int:id>')
 api.add_resource(SubscriptionList, '/subscriptions')
 api.add_resource(Zone, '/zone/<string:name>')
 api.add_resource(ZoneList, '/zones')
+api.add_resource(assignment, '/assignment/<int:medical_doctor_id>/<int:guard_id>')
 
 if __name__ == "__main__":
     app.run(debug=True)
