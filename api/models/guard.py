@@ -25,8 +25,8 @@ class GuardModel(db.Model):
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
     subscription = db.relationship('SubscriptionModel')
     
-    def __init__(self, service, date, start_time, end_time, zone=None):
-        self.service = service
+    def __init__(self, subscription_id, date, start_time, end_time, zone=None):
+        self.subscription_id = subscription_id
         self.date = date
         self.start_time = start_time
         self.end_time = end_time
@@ -44,7 +44,8 @@ class GuardModel(db.Model):
             'end_time': str(self.end_time.strftime('%H:%M')),
             'zone': self.zone.json() if self.zone else None,
             'start': datetime.combine(self.date, self.start_time),
-            'end': datetime.combine(self.date, self.end_time)
+            'end': datetime.combine(self.date, self.end_time),
+
         }
 
     @classmethod

@@ -15,7 +15,7 @@ class Guard(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
-    parser.add_argument('service_id',
+    parser.add_argument('subscription_id',
         type=int,
         required=True,
         help="This field cannot be left blank!"
@@ -62,7 +62,7 @@ class Guard(Resource):
                 id)}, 400
         data = this.parser.parse_args()
         self.logger.info(f'parsed args: {data}')
-        guard = GuardModel(data['service'], data['date'], data['start_time'], date['end_time'], data['zone'])
+        guard = GuardModel(data['subscription_id'], data['date'], data['start_time'], date['end_time'], data['zone'])
 
         try:
             guard.save_to_db()
@@ -88,7 +88,7 @@ class Guard(Resource):
         if guard is None:
             return {'message': 'guard not exist'}, 500
         else:
-            if data['service'] is not None: guard.service = data['service']
+            if data['subscription_id'] is not None: guard.subscription_id = data['subscription_id']
             if data['zone'] is not None: guard.zone = data['zone']
 
         guard.save_to_db()
@@ -112,7 +112,7 @@ class GuardList(Resource):
                         if wday == calendar.day_name[weekday]:
                             date_guard = date(today.year, today.month, day)
                             if date_guard > today:
-                                guards.append(GuardModel(data['service'], date_guard, data['start_time'], date['end_time'], data['zone']))
+                                guards.append(GuardModel(data['subscription_id'], date_guard, data['start_time'], date['end_time'], data['zone']))
                                 #pued e que falte guardar cada guardia
 
         group = GuardsGroupModel(0, guards)
