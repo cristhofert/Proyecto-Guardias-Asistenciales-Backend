@@ -5,12 +5,23 @@ class ZoneModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80))
+    geotag = db.Column(db.String(80))
+    longitude = db.Column(db.String(80))
+    latitude = db.Column(db.String(80))
 
-    def __init__(self, name):
+    def __init__(self, name, geotag=0, longitude=0, latitude=0):
         self.name = name
+        self.geotag = geotag
+        self.longitude = longitude
+        self.latitude = latitude
 
     def json(self):
-        return {'id': self.id, 'name': self.name}
+        return {'id': self.id,
+        'name': self.name,
+        'geotag': self.geotag,
+        'longitude': self.longitude,
+        'latitude': self.latitude
+        }
 
     @classmethod
     def find_by_name(cls, name):

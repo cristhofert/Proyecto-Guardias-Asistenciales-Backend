@@ -4,6 +4,7 @@
 from flask_restful import Resource, reqparse
 #from flask_jwt_extended import jwt_required
 from models.service import ServiceModel
+from models.subscription import SubscriptionModel
 #from app.util.logz import create_logger
 
 class Service(Resource):
@@ -45,9 +46,13 @@ class Service(Resource):
                 name)}, 400
         data = Service.parser.parse_args()
         service = ServiceModel(data['name'], data['code'], data['color'])
+        subscription_list = SubscriptionModel("lista", service)
+        subscription_dispersion = SubscriptionModel("dispersión", service)
 
         try:
             service.save_to_db()
+            subscription_list.save_to_db()
+            subscription_dispersion.save_to_db()
         except:
             return {"message": "An error occurred inserting the service."}, 500
         return service.json(), 201

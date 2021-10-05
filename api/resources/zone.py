@@ -13,6 +13,22 @@ class Zone(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
+    parser.add_argument('geotag',
+        type=str,
+        required=False,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('longitude',
+        type=str,
+        required=False,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('latitude',
+        type=str,
+        required=False,
+        help="This field cannot be left blank!"
+    )
+    
     #self.args = parser.parse_args(strict=True)
 
     def __init__(self):

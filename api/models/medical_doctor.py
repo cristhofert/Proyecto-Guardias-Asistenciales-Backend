@@ -1,6 +1,6 @@
 from db import db
 from models.user import UserModel
-from models.service import service_medical_doctor_table
+from models.subscription import subscription_medical_doctor_table
 from sqlalchemy.orm import relationship
 
 class MedicalDoctorModel(UserModel):
@@ -13,6 +13,7 @@ class MedicalDoctorModel(UserModel):
     residence_zone = db.Column(db.Integer, db.ForeignKey('zone.id'),
         nullable=True)
     #zones = db.relationship('ZoneModel', back_populates='medical_doctors')	
+    subscription = relationship('subscription', secondary=subscription_medical_doctor_table, backref='medical_doctor')
 
     def __init__(self, id, password, speciality, phone, email):
         super().__init__(id, password)
