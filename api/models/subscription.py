@@ -23,7 +23,8 @@ class SubscriptionModel(db.Model):
         return {
             'id': self.id,
             'type': self.type,
-            'service_id': self.service_id
+            'service_id': self.service_id,
+            'name': self.service.name + ' - ' + self.type
         }
 
     @classmethod
