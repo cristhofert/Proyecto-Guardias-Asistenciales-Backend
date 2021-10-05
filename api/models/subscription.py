@@ -1,8 +1,8 @@
 from db import db
 from sqlalchemy.orm import relationship
 
-subscription_medical_doctor_table = db.Table('association', db.Model.metadata,
-    db.Column('subscription_id', db.ForeignKey('services.id'), primary_key=True),
+subscription_medical_doctor_table = db.Table('subscription_medical_doctor_table', db.Model.metadata,
+    db.Column('subscription_id', db.ForeignKey('subscriptions.id'), primary_key=True),
     db.Column('medical_doctor_id', db.ForeignKey('medical_doctor.id'), primary_key=True)
 )
 
