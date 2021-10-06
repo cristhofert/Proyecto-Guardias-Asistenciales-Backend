@@ -1,4 +1,8 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# standard python imports
 from db import db
+from werkzeug.security import hmac
 
 class UserModel(db.Model):
     __tablename__ = 'user'
@@ -10,7 +14,8 @@ class UserModel(db.Model):
 
     __mapper_args__ = {
         'polymorphic_identity': 'user',
-        'polymorphic_on': type
+        'polymorphic_on': type,
+        'with_polymorphic': '*'
     }
 
     def __init__(self, id, name, password, type):
@@ -21,6 +26,9 @@ class UserModel(db.Model):
 
     def json(self):
         return {'id': self.id, 'name': self.name, 'password': self.password}   
+
+    def check_password(self, password):
+        return hmac.compare_digest(self.password, password)
 
     @classmethod
     def find_by_id(cls, id):

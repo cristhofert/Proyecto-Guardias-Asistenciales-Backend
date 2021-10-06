@@ -13,7 +13,7 @@ class SubscriptionModel(db.Model):
     type = db.Column(db.String(80))
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
     service = relationship('ServiceModel')
-    medical_doctor = relationship('medical_doctor', secondary=subscription_medical_doctor_table, backref='subscription')
+    medical_doctors = relationship('MedicalDoctorModel', secondary=subscription_medical_doctor_table, back_populates='subscriptions')
 
     def __init__(self, type, service_id):
         self.type = type

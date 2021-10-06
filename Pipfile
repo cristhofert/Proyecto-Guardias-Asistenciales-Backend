@@ -24,6 +24,8 @@ MarkupSafe = "==2.0.1"
 SQLAlchemy = "==1.4.25"
 Werkzeug = "==2.0.1"
 flask-cors = "*"
+flask-jwt-extended = "*"
+rich = "*"
 
 [dev-packages]
 

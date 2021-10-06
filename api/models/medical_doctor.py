@@ -14,11 +14,14 @@ class MedicalDoctorModel(UserModel):
     residence_zone = db.Column(db.Integer, db.ForeignKey('zone.id'),
         nullable=True)
     #zones = db.relationship('ZoneModel', back_populates='medical_doctors')	
-    subscription = relationship('subscription', secondary=subscription_medical_doctor_table, backref='medical_doctor')
-    assignment = relationship('assignment', secondary=assignment_table, backref='medical_doctor')
+    subscriptions = relationship('SubscriptionModel', secondary=subscription_medical_doctor_table, back_populates='medical_doctors')
+    assignment = relationship('GuardModel', secondary=assignment_table, back_populates='medical_doctor')
+    __mapper_args__ = {
+        'polymorphic_identity':'medical_doctor'
+    }
 
-    def __init__(self, id, password, speciality, phone, email):
-        super().__init__(id, password)
+    def __init__(self,  id, name, password, speciality, phone, email):
+        super().__init__(id, name, password, 'medical_doctor')
         self.speciality = speciality
         self.phone = phone
         self.email = email
