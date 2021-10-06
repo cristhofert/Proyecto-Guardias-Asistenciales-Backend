@@ -20,7 +20,7 @@ class GuardModel(db.Model):
     end_time = db.Column(db.Time)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
     zone = relationship('ZoneModel')#?
-    medical_doctor = relationship('medical_doctor', secondary=assignment_table, backref='guard')
+    medical_doctor = relationship('MedicalDoctorModel', secondary=assignment_table, back_populates='assignment')
     medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'))
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
     subscription = db.relationship('SubscriptionModel')

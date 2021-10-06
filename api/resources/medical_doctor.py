@@ -13,6 +13,11 @@ class MedicalDoctor(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
+    parser.add_argument('name',
+        type=str,
+        required=True,
+        help="This field cannot be left blank!"
+    )
     parser.add_argument('password',
         type=str,
         required=True,
@@ -48,13 +53,13 @@ class MedicalDoctor(Resource):
 
     #@jwt_required()
     def post(self, id):
-        #self.logger.info(f'parsed args: {this.parser.parse_args()}')
+        #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
         if MedicalDoctorModel.find_by_id(id):
             return {'message': "An medical_doctor with name '{}' already exists.".format(
                 id)}, 400
-        data = this.parser.parse_args()
-        medical_doctor =  MedicalDoctorModel(data['id'], data['password'], data['speciality'], data['phone'], data['email'] )
+        data = self.parser.parse_args()
+        medical_doctor =  MedicalDoctorModel(data['id'], data['name'], data['password'], data['speciality'], data['phone'], data['email'] )
 
         try:
             medical_doctor.save_to_db()
@@ -74,11 +79,11 @@ class MedicalDoctor(Resource):
     #@jwt_required()
     def put(self, id):
         # Create or Update
-        data = this.parser.parse_args()
+        data = self.parser.parse_args()
         medical_doctor = MedicalDoctorModel.find_by_id(id)
 
         if medical_doctor is None:
-            medical_doctor = MedicalDoctorModel(id, data['password'], data['speciality'], data['phone'], data['email'] )
+            medical_doctor = MedicalDoctorModel(id, data['name'], data['password'], data['speciality'], data['phone'], data['email'] )
         else:
             if date['name'] is not None: user.name = data['name']
             if date['password'] is not None: user.password = data['password']
