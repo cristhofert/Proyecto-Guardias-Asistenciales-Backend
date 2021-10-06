@@ -4,7 +4,7 @@ download mariadb desde mariabd.org and install
 add C:\Program Files\MariaDB 10.6\bin to PATH in system environment variable 
 create database sggbd character set utf8mb4 collate utf8mb4_spanish_ci;
 CREATE USER 'app_user'@'localhost' IDENTIFIED BY 'app0987user';
-GREAT ALL on sggdb.* to app_user@localhost;
+GRANT ALL on sggdb.* to app_user@localhost;
 
 Comands:
 
