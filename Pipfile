@@ -23,9 +23,9 @@ Jinja2 = "==3.0.1"
 MarkupSafe = "==2.0.1"
 SQLAlchemy = "==1.4.25"
 Werkzeug = "==2.0.1"
-flask-cors = "*"
-flask-jwt-extended = "*"
-rich = "*"
+flask-cors = "==3.0.10"
+flask-jwt-extended = "==4.3.0"
+rich = "==10.11.0"
 
 [dev-packages]
 
