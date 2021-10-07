@@ -43,9 +43,8 @@ class GuardModel(db.Model):
             'start_time': str(self.start_time.strftime('%H:%M')),
             'end_time': str(self.end_time.strftime('%H:%M')),
             'zone': self.zone.json() if self.zone else None,
-            'start': datetime.combine(self.date, self.start_time),
-            'end': datetime.combine(self.date, self.end_time),
-
+            'start': datetime.combine(self.date.strftime('%Y-%m-%d'), self.start_time.strftime('%H:%M')),
+            'end': datetime.combine(self.date.strftime('%Y-%m-%d'), self.end_time.strftime('%H:%M'))
         }
 
     @classmethod

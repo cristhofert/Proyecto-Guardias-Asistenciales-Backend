@@ -9,9 +9,10 @@ GRANT ALL on sggdb.* to app_user@localhost;
 Comands:
 
 Build:
-pip install pipenv
-pipenv install
-pipenv install -dev
+pip install pipenv;
+Restart (Reiniciar);
+pipenv install;
+pipenv install -dev;
 
 Run:
  pipenv run python .\api\app.py

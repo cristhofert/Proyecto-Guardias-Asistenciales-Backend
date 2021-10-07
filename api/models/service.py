@@ -14,7 +14,7 @@ class ServiceModel(db.Model):
         self.color = color
 
     def json(self):
-        return {'name': self.name, 'code': self.code, 'color': self.color}
+        return {'name': self.name, 'code': self.code, 'color': self.color, 'id': self.id}
 
     @classmethod
     def find_by_name(cls, name):
