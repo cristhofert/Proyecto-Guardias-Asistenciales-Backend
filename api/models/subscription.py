@@ -20,7 +20,6 @@ class SubscriptionModel(db.Model):
         self.service_id = service_id
 
     def json(self):
-        print('subs json service', self.service)
         return {
             'id': self.id,
             'type': self.type,

@@ -3,7 +3,7 @@
 # standard python imports
 from flask_restful import Resource, reqparse
 #from flask_jwt_extended import jwt_required
-from models.administrator import AdministratorModel
+from models.notification import NotificationModel
 #from app.util.logz import create_logger
 
 class Notification(Resource):
@@ -12,34 +12,58 @@ class Notification(Resource):
     parse.add_argument('message', type=str, required=True, help="This field cannot be left blank!")
     parse.add_argument('read', type=bool, required=False, help="This field cannot be left blank!")
 
+
     def __init__(self):
         #self.logger = create_logger(__name__)
         pass
 
-    def json(self):
-        return {
-            'id': self.id,
-            'medical_doctor_id': self.medical_doctor_id,
-            'message': self.message,
-            'read': self.read
-        }
+    def get(self, id):
+        notification = NotificationModel.find_by_id(id)
+        #self.logger.info("Notification get: {}".format(notification))
+        if notification:
+            return notification.json()
+        return {'message': 'Notification not found'}, 404
 
-    @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=id).first()
+    #@jwt_required
+    def post(self, id):
+        data = self.parse.parse_args()
+        notification = NotificationModel.find_by_id(id)
 
-    @classmethod
-    def find_by_medical_doctor_id(cls, medical_doctor_id):
-        return cls.query.filter_by(medical_doctor_id=medical_doctor_id).first()
+        if notification:
+            return {'message': "An notification with id '{}' already exists.".format(id)}, 400
 
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
+        notification = NotificationModel(**data)
 
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
-        
+        try:
+            notification.save_to_db()
+        except:
+            return {"message": "An error occurred inserting the notification."}, 500
+
+        return notification.json(), 201
+
+    #@jwt_required
+    def put(self, id):
+        data = self.parse.parse_args()
+        notification = NotificationModel.find_by_id(id)
+
+        if notification:
+            notification.type = data['type']
+            notification.service_id = data['service_id']
+        else:
+            notification = NotificationModel(**data)
+
+        notification.save_to_db()
+
+        return notification.json()
+
+    #@jwt_required
+    def delete(self, id):
+        notification = NotificationModel.find_by_id(id)
+        if notification:
+            notification.delete_from_db()
+            return {'message': 'Notification deleted'}
+        return {'message': 'Notification not found'}, 404
+
 class NotificationList(Resource):
     def get(self):
         return {'notifications': [notification.json() for notification in Notification.query.all()]}

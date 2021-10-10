@@ -27,7 +27,7 @@ class MedicalDoctorModel(UserModel):
         self.email = email
 
     def json(self):
-        return {'id': self.id, 'speciality': self.speciality, 'phone': self.phone, 'email': self.email}
+        return {'id': self.id, 'name': self.name, 'speciality': self.speciality, 'phone': self.phone, 'email': self.email}
 
     @classmethod
     def find_by_id(cls, _id):

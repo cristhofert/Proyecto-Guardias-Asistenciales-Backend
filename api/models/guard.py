@@ -44,7 +44,8 @@ class GuardModel(db.Model):
             'end_time': str(self.end_time.strftime('%H:%M')),
             'zone': self.zone.json() if self.zone else None,
             'start': datetime.combine(self.date.strftime('%Y-%m-%d'), self.start_time.strftime('%H:%M')),
-            'end': datetime.combine(self.date.strftime('%Y-%m-%d'), self.end_time.strftime('%H:%M'))
+            'end': datetime.combine(self.date.strftime('%Y-%m-%d'), self.end_time.strftime('%H:%M')),
+            'subscription': self.subscription.json()
         }
 
     @classmethod

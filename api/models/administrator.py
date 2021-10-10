@@ -13,7 +13,7 @@ class AdministratorModel(UserModel):
         super().__init__(id, name, password, 'administrator')
 
     def json(self):
-        return {'id': self.id, 'name': self.name, 'password': self.password}
+        return {'id': self.id, 'name': self.name}
     
     @classmethod
     def find_by_id(cls, _id):
