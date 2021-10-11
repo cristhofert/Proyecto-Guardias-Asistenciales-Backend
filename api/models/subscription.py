@@ -24,9 +24,22 @@ class SubscriptionModel(db.Model):
             'id': self.id,
             'type': self.type,
             'service_id': self.service_id,
-            'name': self.service.name + ' - ' + self.type
+            'service': self.service.json(),
+            'name': self.service.json()['name'] + ' - ' + self.type
         }
 
     @classmethod
     def find_by_channel_id(cls, channel_id):
         return cls.query.filter_by(channel_id=channel_id).first()
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
+
+    def save_to_db(self):  # Upserting data
+        db.session.add(self)
+        db.session.commit()  # Balla
+
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()

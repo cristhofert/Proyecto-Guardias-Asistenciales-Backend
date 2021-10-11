@@ -16,29 +16,53 @@ class Audit(Resource):
         #self.logger = create_logger(__name__)
         pass
 
-    def json(self):
-        return {
-            'id': audit.id,
-            'user_id': audit.user_id,
-            'action': audit.action
-        }
+    def get(self, id):
+        audit = AuditModel.find_by_id(id)
+        #self.logger.info("Audit get: {}".format(audit))
+        if audit:
+            return audit.json()
+        return {'message': 'Audit not found'}, 404
 
-    @classmethod
-    def find_by_id(cls, id):
-        return cls.query.filter_by(id=_id).first()
+    #@jwt_required
+    def post(self, id):
+        data = self.parse.parse_args()
+        audit = AuditModel.find_by_id(id)
 
-    @classmethod
-    def find_by_user_id(cls, user_id):
-        return cls.query.filter_by(user_id=user_id).all()
-        
-    def save_to_db(self):
-        db.session.add(self)
-        db.session.commit()
+        if audit:
+            return {'message': "An audit with id '{}' already exists.".format(id)}, 400
 
-    def delete_from_db(self):
-        db.session.delete(self)
-        db.session.commit()
+        audit = AuditModel(**data)
+
+        try:
+            audit.save_to_db()
+        except:
+            return {"message": "An error occurred inserting the audit."}, 500
+
+        return audit.json(), 201
+
+    #@jwt_required
+    def put(self, id):
+        data = self.parse.parse_args()
+        audit = AuditModel.find_by_id(id)
+
+        if audit:
+            audit.type = data['type']
+            audit.service_id = data['service_id']
+        else:
+            audit = AuditModel(**data)
+
+        audit.save_to_db()
+
+        return audit.json()
+
+    #@jwt_required
+    def delete(self, id):
+        audit = AuditModel.find_by_id(id)
+        if audit:
+            audit.delete_from_db()
+            return {'message': 'Audit deleted'}
+        return {'message': 'Audit not found'}, 404
 
 class AuditList(Resource):
     def get(self):
-        return {'audits': [audit.json() for audit in Audit.query.all()]}
+        return {'audits': [audit.json() for audit in AuditModel.query.all()]}

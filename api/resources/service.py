@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # standard python imports
+from flask import jsonify
 from flask_restful import Resource, reqparse
 #from flask_jwt_extended import jwt_required
 from models.service import ServiceModel
@@ -38,24 +39,34 @@ class Service(Resource):
         return {'message': 'Service not found'}, 404
 
     #@jwt_required()
-    def post(self, name):
+    def post(self, id):
         #self.logger.info(f'parsed args: {Service.parser.parse_args()}')
-
-        if ServiceModel.find_by_name(name):
-            return {'message': "An service with name '{}' already exists.".format(
-                name)}, 400
         data = Service.parser.parse_args()
-        service = ServiceModel(data['name'], data['code'], data['color'])
-        subscription_list = SubscriptionModel("lista", service)
-        subscription_dispersion = SubscriptionModel("dispersión", service)
 
+        if ServiceModel.find_by_name(data['name']):
+            return {'message': "An service with name '{}' already exists.".format(
+                data['name'])}, 400
+        service = ServiceModel(data['name'], data['code'], data['color'])
         try:
             service.save_to_db()
-            subscription_list.save_to_db()
-            subscription_dispersion.save_to_db()
         except:
             return {"message": "An error occurred inserting the service."}, 500
-        return service.json(), 201
+
+        print(f'Service  {service.id}. {type(service.id)}')
+        subscription_list = SubscriptionModel("lista", service.id)
+        subscription_dispersion = SubscriptionModel("dispersión", service.id)
+
+        try:
+            subscription_list.save_to_db()
+            subscription_dispersion.save_to_db()
+        except BaseException as err:
+            print(f"Unexpected {err=}, {type(err)=}")
+            raise
+        return {
+            "service": service.json(),
+            "subscription_list": subscription_list.json(),
+            "subscription_dispersion": subscription_dispersion.json()
+            }, 201
 
     #@jwt_required()
     def delete(self, name):
