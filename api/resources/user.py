@@ -38,12 +38,12 @@ class User(Resource):
 
     #@jwt_required()
     def post(self, id):
-        #self.logger.info(f'parsed args: {this.parser.parse_args()}')
+        #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
         if UserModel.find_by_id(id):
             return {'message': "An user with id '{}' already exists.".format(
                 id)}, 400
-        data = this.parser.parse_args()
+        data = self.parser.parse_args()
         user = UserModel(data['id'], data['name'], data['password'])
 
         try:
@@ -64,7 +64,7 @@ class User(Resource):
     #@jwt_required()
     def put(self, id):
         # Create or Update
-        data = this.parser.parse_args()
+        data = self.parser.parse_args()
         user = UserModel.find_by_id(id)
 
         if user is None:
