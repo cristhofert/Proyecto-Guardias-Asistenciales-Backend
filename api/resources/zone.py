@@ -36,21 +36,21 @@ class Zone(Resource):
         ##self.logger = create_logger()
 
     #@jwt_required()  # Requires dat token
-    def get(self, id):
+    def get(self, name):
         print(f'GetZone args: {self.args}')
-        zone = ZoneModel.find_by_id(id)
+        zone = ZoneModel.find_by_name(name)
         #self.logger.info(f'returning zone: {zone.json()}')
         if zone:
             return zone.json()
         return {'message': 'Zone not found'}, 404
 
     #@jwt_required()
-    def post(self, id):
+    def post(self, name):
         #self.logger.info(f'parsed args: {Zone.parser.parse_args()}')
 
-        if ZoneModel.find_by_id(id):
-            return {'message': "An zone with id '{}' already exists.".format(
-                id)}, 400
+        if ZoneModel.find_by_name(name):
+            return {'message': "An zone with name '{}' already exists.".format(
+                name)}, 400
         data = Zone.parser.parse_args()
         zone = ZoneModel(data['name'])
 
@@ -61,22 +61,22 @@ class Zone(Resource):
         return zone.json(), 201
 
     #@jwt_required()
-    def delete(self, id):
+    def delete(self, name):
 
-        zone = ZoneModel.find_by_id(id)
+        zone = ZoneModel.find_by_name(name)
         if zone:
             zone.delete_from_db()
 
             return {'message': 'zone has been deleted'}
 
     #@jwt_required()
-    def put(self, id):
+    def put(self, name):
         # Create or Update
         data = Zone.parser.parse_args()
-        zone = ZoneModel.find_by_id(id)
+        zone = ZoneModel.find_by_name(name)
 
         if zone is None:
-            zone = ZoneModel(id, data['name'])
+            zone = ZoneModel(name, data['name'])
         else:
             if data['name'] is not None: zone.name = data['name']
 

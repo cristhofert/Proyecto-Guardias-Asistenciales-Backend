@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # standard python imports
-from flask_restful import Resource, reqparse, inputs
+from flask_restful import Resource, reqparse, inputs, fields
 #from flask_jwt_extended import jwt_required
 from models.guard import GuardModel
 #from app.util.logz import create_logger
@@ -10,11 +10,6 @@ from datetime import datetime
 
 class Guard(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('id',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
     parser.add_argument('subscription_id',
         type=int,
         required=True,
@@ -31,12 +26,12 @@ class Guard(Resource):
         help="This field cannot be left blank!"
     )
     parser.add_argument('start_time',
-        type=inputs.time,#Time
+        type=str,#Time
         required=True,
         help="This field cannot be left blank!"
     )
     parser.add_argument('end_time',
-        type=inputs.time,#Time
+        type=str,#Time
         required=True,
         help="This field cannot be left blank!"
     )
@@ -55,14 +50,11 @@ class Guard(Resource):
 
     #@jwt_required()
     def post(self, id):
-        #self.logger.info(f'parsed args: {this.parser.parse_args()}')
+        #self.logger.info(f'parsed args: {self.parser.parse_args()}')
+        data = self.parser.parse_args()
 
-        if GuardModel.find_by_id(id):
-            return {'message': "An guard with id '{}' already exists.".format(
-                id)}, 400
-        data = this.parser.parse_args()
-        self.logger.info(f'parsed args: {data}')
-        guard = GuardModel(data['subscription_id'], data['date'], data['start_time'], date['end_time'], data['zone'])
+        #self.logger.info(f'parsed args: {data}')
+        guard = GuardModel(data['subscription_id'], data['date'], data['start_time'], data['end_time'], data['zone_id'])
 
         try:
             guard.save_to_db()
@@ -82,7 +74,7 @@ class Guard(Resource):
     #@jwt_required()
     def put(self, id):
         # Create or Update
-        data = this.parser.parse_args()
+        data = self.parser.parse_args()
         guard = GuardModel.find_by_id(id)
 
         if guard is None:

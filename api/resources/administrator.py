@@ -38,12 +38,12 @@ class Administrator(Resource):
 
     #@jwt_required()
     def post(self, name):
-        #self.logger.info(f'parsed args: {this.parser.parse_args()}')
+        #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
         if AdministratorModel.find_by_name(name):
             return {'message': "An administrator with name '{}' already exists.".format(
                 name)}, 400
-        data = this.parser.parse_args()
+        data = self.parser.parse_args()
         administrator = AdministratorModel(data['name'], data['code'])
 
         try:
@@ -64,7 +64,7 @@ class Administrator(Resource):
     #@jwt_required()
     def put(self, name):
         # Create or Update
-        data = this.parser.parse_args()
+        data = self.parser.parse_args()
         administrator = AdministratorModel.find_by_name(name)
 
         if administrator is None:
