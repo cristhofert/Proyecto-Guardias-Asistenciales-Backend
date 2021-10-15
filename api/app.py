@@ -6,6 +6,7 @@ from flask_restful import Api
 from flask_cors import CORS
 from config import mariadbConfig
 from flask_jwt_extended import JWTManager
+from sqlalchemy import event
 
 from resources.administrator import Administrator, AdministratorList
 from resources.audit import Audit, AuditList
@@ -19,6 +20,7 @@ from resources.assignment import Assignment
 from resources.login import Login
 from resources.user import User, UserList
 from models.user import UserModel
+from models.institution import InstitutionModel
 
 app = Flask(__name__)
 
@@ -33,7 +35,7 @@ api = Api(app)
 def create_tables():
     from db import db
     db.init_app(app)
-    #db.drop_all()
+    db.drop_all()
     db.create_all()
 
 # Register a callback function that takes whatever object is passed in as the
@@ -51,6 +53,16 @@ def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return UserModel.query.filter_by(id=identity['id']).one_or_none()
 
+#auto insert user
+def insert_data_i(target, connection, **kw):
+    connection.execute(target.insert(), {})
+
+event.listen(InstitutionModel.__table__, 'after_create', insert_data_i)
+
+def insert_data(target, connection, **kw):
+    connection.execute(target.insert(), {'id': 1234562, 'name': 'Cristhofer Travieso', 'password': 'cris1234', 'type': 'administrator', 'institution_id': 1}, {'id': 98765443, 'name': 'Travieso Cristhofer', 'password': '1234cris', 'type': 'medical_doctor', 'institution_id': 1})
+
+event.listen(UserModel.__table__, 'after_create', insert_data)
 
 api.add_resource(Administrator, '/administrator/<int:id>')
 api.add_resource(AdministratorList, '/administrators')

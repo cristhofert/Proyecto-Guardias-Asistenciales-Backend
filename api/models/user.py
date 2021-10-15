@@ -11,6 +11,8 @@ class UserModel(db.Model):
     name = db.Column(db.String(80))
     password = db.Column(db.String(80))
     type = db.Column(db.String(80))
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False)
+    institution = db.relationship("InstitutionModel")
 
     __mapper_args__ = {
         'polymorphic_identity': 'user',
@@ -18,14 +20,19 @@ class UserModel(db.Model):
         'with_polymorphic': '*'
     }
 
-    def __init__(self, id, name, password, type):
+    def __init__(self, id, name, password, type, institution_id):
         self.id = id
         self.name = name
         self.password = password
         self.type = type
+        self.institution_id = institution_id
 
     def json(self):
-        return {'id': self.id, 'name': self.name, 'password': self.password}   
+        return {
+            'id': self.id, 
+            'name': self.name,
+            'institution': self.institution_id
+        }   
 
     def check_password(self, password):
         return hmac.compare_digest(self.password, password)
