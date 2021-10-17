@@ -1,0 +1,174 @@
+
+GET
+  /administrator/12349875
+ {
+    'id': 12349875,
+    'name': 'Juan Perez',
+    'password': '12password23'
+    }
+
+GET
+/audit/1
+return {
+    'id': 1,
+    'user_id': 1,
+    'action': 'create guard 32',
+    'timestamp': '2021-10-08 15:55:35'
+}
+
+GET
+/guard/1
+return {
+    'id': 1,
+    'created_at': '2021-10-08 15:55:35',
+    'updated_at': '2021-10-08 15:55:35',
+    'date': '2021-11-25',
+    'start_time': '19:45',
+    'end_time': '19:45',
+    'zone':  {
+        'id': 1,
+        'name': 'pocito',
+        'geotag': 'geotag',
+        'longitude': 155.2049,
+        'latitude':  63.4378
+        },
+    'start': '2021-10-08 15:55:35',
+    'end': '2021-10-08 15:55:35',
+    'subscription': {
+        'id': 1,
+        'type': 'lista',
+        'service_id': 1,
+        'service': {
+            'name': 'Puerta de Emergencia I',
+            'code': 'E1',
+            'color': '#55555',
+            'id': 1
+            },
+        'name': 'Puerta de Emergencia I - lista'
+        }
+}
+
+GET 
+/medical_doctor/41239875
+return {
+    'id': 41239875,
+    'name': 'Pedro Gonzalez',
+    'speciality': 'Sirujano',
+    'phone': '09166655',
+    'email': 'pedrogonzalez@gmail.com'
+    }
+
+GET
+/notification/1
+return {
+    'id': 1,
+    'medical_doctor':  {
+        'id': 41239875,
+        'name': 'Pedro Gonzalez',
+        'speciality': 'Sirujano',
+        'phone': '09166655',
+        'email': 'pedrogonzalez@gmail.com'
+        },
+    'message': 'Guardia disponible',
+    'read': True,
+    'timestamp': '2021-10-08 15:55:35'
+}
+
+GET 
+/service/1 
+return {
+    'name': 'Puerta de Emergencia I',
+    'code': 'E1',
+    'color': '#55555',
+    'id': 1
+}
+
+GET
+/subscription/1
+return {
+    'id': 1,
+    'type': 'lista',
+    'service_id': 1,
+    'service': {
+        'name': 'Puerta de Emergencia I',
+        'code': 'E1',
+        'color': '#55555',
+        'id': 1
+        },
+    'name': 'Puerta de Emergencia I - lista'
+}
+
+GET
+/zone/1
+return {
+    'id': 1,
+    'name': 'pocito',
+    'geotag': 'geotag',
+    'longitude': 155.2049,
+    'latitude':  63.4378
+}
+
+POST
+/administrator/1
+ {
+    'id': 12349875,
+    'name': 'Juan Perez',
+    'password': '12password23'
+    }
+POST 
+/audit/1
+{
+    'id': 1,
+    'user_id': 1,
+    'action': 'create guard 32'
+}
+
+POST
+/guard/1
+{
+'subscription_id': 1,
+'zone_id': 1,
+'date': '2021-11-25',
+'start_time': '19:45',
+'end_time': '20:50'
+}
+
+POST
+/medical_doctor/1
+{
+    'id': 41239875,
+    'name': 'Pedro Gonzalez',
+    'password': 'secr3t',
+    'speciality': 'Sirujano',
+    'phone': '09166655',
+    'email': 'pedrogonzalez@gmail.com'
+    }
+POST
+/notification/1
+{
+    'medical_doctor_id': 41239875,
+    'message': 'Guardia disponible',
+    'read': True
+}
+
+POST
+/service/1
+{
+    'name': 'Puerta de Emergencia I',
+    'code': 'E1',
+    'color': '#55555'
+    }
+POST  
+/subscription/1
+return {
+    'type': 'lista',
+    'service_id': 1
+}
+POST 
+/zone/pocito
+{
+    'name': 'pocito',
+    'geotag': 'geotag',
+    'longitude': 155.2049,
+    'latitude':  63.4378
+    }
