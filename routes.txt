@@ -108,6 +108,25 @@ return {
     'latitude':  63.4378
 }
 
+GET
+/administrators
+GET
+/audits
+GET
+/guards
+GET
+/medical_doctors
+GET
+/notifications
+GET
+/notifications
+GET
+/subscriptions
+GET
+/zones
+GET
+/users
+
 POST
 /administrator/1
  {
