@@ -26,7 +26,7 @@ class Audit(Resource):
     #@jwt_required
     def post(self, id):
         data = self.parse.parse_args()
-        audit = AuditModel.find_by_id(id)
+        audit = AuditModel.find_by_id(data['id'])
 
         if audit:
             return {'message': "An audit with id '{}' already exists.".format(id)}, 400
@@ -43,11 +43,11 @@ class Audit(Resource):
     #@jwt_required
     def put(self, id):
         data = self.parse.parse_args()
-        audit = AuditModel.find_by_id(id)
+        audit = AuditModel.find_by_id(data['id'])
 
         if audit:
-            audit.type = data['type']
-            audit.service_id = data['service_id']
+            audit.action = data['action']
+            audit.user_id = data['user_id']
         else:
             audit = AuditModel(**data)
 

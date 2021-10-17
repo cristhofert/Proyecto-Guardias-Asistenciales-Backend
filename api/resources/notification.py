@@ -27,7 +27,7 @@ class Notification(Resource):
     #@jwt_required
     def post(self, id):
         data = self.parse.parse_args()
-        notification = NotificationModel.find_by_id(id)
+        notification = NotificationModel.find_by_id(data['id'])
 
         if notification:
             return {'message': "An notification with id '{}' already exists.".format(id)}, 400
@@ -47,8 +47,9 @@ class Notification(Resource):
         notification = NotificationModel.find_by_id(id)
 
         if notification:
-            notification.type = data['type']
-            notification.service_id = data['service_id']
+            notification.medical_doctor_id = data['medical_doctor_id']
+            notification.message = data['message'] 
+            notification.read = data['read'] 
         else:
             notification = NotificationModel(**data)
 

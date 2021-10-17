@@ -72,22 +72,51 @@ class Guard(Resource):
             return {'message': 'guard has been deleted'}
 
     #@jwt_required()
-    def put(self, id):
+    def put(self):
         # Create or Update
         data = self.parser.parse_args()
-        guard = GuardModel.find_by_id(id)
+        guard = GuardModel.find_by_id(data['id'])
 
         if guard is None:
             return {'message': 'guard not exist'}, 500
         else:
             if data['subscription_id'] is not None: guard.subscription_id = data['subscription_id']
-            if data['zone'] is not None: guard.zone = data['zone']
+            if data['zone_id'] is not None: guard.zone_id = data['zone_id']
+            if data['date'] is not None: guard.date = data['date']
+            if data['start_time'] is not None: guard.start_time = data['start_time']
+            if data['end_time'] is not None: guard.end_time = data['end_time']
 
         guard.save_to_db()
 
         return guard.json()
 
 class GuardList(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('subscription_id',
+        type=int,
+        required=True,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('zone_id',
+        type=int,
+        required=False,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('repeat',
+        type=[],#input date
+        required=True,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('start_time',
+        type=str,#Time
+        required=True,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('end_time',
+        type=str,#Time
+        required=True,
+        help="This field cannot be left blank!"
+    )
     #@jwt_required()
     def get(self):
         return {
