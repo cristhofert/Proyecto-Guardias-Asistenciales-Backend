@@ -31,8 +31,8 @@ class Service(Resource):
         ##self.logger = create_logger()
 
     #@jwt_required()  # Requires dat token
-    def get(self, name):
-        service = ServiceModel.find_by_name(name)
+    def get(self, id):
+        service = ServiceModel.find_by_id(id)
         #self.logger.info(f'returning service: {service.json()}')
         if service:
             return service.json()
@@ -69,9 +69,9 @@ class Service(Resource):
             }, 201
 
     #@jwt_required()
-    def delete(self, name):
+    def delete(self, id):
 
-        service = ServiceModel.find_by_name(name)
+        service = ServiceModel.find_by_id(id)
         if service:
             service.delete_from_db()
 
@@ -84,10 +84,11 @@ class Service(Resource):
         service = ServiceModel.find_by_name(name)
 
         if service is None:
-            service = ServiceModel(name, data['code'], date['color'])	
+            service = ServiceModel(**data)	
         else:
             if data['code'] is not None: service.code = data['code']
             if data['color'] is not None: service.color = data['color']
+            if data['name'] is not None: service.name = data['name']
 
         service.save_to_db()
 

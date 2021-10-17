@@ -55,7 +55,7 @@ class MedicalDoctor(Resource):
     def post(self, id):
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
-        if MedicalDoctorModel.find_by_id(id):
+        if MedicalDoctorModel.find_by_id(data['id']):
             return {'message': "An medical_doctor with name '{}' already exists.".format(
                 id)}, 400
         data = self.parser.parse_args()

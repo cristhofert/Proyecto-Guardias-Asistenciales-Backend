@@ -29,22 +29,22 @@ class Administrator(Resource):
         ##self.logger = create_logger()
 
     #@jwt_required()  # Requires dat token
-    def get(self, name):
-        administrator = AdministratorModel.find_by_name(name)
+    def get(self, id):
+        administrator = AdministratorModel.find_by_id(id)
         #self.logger.info(f'returning administrator: {administrator.json()}')
         if administrator:
             return administrator.json()
         return {'message': 'this not found'}, 404
 
     #@jwt_required()
-    def post(self, name):
+    def post(self, id):
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
-        if AdministratorModel.find_by_name(name):
+        if AdministratorModel.find_by_name(data['id']):
             return {'message': "An administrator with name '{}' already exists.".format(
                 name)}, 400
         data = self.parser.parse_args()
-        administrator = AdministratorModel(data['name'], data['code'])
+        administrator = AdministratorModel(data['id'], data['name'], data['password'])
 
         try:
             administrator.save_to_db()
@@ -53,25 +53,26 @@ class Administrator(Resource):
         return administrator.json(), 201
 
     #@jwt_required()
-    def delete(self, name):
+    def delete(self, id):
 
-        administrator = AdministratorModel.find_by_name(name)
+        administrator = AdministratorModel.find_by_id(id)
         if administrator:
             administrator.delete_from_db()
 
             return {'message': 'administrator has been deleted'}
 
     #@jwt_required()
-    def put(self, name):
+    def put(self, id):
         # Create or Update
         data = self.parser.parse_args()
-        administrator = AdministratorModel.find_by_name(name)
+        administrator = AdministratorModel.find_by_id(id)
 
         if administrator is None:
-            administrator = AdministratorModel(name, data['code'])
+            administrator = AdministratorModel(data['id'], data['name'], data['password'])
         else:
-            if date['name'] is not None: user.name = data['name']
-            if date['password'] is not None: user.password = data['password']
+            if date['id'] is not None: administrator.id = data['id']
+            if date['name'] is not None: administrator.name = data['name']
+            if date['password'] is not None: administrator.password = data['password']
             
         administrator.save_to_db()
 

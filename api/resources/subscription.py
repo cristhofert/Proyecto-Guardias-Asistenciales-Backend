@@ -25,11 +25,7 @@ class Subscription(Resource):
     #@jwt_required
     def post(self, id):
         data = Subscription.parse.parse_args()
-        subscription = SubscriptionModel.find_by_id(id)
-
-        if subscription:
-            return {'message': "An subscription with id '{}' already exists.".format(id)}, 400
-
+ 
         subscription = SubscriptionModel(**data)
 
         try:

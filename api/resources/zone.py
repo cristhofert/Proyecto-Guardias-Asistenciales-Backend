@@ -36,23 +36,19 @@ class Zone(Resource):
         ##self.logger = create_logger()
 
     #@jwt_required()  # Requires dat token
-    def get(self, name):
-        print(f'GetZone args: {self.args}')
-        zone = ZoneModel.find_by_name(name)
+    def get(self, id):
+        zone = ZoneModel.find_by_id(id)
         #self.logger.info(f'returning zone: {zone.json()}')
         if zone:
             return zone.json()
         return {'message': 'Zone not found'}, 404
 
     #@jwt_required()
-    def post(self, name):
+    def post(self, id):
         #self.logger.info(f'parsed args: {Zone.parser.parse_args()}')
 
-        if ZoneModel.find_by_name(name):
-            return {'message': "An zone with name '{}' already exists.".format(
-                name)}, 400
         data = Zone.parser.parse_args()
-        zone = ZoneModel(data['name'])
+        zone = ZoneModel(**data)
 
         try:
             zone.save_to_db()
@@ -61,24 +57,27 @@ class Zone(Resource):
         return zone.json(), 201
 
     #@jwt_required()
-    def delete(self, name):
+    def delete(self, id):
 
-        zone = ZoneModel.find_by_name(name)
+        zone = ZoneModel.find_by_id(id)
         if zone:
             zone.delete_from_db()
 
             return {'message': 'zone has been deleted'}
 
     #@jwt_required()
-    def put(self, name):
+    def put(self, id):
         # Create or Update
         data = Zone.parser.parse_args()
-        zone = ZoneModel.find_by_name(name)
+        zone = ZoneModel.find_by_id(data['id'])
 
         if zone is None:
-            zone = ZoneModel(name, data['name'])
+            zone = ZoneModel(**data)
         else:
             if data['name'] is not None: zone.name = data['name']
+            if data['geotag'] is not None: zone.geotag = data['geotag']
+            if data['longitude'] is not None: zone.longitude = data['longitude']
+            if data['latitude'] is not None: zone.latitude = data['latitude']
 
         zone.save_to_db()
 
