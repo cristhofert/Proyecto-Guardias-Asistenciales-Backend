@@ -20,8 +20,8 @@ class MedicalDoctorModel(UserModel):
         'polymorphic_identity':'medical_doctor'
     }
 
-    def __init__(self,  id, name, password, speciality, phone, email):
-        super().__init__(id, name, password, 'medical_doctor')
+    def __init__(self,  id, name, password, speciality, phone, email, institution_id=1):
+        super().__init__(id, name, password, 'medical_doctor', institution_id)
         self.speciality = speciality
         self.phone = phone
         self.email = email

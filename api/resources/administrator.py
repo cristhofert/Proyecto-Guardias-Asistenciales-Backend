@@ -44,7 +44,7 @@ class Administrator(Resource):
             return {'message': "An administrator with name '{}' already exists.".format(
                 name)}, 400
         data = self.parser.parse_args()
-        administrator = AdministratorModel(data['name'], data['code'])
+        administrator = AdministratorModel(data['id'], data['name'], data['password'])
 
         try:
             administrator.save_to_db()

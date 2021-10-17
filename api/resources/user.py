@@ -23,6 +23,11 @@ class User(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
+    parser.add_argument('institution_id',
+        type=int,
+        required=False,
+        help="This field cannot be left blank!"
+    )
 
     def __init__(self):
         pass
@@ -44,7 +49,7 @@ class User(Resource):
             return {'message': "An user with id '{}' already exists.".format(
                 id)}, 400
         data = self.parser.parse_args()
-        user = UserModel(data['id'], data['name'], data['password'])
+        user = UserModel(data['id'], data['name'], data['password'], data['institution_id'])
 
         try:
             user.save_to_db()
@@ -68,7 +73,7 @@ class User(Resource):
         user = UserModel.find_by_id(id)
 
         if user is None:
-            user = UserModel(id, data['name'], data['password'])
+            user = UserModel(id, data['name'], data['password'], data['institution_id'])
         else:
             if data['name'] is not None: user.name = data['name']
             if data['password'] is not None: user.password = data['password']

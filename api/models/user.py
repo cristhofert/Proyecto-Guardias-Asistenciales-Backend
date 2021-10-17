@@ -20,7 +20,7 @@ class UserModel(db.Model):
         'with_polymorphic': '*'
     }
 
-    def __init__(self, id, name, password, type, institution_id):
+    def __init__(self, id, name, password, type, institution_id=1):
         self.id = id
         self.name = name
         self.password = password

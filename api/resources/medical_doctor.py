@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 # standard python imports
 from flask_restful import Resource, reqparse
-#from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required
 from models.medical_doctor import MedicalDoctorModel
+from flask_jwt_extended import current_user
 #from app.util.logz import create_logger
 
 class MedicalDoctor(Resource):
@@ -51,7 +52,7 @@ class MedicalDoctor(Resource):
             return medical_doctor.json()
         return {'message': 'this not found'}, 404
 
-    #@jwt_required()
+    @jwt_required()
     def post(self, id):
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
@@ -59,7 +60,7 @@ class MedicalDoctor(Resource):
             return {'message': "An medical_doctor with name '{}' already exists.".format(
                 id)}, 400
         data = self.parser.parse_args()
-        medical_doctor =  MedicalDoctorModel(data['id'], data['name'], data['password'], data['speciality'], data['phone'], data['email'] )
+        medical_doctor =  MedicalDoctorModel(data['id'], data['name'], data['password'], data['speciality'], data['phone'], data['email'], current_user.json().institution_id )
 
         try:
             medical_doctor.save_to_db()
@@ -76,14 +77,14 @@ class MedicalDoctor(Resource):
 
             return {'message': 'medical_doctor has been deleted'}
 
-    #@jwt_required()
+    @jwt_required()
     def put(self, id):
         # Create or Update
         data = self.parser.parse_args()
         medical_doctor = MedicalDoctorModel.find_by_id(id)
 
         if medical_doctor is None:
-            medical_doctor = MedicalDoctorModel(id, data['name'], data['password'], data['speciality'], data['phone'], data['email'] )
+            medical_doctor = MedicalDoctorModel(id, data['name'], data['password'], data['speciality'], data['phone'], data['email'], current_user.json().institution_id  )
         else:
             if date['name'] is not None: user.name = data['name']
             if date['password'] is not None: user.password = data['password']
@@ -92,10 +93,9 @@ class MedicalDoctor(Resource):
 
         return medical_doctor.json()
 
-
 class MedicalDoctorList(Resource):
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         return {
-            'medical_doctors': [medical_doctor.json() for medical_doctor in MedicalDoctorModel.query.all()]}  # More pythonic
+            'medical_doctors': [medical_doctor.json() for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json().institution_id).all()]}  # More pythonic
         ##return {'medical_doctors': list(map(lambda x: x.json(), MedicalDoctorModel.query.all()))} #Alternate Lambda way

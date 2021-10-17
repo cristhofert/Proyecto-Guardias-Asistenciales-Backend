@@ -48,7 +48,7 @@ class Zone(Resource):
     def post(self, name):
         #self.logger.info(f'parsed args: {Zone.parser.parse_args()}')
 
-        if ZoneModel.find_by_name(name):
+        if ZoneModel.find_by_name(data['name']):
             return {'message': "An zone with name '{}' already exists.".format(
                 name)}, 400
         data = Zone.parser.parse_args()
