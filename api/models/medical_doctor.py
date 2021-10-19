@@ -4,6 +4,7 @@ from models.subscription import subscription_medical_doctor_table
 from models.guard import assignment_table
 from sqlalchemy.orm import relationship
 
+
 class MedicalDoctorModel(UserModel):
     __tablename__ = 'medical_doctor'
 
@@ -12,12 +13,14 @@ class MedicalDoctorModel(UserModel):
     phone = db.Column(db.String(9))
     email = db.Column(db.String(80))
     residence_zone = db.Column(db.Integer, db.ForeignKey('zone.id'),
-        nullable=True)
-    #zones = db.relationship('ZoneModel', back_populates='medical_doctors')	
-    subscriptions = relationship('SubscriptionModel', secondary=subscription_medical_doctor_table, back_populates='medical_doctors')
-    assignment = relationship('GuardModel', secondary=assignment_table, back_populates='medical_doctor')
+                               nullable=True)
+    #zones = db.relationship('ZoneModel', back_populates='medical_doctors')
+    subscriptions = relationship(
+        'SubscriptionModel', secondary=subscription_medical_doctor_table, back_populates='medical_doctors')
+    assignment = relationship(
+        'GuardModel', secondary=assignment_table, back_populates='medical_doctor')
     __mapper_args__ = {
-        'polymorphic_identity':'medical_doctor'
+        'polymorphic_identity': 'medical_doctor'
     }
 
     def __init__(self,  id, name, password, speciality, phone, email, institution_id=1):
@@ -27,7 +30,14 @@ class MedicalDoctorModel(UserModel):
         self.email = email
 
     def json(self):
-        return {'id': self.id, 'name': self.name, 'speciality': self.speciality, 'phone': self.phone, 'email': self.email}
+        return {
+            'id': self.id, 
+            'name': self.name, 
+            'speciality': self.speciality, 
+            'phone': self.phone, 
+            'email': self.email,
+            'institution': self.institution_id
+            }
 
     @classmethod
     def find_by_id(cls, _id):

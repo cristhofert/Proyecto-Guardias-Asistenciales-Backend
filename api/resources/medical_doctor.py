@@ -96,6 +96,8 @@ class MedicalDoctor(Resource):
 class MedicalDoctorList(Resource):
     @jwt_required()
     def get(self):
+        print(current_user.json())
+        insti = current_user.json()['institution']
         return {
-            'medical_doctors': [medical_doctor.json() for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json().institution_id).all()]}  # More pythonic
+            'medical_doctors': [medical_doctor.json() for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=insti).all()]}  # 
         ##return {'medical_doctors': list(map(lambda x: x.json(), MedicalDoctorModel.query.all()))} #Alternate Lambda way

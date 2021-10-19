@@ -31,7 +31,8 @@ class UserModel(db.Model):
         return {
             'id': self.id, 
             'name': self.name,
-            'institution': self.institution_id
+            'institution': self.institution_id,
+            'type': self.type
         }   
 
     def check_password(self, password):
