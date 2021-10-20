@@ -11,7 +11,7 @@ class UserModel(db.Model):
     name = db.Column(db.String(80))
     password = db.Column(db.String(80))
     type = db.Column(db.String(80))
-    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False)
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
 
     __mapper_args__ = {

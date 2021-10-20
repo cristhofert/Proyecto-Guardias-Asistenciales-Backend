@@ -9,8 +9,8 @@ class AdministratorModel(UserModel):
         'polymorphic_identity':'administrator'
     }
     
-    def __init__(self, id, name, password):
-        super().__init__(id, name, password, 'administrator')
+    def __init__(self, id, name, password, institution_id=1):
+        super().__init__(id, name, password, 'administrator', institution_id)
 
     def json(self):
         return {'id': self.id, 'name': self.name}

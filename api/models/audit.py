@@ -7,12 +7,14 @@ class AuditModel(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('UserModel')
     action = db.Column(db.String(200))
-    timestamp = db.Column(db.DateTime)
+    timestamp = db.Column(db.DateTime, default=db.func.current_timestamp())
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    institution = db.relationship("InstitutionModel")
 
-    def __init__(self, user_id, action, timestamp):
+    def __init__(self, user_id, action, institution_id=1):
         self.user_id = user_id
         self.action = action
-        self.timestamp = timestamp
+        self.institution_id = institution_id
 
     def json(self):
         return {

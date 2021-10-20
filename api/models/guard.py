@@ -24,15 +24,18 @@ class GuardModel(db.Model):
     medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'))
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
     subscription = db.relationship('SubscriptionModel')
-    
-    def __init__(self, subscription_id, date, start_time, end_time, zone_id=None):
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    institution = db.relationship("InstitutionModel")
+
+    def __init__(self, subscription_id, date, start_time, end_time, zone_id=None, institution_id=1):
         self.subscription_id = subscription_id
         self.date = date
         self.start_time = start_time
         self.end_time = end_time
+        self.institution_id = institution_id
         if zone_id:
             self.zone_id = zone_id
-            
+
     def json(self):
 
         return {

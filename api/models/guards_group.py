@@ -6,10 +6,13 @@ class GuardsGroupModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     guards = relationship("guards", backref="guards_group")
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    institution = db.relationship("InstitutionModel")
 
-    def __init__(self, id, guards):
+    def __init__(self, id, guards, institution_id=1):
         self.id = id
         self.guards = guards
+        self.institution_id = institution_id
 
     def json(self):
         return {'id': self.id, 'guards': self.guards}
