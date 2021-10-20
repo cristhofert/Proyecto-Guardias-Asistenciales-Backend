@@ -57,6 +57,7 @@ class Administrator(Resource):
 
         administrator = AdministratorModel.find_by_id(id)
         if administrator and (administrator.json()['institution'] == current_user.json()['institution']):
+
             administrator.delete_from_db()
 
             return {'message': 'administrator has been deleted'}
@@ -66,6 +67,7 @@ class Administrator(Resource):
         # Create or Update
         data = self.parser.parse_args()
         administrator = AdministratorModel.find_by_id(data['id'])
+
 
         if administrator.json()['institution'] == current_user.json()['institution'] :
             if administrator is None:

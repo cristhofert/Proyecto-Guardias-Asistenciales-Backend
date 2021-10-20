@@ -95,6 +95,33 @@ class Guard(Resource):
             return {'message': 'access denied'}, 401
 
 class GuardList(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('subscription_id',
+        type=int,
+        required=True,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('zone_id',
+        type=int,
+        required=False,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('repeat',
+        type=[],#input date
+        required=True,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('start_time',
+        type=str,#Time
+        required=True,
+        help="This field cannot be left blank!"
+    )
+    parser.add_argument('end_time',
+        type=str,#Time
+        required=True,
+        help="This field cannot be left blank!"
+    )
+    
     @jwt_required()
     def get(self):
         return {

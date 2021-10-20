@@ -39,6 +39,7 @@ class Zone(Resource):
     def get(self, name):
         print(f'GetZone args: {self.args}')
         zone = ZoneModel.find_by_name(name)
+
         #self.logger.info(f'returning zone: {zone.json()}')
         if zone and (zone.json()['institution'] == current_user.json()['institution']):
             return zone.json()

@@ -26,7 +26,7 @@ class Audit(Resource):
     @jwt_required
     def post(self, id):
         data = self.parse.parse_args()
-        audit = AuditModel.find_by_id(id)
+        audit = AuditModel.find_by_id(data['id'])
 
         if audit:
             return {'message': "An audit with id '{}' already exists.".format(id)}, 400
@@ -51,6 +51,7 @@ class Audit(Resource):
                 audit.action = data['action']
             else:
                 audit = AuditModel(**data, institution_id=current_user.json()['institution'])
+
 
             audit.save_to_db()
 
