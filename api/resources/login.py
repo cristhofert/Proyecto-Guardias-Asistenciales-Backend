@@ -10,11 +10,13 @@ from util.encoder import AlchemyEncoder
 import json
 from util.logz import create_logger
 
+
 class Login(Resource):
     def __init__(self):
         self.logger = create_logger()
 
-    parser = reqparse.RequestParser()  # only allow price changes, no name changes allowed
+    # only allow price changes, no name changes allowed
+    parser = reqparse.RequestParser()
     parser.add_argument('id', type=int, required=True,
                         help='This field cannot be left blank')
     parser.add_argument('password', type=str, required=True,
@@ -30,10 +32,16 @@ class Login(Resource):
             return {'message': 'Wrong id or password.'}, 401
         # Notice that we are passing in the actual sqlalchemy user object here
         access_token = create_access_token(
-            identity=user.json())#json.dumps(user, cls=AlchemyEncoder)
+            identity=user)
         return jsonify(access_token=access_token)
 
     @jwt_required()  # Requires dat token
     def get(self):
+        print("GET login")
         # We can now access our sqlalchemy User object via `current_user`.
-        return jsonify(current_user.json())
+        return jsonify(
+            id=current_user.id, 
+            name=current_user.name,
+            institution_id=current_user.institution_id,
+            type=current_user.type
+            )

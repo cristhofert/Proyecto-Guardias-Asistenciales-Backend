@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # standard python imports
 from flask_restful import Resource, reqparse
+from flask_jwt_extended import jwt_required, current_user
 from models.medical_doctor import MedicalDoctorModel
 from models.guard import GuardModel
 
@@ -21,11 +22,11 @@ class Assignment(Resource):
     def __init__(self):
         pass
 
+    @jwt_required
     def post(self, medical_doctor_id, guard_id):
-
         medical_doctor = MedicalDoctorModel.find_by_id(medical_doctor_id)
         guard = GuardModel.find_by_id(guard_id)
-        if medical_doctor and guard:
+        if medical_doctor and guard and (medical_doctor.json()['institution'] == current_user.json()['institution']) and (guard.json()['institution'] == current_user.json()['institution']):
             medical_doctor.assignment.append(guard)
 
             try:
@@ -35,11 +36,12 @@ class Assignment(Resource):
                 return {"message": "An error occurred inserting the medical_doctor."}, 500
         return medical_doctor.json(), 201
 
+    @jwt_required
     def delete(self, medical_doctor_id, guard_id):
         medical_doctor = MedicalDoctorModel.find_by_id(medical_doctor_id)
         guard = GuardModel.find_by_id(guard_id)
 
-        if medical_doctor and guard:
+        if medical_doctor and guard and (medical_doctor.json()['institution'] == current_user.json()['institution']) and (guard.json()['institution'] == current_user.json()['institution']):
             medical_doctor.assignment.remove(guard)
 
             try:

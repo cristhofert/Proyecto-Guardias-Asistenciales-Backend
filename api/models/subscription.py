@@ -14,10 +14,13 @@ class SubscriptionModel(db.Model):
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
     service = relationship('ServiceModel')
     medical_doctors = relationship('MedicalDoctorModel', secondary=subscription_medical_doctor_table, back_populates='subscriptions')
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    institution = db.relationship("InstitutionModel")
 
-    def __init__(self, type, service_id):
+    def __init__(self, type, service_id, institution_id=1):
         self.type = type
         self.service_id = service_id
+        self.institution_id = institution_id
 
     def json(self):
         return {

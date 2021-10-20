@@ -7,11 +7,14 @@ class ServiceModel(db.Model):
     name = db.Column(db.String(100), unique=True)
     code = db.Column(db.String(10), unique=True)
     color = db.Column(db.String(10), unique=True)
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    institution = db.relationship("InstitutionModel")
 
-    def __init__(self, name, code, color):
+    def __init__(self, name, code, color, institution_id=1):
         self.name = name
         self.code = code
         self.color = color
+        self.institution_id = institution_id
 
     def json(self):
         return {'name': self.name, 'code': self.code, 'color': self.color, 'id': self.id}
