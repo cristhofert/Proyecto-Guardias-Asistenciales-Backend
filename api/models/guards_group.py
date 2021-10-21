@@ -5,7 +5,7 @@ class GuardsGroupModel(db.Model):
     __tablename__ = 'guards_group'
 
     id = db.Column(db.Integer, primary_key=True)
-    guards = relationship("guards", backref="guards_group")
+    guards = relationship("GuardModel", backref="guards_group")
     institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
 

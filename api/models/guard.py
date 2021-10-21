@@ -24,6 +24,7 @@ class GuardModel(db.Model):
     medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'))
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
     subscription = db.relationship('SubscriptionModel')
+    group_id = db.Column(db.Integer, db.ForeignKey('guards_group.id'), nullable=True)
     institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
 

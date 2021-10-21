@@ -19,6 +19,8 @@ from resources.zone import Zone, ZoneList
 from resources.assignment import Assignment
 from resources.login import Login
 from resources.user import User, UserList
+from resources.password import Password
+from resources.recover import Recover
 from models.user import UserModel
 from models.institution import InstitutionModel
 from util.preset import preset, preset_db
@@ -77,6 +79,8 @@ api.add_resource(Assignment, '/assignment/<int:medical_doctor_id>/<int:guard_id>
 api.add_resource(Login, '/login')
 api.add_resource(User, '/user')
 api.add_resource(UserList, '/users')
+api.add_resource(Password, '/password/<string:token>')
+api.add_resource(Recover, '/recover/')
 
 if __name__ == "__main__":
     app.run(debug=True)
