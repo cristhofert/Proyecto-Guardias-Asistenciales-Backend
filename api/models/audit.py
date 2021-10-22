@@ -21,7 +21,8 @@ class AuditModel(db.Model):
             'id': self.id,
             'user_id': self.user_id,
             'action': self.action,
-            'timestamp': self.timestamp
+            'timestamp': self.timestamp,
+            'institution': self.institution_id	
         }
 
     @classmethod

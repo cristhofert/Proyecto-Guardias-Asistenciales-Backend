@@ -3,12 +3,6 @@ from sqlalchemy.orm import relationship
 from pprint import pprint
 from datetime import datetime
 
-assignment_table = db.Table('assignment', db.Model.metadata,
-    db.Column('guard_id', db.ForeignKey('guard.id'), primary_key=True),
-    db.Column('medical_doctor_id', db.ForeignKey('medical_doctor.id'), primary_key=True),
-    db.Column('assignment_date', db.DateTime, default=db.func.current_timestamp())
-)
-
 class GuardModel(db.Model):
     __tablename__ = 'guard'
 
@@ -20,8 +14,7 @@ class GuardModel(db.Model):
     end_time = db.Column(db.Time)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
     zone = relationship('ZoneModel')#?
-    medical_doctor = relationship('MedicalDoctorModel', secondary=assignment_table, back_populates='assignment')
-    medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'))
+    assignment = relationship('AssignmentModel')
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
     subscription = db.relationship('SubscriptionModel')
     group_id = db.Column(db.Integer, db.ForeignKey('guards_group.id'), nullable=True)
@@ -51,6 +44,9 @@ class GuardModel(db.Model):
             'end': (self.date.strftime('%Y-%m-%d') + " " + self.end_time.strftime('%H:%M')),
             'subscription': self.subscription.json()
         }
+
+    def medical_doctors(self):
+        return [assignment.medical_doctor for assignment in self.assignment]
 
     @classmethod
     def find_by_id(cls, _id):

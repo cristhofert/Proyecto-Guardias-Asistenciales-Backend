@@ -15,7 +15,7 @@ class Audit(Resource):
         #self.logger = create_logger(__name__)
         pass
 
-    @jwt_required
+    @jwt_required()
     def get(self, id):
         audit = AuditModel.find_by_id(id)
         #self.logger.info("Audit get: {}".format(audit))
@@ -23,7 +23,7 @@ class Audit(Resource):
             return audit.json()
         return {'message': 'Audit not found'}, 404
 
-    @jwt_required
+    @jwt_required()
     def post(self, id):
         data = self.parse.parse_args()
         audit = AuditModel.find_by_id(data['id'])
@@ -40,7 +40,7 @@ class Audit(Resource):
 
         return audit.json(), 201
 
-    @jwt_required
+    @jwt_required()
     def put(self, id):
         data = self.parse.parse_args()
         audit = AuditModel.find_by_id(data['id'])
@@ -59,7 +59,7 @@ class Audit(Resource):
         else:
             return {'message': 'access denied'}, 401
 
-    @jwt_required
+    @jwt_required()
     def delete(self, id):
         audit = AuditModel.find_by_id(id)
         if audit and (audit.json()['institution'] == current_user.json()['institution']):
