@@ -36,6 +36,11 @@ class Guard(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
+    parser.add_argument('quantity',
+        type=str,
+        required=False,
+        help="This field cannot be left blank!"
+    )
 
     def __init__(self):
         pass
@@ -55,10 +60,15 @@ class Guard(Resource):
         data = self.parser.parse_args()
 
         #self.logger.info(f'parsed args: {data}')
-        guard = GuardModel(data['subscription_id'], data['date'], data['start_time'], data['end_time'], data['zone_id'], current_user.json()['institution'])
+        quantity = data['quantity'] if data['quantity'] else 1
+        guards = []
+        for i in range(quantity):
+            guards.append(GuardModel(data['subscription_id'], data['date'], data['start_time'], data['end_time'], data['zone_id'], current_user.json()['institution']))
+
+        group = GuardsGroupModel(0, guards, current_user.json()['institution'])
 
         try:
-            guard.save_to_db()
+            group.save_to_db()
         except:
             return {"message": "An error occurred inserting the guard."}, 500
         return guard.json(), 201
@@ -139,8 +149,10 @@ class GuardList(Resource):
                         if wday == calendar.day_name[weekday]:
                             date_guard = date(today.year, today.month, day)
                             if date_guard > today:
-                                guards.append(GuardModel(data['subscription_id'], date_guard, data['start_time'], date['end_time'], data['zone_id'], current_user.json()['institution']))
-                                #puede que falte guardar cada guardia
+                                quantity = data['quantity'] if data['quantity'] else 1
+                                for i in range(quantity):
+                                    guards.append(GuardModel(data['subscription_id'], date_guard, data['start_time'], date['end_time'], data['zone_id'], current_user.json()['institution']))
+                                    #puede que falte guardar cada guardia
 
         group = GuardsGroupModel(0, guards, current_user.json()['institution'])
 
