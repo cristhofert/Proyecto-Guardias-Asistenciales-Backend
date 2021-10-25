@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 class MedicalDoctorModel(UserModel):
     __tablename__ = 'medical_doctor'
 
-    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.string(80), db.ForeignKey('user.id'), primary_key=True)
     speciality = db.Column(db.String(80))
     phone = db.Column(db.String(9))
     email = db.Column(db.String(80))

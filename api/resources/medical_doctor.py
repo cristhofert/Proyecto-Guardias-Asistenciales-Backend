@@ -10,7 +10,7 @@ from flask_jwt_extended import current_user
 class MedicalDoctor(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',
-        type=int,
+        type=str,
         required=True,
         help="This field cannot be left blank!"
     )

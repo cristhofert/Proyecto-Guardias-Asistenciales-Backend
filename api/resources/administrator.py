@@ -9,7 +9,7 @@ from models.administrator import AdministratorModel
 class Administrator(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',
-        type=int,
+        type=str,
         required=True,
         help="This field cannot be left blank!"
     )

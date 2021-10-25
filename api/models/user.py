@@ -7,7 +7,7 @@ from werkzeug.security import hmac
 class UserModel(db.Model):
     __tablename__ = 'user'
 
-    id = db.Column(db.Integer, primary_key=True)# Cedula de Identidad de Uruguay
+    id = db.Column(db.String(80), primary_key=True)# Cedula de Identidad de Uruguay
     name = db.Column(db.String(80))
     password = db.Column(db.String(80))
     type = db.Column(db.String(80))
