@@ -13,7 +13,7 @@ class Administrator(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
-    parser.add_argument('id',
+    parser.add_argument('name',
         type=str,
         required=True,
         help="This field cannot be left blank!"
@@ -40,10 +40,10 @@ class Administrator(Resource):
     def post(self, id):
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
+        data = self.parser.parse_args()
         if AdministratorModel.find_by_id(data['id']):
             return {'message': "An administrator with id '{}' already exists.".format(
                 id)}, 400
-        data = self.parser.parse_args()
         administrator = AdministratorModel(data['id'], data['name'], data['password'], current_user.json()['institution'])
 
         try:

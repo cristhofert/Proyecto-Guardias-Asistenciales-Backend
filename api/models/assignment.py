@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 class Assignmentmodel(db.Model):
     __tablename__ = 'assignment'
     
-    guard_id = guardb.Column(db.ForeignKey('guard.id'), primary_key=True)
+    guard_id = db.Column(db.ForeignKey('guard.id'), primary_key=True)
     guard = db.relationship("GuardModel")
     medical_doctor_id = db.Column(db.ForeignKey('medical_doctor.id'), primary_key=True)
     medical_doctor = db.relationship('MedicalDoctorModel')

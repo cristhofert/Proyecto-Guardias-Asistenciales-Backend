@@ -1,7 +1,6 @@
 from db import db
 from models.user import UserModel
 from models.subscription import subscription_medical_doctor_table
-from models.guard import assignment_table
 from sqlalchemy.orm import relationship
 
 
