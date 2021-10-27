@@ -3,11 +3,10 @@ from models.user import UserModel
 from models.subscription import subscription_medical_doctor_table
 from sqlalchemy.orm import relationship
 
-
 class MedicalDoctorModel(UserModel):
     __tablename__ = 'medical_doctor'
 
-    id = db.Column(db.string(80), db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.String(80), db.ForeignKey('user.id'), primary_key=True)
     speciality = db.Column(db.String(80))
     phone = db.Column(db.String(9))
     email = db.Column(db.String(80))
@@ -16,7 +15,7 @@ class MedicalDoctorModel(UserModel):
     #zones = db.relationship('ZoneModel', back_populates='medical_doctors')
     subscriptions = relationship(
         'SubscriptionModel', secondary=subscription_medical_doctor_table, back_populates='medical_doctors')
-    assignment = relationship('AssignmentModel')
+    assignment = relationship('AssignmentModel', back_populates='medical_doctor', uselist=False)
     __mapper_args__ = {
         'polymorphic_identity': 'medical_doctor'
     }

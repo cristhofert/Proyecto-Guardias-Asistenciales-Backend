@@ -21,9 +21,10 @@ from resources.login import Login
 from resources.user import User, UserList
 from resources.password import Password
 from resources.recover import Recover
+from resources.subscribe import Subscribe
 from models.user import UserModel
 from models.institution import InstitutionModel
-from util.preset import preset, preset_db
+from util.preset import preset_db
 
 app = Flask(__name__)
 
@@ -81,6 +82,7 @@ api.add_resource(User, '/user')
 api.add_resource(UserList, '/users')
 api.add_resource(Password, '/password/<string:token>')
 api.add_resource(Recover, '/recover/')
+api.add_resource(Subscribe, '/subscribe/<int:medical_doctor_id>/<int:subscription_id>')
 
 if __name__ == "__main__":
     app.run(debug=True)

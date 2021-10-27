@@ -2,13 +2,13 @@ from db import db
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 
-class Assignmentmodel(db.Model):
+class AssignmentModel(db.Model):
     __tablename__ = 'assignment'
     
     guard_id = db.Column(db.ForeignKey('guard.id'), primary_key=True)
-    guard = db.relationship("GuardModel")
+    guard = db.relationship("GuardModel", back_populates="assignment", uselist=False)#solucionar esta relacion
     medical_doctor_id = db.Column(db.ForeignKey('medical_doctor.id'), primary_key=True)
-    medical_doctor = db.relationship('MedicalDoctorModel')
+    medical_doctor = db.relationship('MedicalDoctorModel', back_populates='assignment', uselist=False)
     assignment_date= db.Column(db.DateTime, default=db.func.current_timestamp())
     institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")

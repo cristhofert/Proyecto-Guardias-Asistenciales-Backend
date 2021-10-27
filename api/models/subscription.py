@@ -1,10 +1,13 @@
 from db import db
 from sqlalchemy.orm import relationship
+from pprint import pprint
 
 subscription_medical_doctor_table = db.Table('subscription_medical_doctor_table', db.Model.metadata,
-    db.Column('subscription_id', db.ForeignKey('subscriptions.id'), primary_key=True),
-    db.Column('medical_doctor_id', db.ForeignKey('medical_doctor.id'), primary_key=True)
-)
+                                             db.Column('subscription_id', db.ForeignKey(
+                                                 'subscriptions.id'), primary_key=True),
+                                             db.Column('medical_doctor_id', db.ForeignKey(
+                                                 'medical_doctor.id'), primary_key=True)
+                                             )
 
 class SubscriptionModel(db.Model):
     __tablename__ = 'subscriptions'
@@ -13,8 +16,11 @@ class SubscriptionModel(db.Model):
     type = db.Column(db.String(80))
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
     service = relationship('ServiceModel')
-    medical_doctors = relationship('MedicalDoctorModel', secondary=subscription_medical_doctor_table, back_populates='subscriptions')
-    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    medical_doctors = relationship(
+        'MedicalDoctorModel', secondary=subscription_medical_doctor_table, back_populates='subscriptions')
+    guards = db.relationship('GuardModel', back_populates='subscription')
+    institution_id = db.Column(db.Integer, db.ForeignKey(
+        'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
 
     def __init__(self, type, service_id, institution_id=1):

@@ -14,9 +14,9 @@ class GuardModel(db.Model):
     end_time = db.Column(db.Time)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
     zone = relationship('ZoneModel')#?
-    assignment = relationship('AssignmentModel')
+    assignment = relationship('AssignmentModel', back_populates='guard', uselist=False)
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
-    subscription = db.relationship('SubscriptionModel')
+    subscription = db.relationship('SubscriptionModel', back_populates='guards')
     group_id = db.Column(db.Integer, db.ForeignKey('guards_group.id'), nullable=True)
     institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
@@ -31,7 +31,6 @@ class GuardModel(db.Model):
             self.zone_id = zone_id
 
     def json(self):
-
         return {
             'id': self.id,
             'created_at': str(self.created_at.strftime('%Y-%m-%d %H:%M:%S')),
@@ -42,7 +41,7 @@ class GuardModel(db.Model):
             'zone': self.zone.json() if self.zone else None,
             'start': (self.date.strftime('%Y-%m-%d') + " " + self.start_time.strftime('%H:%M')),
             'end': (self.date.strftime('%Y-%m-%d') + " " + self.end_time.strftime('%H:%M')),
-            'subscription': self.subscription.json()
+            'subscription': self.subscription.json() if self.subscription else None
         }
 
     def medical_doctors(self):

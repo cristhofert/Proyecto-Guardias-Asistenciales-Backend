@@ -8,7 +8,7 @@ from models.notification import NotificationModel
 
 class Notification(Resource):
     parse = reqparse.RequestParser()
-    parse.add_argument('medical_doctor_id', type=int, required=True, help="This field cannot be left blank!")
+    parse.add_argument('medical_doctor_id', type=str, required=True, help="This field cannot be left blank!")
     parse.add_argument('message', type=str, required=True, help="This field cannot be left blank!")
     parse.add_argument('read', type=bool, required=False, help="This field cannot be left blank!")
 
@@ -16,7 +16,7 @@ class Notification(Resource):
         #self.logger = create_logger(__name__)
         pass
 
-    @jwt_required
+    @jwt_required()
     def get(self, id):
         notification = NotificationModel.find_by_id(id)
         #self.logger.info("Notification get: {}".format(notification))
@@ -24,7 +24,7 @@ class Notification(Resource):
             return notification.json()
         return {'message': 'Notification not found'}, 404
 
-    @jwt_required
+    @jwt_required()
     def post(self, id):
         data = self.parse.parse_args()
         notification = NotificationModel.find_by_id(data['id'])
@@ -41,7 +41,7 @@ class Notification(Resource):
 
         return notification.json(), 201
 
-    @jwt_required
+    @jwt_required()
     def put(self, id):
         data = self.parse.parse_args()
         notification = NotificationModel.find_by_id(data['id'])
@@ -60,7 +60,7 @@ class Notification(Resource):
         else:
             return {'message': 'access denied'}, 401
 
-    @jwt_required
+    @jwt_required()
     def delete(self, id):
         notification = NotificationModel.find_by_id(id)
         if notification and (notification.json()['institution'] == current_user.json()['institution']):
@@ -69,6 +69,6 @@ class Notification(Resource):
         return {'message': 'Notification not found'}, 404
 
 class NotificationList(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self):
         return {'notifications': [notification.json() for notification in Notification.query.filter_by(institution_id=current_user.json()['institution']).all()]}
