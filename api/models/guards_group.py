@@ -5,14 +5,21 @@ class GuardsGroupModel(db.Model):
     __tablename__ = 'guards_group'
 
     id = db.Column(db.Integer, primary_key=True)
-    guards = relationship("guards", backref="guards_group")
+    guards = relationship("GuardModel", backref="guards_group")
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    institution = db.relationship("InstitutionModel")
+    quantity = db.Column(db.Integer, nullable=False, default=1)
 
-    def __init__(self, id, guards):
+    def __init__(self, id, guards, institution_id=1, quantity=1):
         self.id = id
         self.guards = guards
+        self.institution_id = institution_id
+        self.quantity = quantity
 
     def json(self):
-        return {'id': self.id, 'guards': self.guards}
+        return {
+            'id': self.id,
+            'guards': [guard.json() for gurad in self.guards ]}
 
     @classmethod
     def find_by_id(cls, id):

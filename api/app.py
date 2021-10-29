@@ -6,6 +6,7 @@ from flask_restful import Api
 from flask_cors import CORS
 from config import mariadbConfig
 from flask_jwt_extended import JWTManager
+import json
 
 from resources.administrator import Administrator, AdministratorList
 from resources.audit import Audit, AuditList
@@ -18,7 +19,12 @@ from resources.zone import Zone, ZoneList
 from resources.assignment import Assignment
 from resources.login import Login
 from resources.user import User, UserList
+from resources.password import Password
+from resources.recover import Recover
+from resources.subscribe import Subscribe
 from models.user import UserModel
+from models.institution import InstitutionModel
+from util.preset import preset_db
 
 app = Flask(__name__)
 
@@ -33,14 +39,15 @@ api = Api(app)
 def create_tables():
     from db import db
     db.init_app(app)
-    #db.drop_all()
+    db.drop_all()
     db.create_all()
+    preset_db()
 
 # Register a callback function that takes whatever object is passed in as the
 # identity when creating JWTs and converts it to a JSON serializable format.
 @jwt.user_identity_loader
 def user_identity_lookup(user):
-    return user
+    return user.id
 
 # Register a callback function that loades a user from your database whenever
 # a protected route is accessed. This should return any python object on a
@@ -49,8 +56,9 @@ def user_identity_lookup(user):
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
-    return UserModel.query.filter_by(id=identity['id']).one_or_none()
+    return UserModel.query.filter_by(id=identity).one_or_none()
 
+#preset()
 
 api.add_resource(Administrator, '/administrator/<int:id>')
 api.add_resource(AdministratorList, '/administrators')
@@ -72,6 +80,9 @@ api.add_resource(Assignment, '/assignment/<int:medical_doctor_id>/<int:guard_id>
 api.add_resource(Login, '/login')
 api.add_resource(User, '/user')
 api.add_resource(UserList, '/users')
+api.add_resource(Password, '/password/<string:token>')
+api.add_resource(Recover, '/recover/')
+api.add_resource(Subscribe, '/subscribe/<int:medical_doctor_id>/<int:subscription_id>')
 
 if __name__ == "__main__":
     app.run(debug=True)

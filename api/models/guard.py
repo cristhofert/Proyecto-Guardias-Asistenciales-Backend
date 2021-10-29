@@ -3,12 +3,6 @@ from sqlalchemy.orm import relationship
 from pprint import pprint
 from datetime import datetime
 
-assignment_table = db.Table('assignment', db.Model.metadata,
-    db.Column('guard_id', db.ForeignKey('guard.id'), primary_key=True),
-    db.Column('medical_doctor_id', db.ForeignKey('medical_doctor.id'), primary_key=True),
-    db.Column('assignment_date', db.DateTime, default=db.func.current_timestamp())
-)
-
 class GuardModel(db.Model):
     __tablename__ = 'guard'
 
@@ -20,21 +14,23 @@ class GuardModel(db.Model):
     end_time = db.Column(db.Time)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
     zone = relationship('ZoneModel')#?
-    medical_doctor = relationship('MedicalDoctorModel', secondary=assignment_table, back_populates='assignment')
-    medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'))
+    assignment = relationship('AssignmentModel', back_populates='guard', uselist=False)
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
-    subscription = db.relationship('SubscriptionModel')
-    
-    def __init__(self, subscription_id, date, start_time, end_time, zone_id=None):
+    subscription = db.relationship('SubscriptionModel', back_populates='guards')
+    group_id = db.Column(db.Integer, db.ForeignKey('guards_group.id'), nullable=True)
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    institution = db.relationship("InstitutionModel")
+
+    def __init__(self, subscription_id, date, start_time, end_time, zone_id=None, institution_id=1):
         self.subscription_id = subscription_id
         self.date = date
         self.start_time = start_time
         self.end_time = end_time
+        self.institution_id = institution_id
         if zone_id:
             self.zone_id = zone_id
-            
-    def json(self):
 
+    def json(self):
         return {
             'id': self.id,
             'created_at': str(self.created_at.strftime('%Y-%m-%d %H:%M:%S')),
@@ -45,8 +41,11 @@ class GuardModel(db.Model):
             'zone': self.zone.json() if self.zone else None,
             'start': (self.date.strftime('%Y-%m-%d') + " " + self.start_time.strftime('%H:%M')),
             'end': (self.date.strftime('%Y-%m-%d') + " " + self.end_time.strftime('%H:%M')),
-            'subscription': self.subscription.json()
+            'subscription': self.subscription.json() if self.subscription else None
         }
+
+    def medical_doctors(self):
+        return [assignment.medical_doctor for assignment in self.assignment]
 
     @classmethod
     def find_by_id(cls, _id):

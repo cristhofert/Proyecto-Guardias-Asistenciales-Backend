@@ -4,13 +4,13 @@ from models.user import UserModel
 class AdministratorModel(UserModel):
     __tablename__ = 'administrator'
     
-    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.String(80), db.ForeignKey('user.id'), primary_key=True)
     __mapper_args__ = {
         'polymorphic_identity':'administrator'
     }
     
-    def __init__(self, id, name, password):
-        super().__init__(id, name, password, 'administrator')
+    def __init__(self, id, name, password, institution_id=1):
+        super().__init__(id, name, password, 'administrator', institution_id)
 
     def json(self):
         return {'id': self.id, 'name': self.name}

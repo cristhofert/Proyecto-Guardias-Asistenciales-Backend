@@ -4,16 +4,19 @@ class NotificationModel(db.Model):
     __tablename__ = 'notifications'
 
     id = db.Column(db.Integer, primary_key=True)
-    medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'), nullable=False)
+    medical_doctor_id = db.Column(db.String(80), db.ForeignKey('medical_doctor.id'), nullable=False)
     medical_doctor = db.relationship('MedicalDoctorModel', backref='notifications', lazy=True)
     message = db.Column(db.String(128), nullable=False)
     read = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=db.func.current_timestamp())
+    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    institution = db.relationship("InstitutionModel")
 
-    def __init__(self, medical_doctor_id, message, read=False):
+    def __init__(self, medical_doctor_id, message, read=False, institution_id=1):
         self.medical_doctor_id = medical_doctor_id
         self.message = message
         self.read = read
+        self.institution_id = institution_id
 
     def json(self):
         return {
