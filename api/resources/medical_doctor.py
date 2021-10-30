@@ -3,42 +3,42 @@
 # standard python imports
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
-from models.medical_doctor import MedicalDoctorModel
 from flask_jwt_extended import current_user
 #from app.util.logz import create_logger
+
 
 class MedicalDoctor(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=int,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('name',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('password',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('speciality',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('phone',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('email',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
 
     def __init__(self):
         pass
@@ -60,7 +60,8 @@ class MedicalDoctor(Resource):
             return {'message': "An medical_doctor with name '{}' already exists.".format(
                 id)}, 400
         data = self.parser.parse_args()
-        medical_doctor =  MedicalDoctorModel(data['id'], data['name'], data['password'], data['speciality'], data['phone'], data['email'], current_user.json()['institution'] )
+        medical_doctor = MedicalDoctorModel(data['id'], data['name'], data['password'],
+                                            data['speciality'], data['phone'], data['email'], current_user.json()['institution'])
 
         try:
             medical_doctor.save_to_db()
@@ -82,15 +83,21 @@ class MedicalDoctor(Resource):
         # Create or Update
         data = self.parser.parse_args()
         medical_doctor = MedicalDoctorModel.find_by_id(data['id'])
-        if medical_doctor.json()['institution'] == current_user.json()['institution'] :
+        if medical_doctor.json()['institution'] == current_user.json()['institution']:
             if medical_doctor is None:
-                medical_doctor = MedicalDoctorModel(data['id'], data['name'], data['password'], data['speciality'], data['phone'], data['email'], current_user.json()['institution_id']  )
+                medical_doctor = MedicalDoctorModel(
+                    data['id'], data['name'], data['password'], data['speciality'], data['phone'], data['email'], current_user.json()['institution_id'])
             else:
-                if date['name'] is not None: medical_doctor.name = data['name']
-                if date['password'] is not None: medical_doctor.password = data['password']
-                if date['speciality'] is not None: medical_doctor.speciality = data['speciality']
-                if date['phone'] is not None: medical_doctor.phone = data['phone']
-                if date['email'] is not None: medical_doctor.email = data['email']
+                if date['name'] is not None:
+                    medical_doctor.name = data['name']
+                if date['password'] is not None:
+                    medical_doctor.password = data['password']
+                if date['speciality'] is not None:
+                    medical_doctor.speciality = data['speciality']
+                if date['phone'] is not None:
+                    medical_doctor.phone = data['phone']
+                if date['email'] is not None:
+                    medical_doctor.email = data['email']
 
             medical_doctor.save_to_db()
 
@@ -98,9 +105,10 @@ class MedicalDoctor(Resource):
         else:
             return {'message': 'access denied'}, 401
 
+
 class MedicalDoctorList(Resource):
     @jwt_required()
     def get(self):
         return {
             'medical_doctors': [medical_doctor.json() for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}
-        ##return {'medical_doctors': list(map(lambda x: x.json(), MedicalDoctorModel.query.all()))} #Alternate Lambda way
+        # return {'medical_doctors': list(map(lambda x: x.json(), MedicalDoctorModel.query.all()))} #Alternate Lambda way

@@ -40,8 +40,8 @@ class Login(Resource):
         print("GET login")
         # We can now access our sqlalchemy User object via `current_user`.
         return jsonify(
-            id=current_user.id, 
+            id=current_user.id,
             name=current_user.name,
             institution_id=current_user.institution_id,
             type=current_user.type
-            )
+        )

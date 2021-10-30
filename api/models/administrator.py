@@ -4,7 +4,7 @@ from models.user import UserModel
 class AdministratorModel(UserModel):
     __tablename__ = 'administrator'
     
-    id = db.Column(db.String(80), db.ForeignKey('user.id'), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
     __mapper_args__ = {
         'polymorphic_identity':'administrator'
     }

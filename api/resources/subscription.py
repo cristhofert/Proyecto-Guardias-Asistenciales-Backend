@@ -15,7 +15,7 @@ class Subscription(Resource):
         #self.logger = create_logger(__name__)
         pass
 
-    @jwt_required()
+    @jwt_required
     def get(self, id):
         subscription = SubscriptionModel.find_by_id(id)
         #self.logger.info("Subscription get: {}".format(subscription))
@@ -23,7 +23,7 @@ class Subscription(Resource):
             return subscription.json()
         return {'message': 'Subscription not found'}, 404
 
-    @jwt_required()
+    @jwt_required
     def post(self, id):
         data = Subscription.parse.parse_args()
         subscription = SubscriptionModel.find_by_id(data['id'])
@@ -40,7 +40,7 @@ class Subscription(Resource):
 
         return subscription.json(), 201
 
-    @jwt_required()
+    @jwt_required
     def put(self, id):
         data = Subscription.parse.parse_args()
         subscription = SubscriptionModel.find_by_id(id)
@@ -59,7 +59,7 @@ class Subscription(Resource):
         else:
             return {'message': 'access denied'}, 401
 
-    @jwt_required()
+    @jwt_required
     def delete(self, id):
         subscription = SubscriptionModel.find_by_id(id)
         if subscription and (subscription.json()['institution'] == current_user.json()['institution']):
@@ -68,6 +68,6 @@ class Subscription(Resource):
         return {'message': 'Subscription not found'}, 404
 
 class SubscriptionList(Resource):
-    @jwt_required()
+    @jwt_required
     def get(self):
         return {'subscriptions': [subscription.json() for subscription in SubscriptionModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}

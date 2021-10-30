@@ -6,23 +6,24 @@ from flask_jwt_extended import jwt_required, current_user
 from models.administrator import AdministratorModel
 #from app.util.logz import create_logger
 
+
 class Administrator(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=int,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('name',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('password',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
 
     def __init__(self):
         pass
@@ -39,13 +40,13 @@ class Administrator(Resource):
     @jwt_required()
     def post(self, id):
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
-
         data = self.parser.parse_args()
         if AdministratorModel.find_by_id(data['id']):
             return {'message': "An administrator with id '{}' already exists.".format(
                 id)}, 400
-        administrator = AdministratorModel(data['id'], data['name'], data['password'], current_user.json()['institution'])
 
+        administrator = AdministratorModel(
+            data['id'], data['name'], data['password'], 1)
         try:
             administrator.save_to_db()
         except:
@@ -68,24 +69,28 @@ class Administrator(Resource):
         data = self.parser.parse_args()
         administrator = AdministratorModel.find_by_id(data['id'])
 
-
-        if administrator.json()['institution'] == current_user.json()['institution'] :
+        if administrator.json()['institution'] == current_user.json()['institution']:
             if administrator is None:
-                administrator = AdministratorModel(data['id'], data['name'], data['password'], current_user.json()['institution'])
+                administrator = AdministratorModel(
+                    data['id'], data['name'], data['password'], current_user.json()['institution'])
             else:
-                if date['id'] is not None: administrator.id = data['id']
-                if date['name'] is not None: administrator.name = data['name']
-                if date['password'] is not None: administrator.password = data['password']
-                
+                if date['id'] is not None:
+                    administrator.id = data['id']
+                if date['name'] is not None:
+                    administrator.name = data['name']
+                if date['password'] is not None:
+                    administrator.password = data['password']
+
             administrator.save_to_db()
 
             return administrator.json()
         else:
             return {'message': 'access denied'}, 401
 
+
 class AdministratorList(Resource):
     @jwt_required()
     def get(self):
         return {
             'administrators': [administrator.json() for administrator in AdministratorModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
-        ##return {'administrators': list(map(lambda x: x.json(), AdministratorModel.query.all()))} #Alternate Lambda way
+        # return {'administrators': list(map(lambda x: x.json(), AdministratorModel.query.all()))} #Alternate Lambda way

@@ -17,9 +17,7 @@ class GuardsGroupModel(db.Model):
         self.quantity = quantity
 
     def json(self):
-        return {
-            'id': self.id,
-            'guards': [guard.json() for gurad in self.guards ]}
+        return {'id': self.id, 'guards': self.guards}
 
     @classmethod
     def find_by_id(cls, id):

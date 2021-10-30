@@ -4,7 +4,7 @@ class NotificationModel(db.Model):
     __tablename__ = 'notifications'
 
     id = db.Column(db.Integer, primary_key=True)
-    medical_doctor_id = db.Column(db.String(80), db.ForeignKey('medical_doctor.id'), nullable=False)
+    medical_doctor_id = db.Column(db.Integer, db.ForeignKey('medical_doctor.id'), nullable=False)
     medical_doctor = db.relationship('MedicalDoctorModel', backref='notifications', lazy=True)
     message = db.Column(db.String(128), nullable=False)
     read = db.Column(db.Boolean, default=False)

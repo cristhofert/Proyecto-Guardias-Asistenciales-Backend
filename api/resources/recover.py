@@ -10,17 +10,17 @@ from util.encoder import AlchemyEncoder
 import json
 from util.logz import create_logger
 
+
 class Recover(Resource):
     def __init__(self):
-        pass
-        #self.logger = create_logger()
+        self.logger = create_logger()
 
     # only allow price changes, no name changes allowed
     parser = reqparse.RequestParser()
-    parser.add_argument('email', type=str, required=True,
+    parser.add_argument('email', type=int, required=True,
                         help='This field cannot be left blank')
 
-    #@jwt_required()
+    @jwt_required()
     def post(self):
         if current_user.type == 'medical_doctor':
             return {'message': 'You are not allowed to recover password'}, 401

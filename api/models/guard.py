@@ -3,22 +3,26 @@ from sqlalchemy.orm import relationship
 from pprint import pprint
 from datetime import datetime
 
+
 class GuardModel(db.Model):
     __tablename__ = 'guard'
 
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
-    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
+    updated_at = db.Column(db.DateTime, default=db.func.current_timestamp(
+    ), onupdate=db.func.current_timestamp())
     date = db.Column(db.Date)
     start_time = db.Column(db.Time)
     end_time = db.Column(db.Time)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
-    zone = relationship('ZoneModel')#?
-    assignment = relationship('AssignmentModel', back_populates='guard', uselist=False)
+    zone = relationship('ZoneModel')  # ?
+    assignment = relationship('AssignmentModel')
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
-    subscription = db.relationship('SubscriptionModel', back_populates='guards')
-    group_id = db.Column(db.Integer, db.ForeignKey('guards_group.id'), nullable=True)
-    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    subscription = db.relationship('SubscriptionModel')
+    group_id = db.Column(db.Integer, db.ForeignKey(
+        'guards_group.id'), nullable=True)
+    institution_id = db.Column(db.Integer, db.ForeignKey(
+        'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
 
     def __init__(self, subscription_id, date, start_time, end_time, zone_id=None, institution_id=1):
@@ -31,6 +35,7 @@ class GuardModel(db.Model):
             self.zone_id = zone_id
 
     def json(self):
+
         return {
             'id': self.id,
             'created_at': str(self.created_at.strftime('%Y-%m-%d %H:%M:%S')),
@@ -41,7 +46,7 @@ class GuardModel(db.Model):
             'zone': self.zone.json() if self.zone else None,
             'start': (self.date.strftime('%Y-%m-%d') + " " + self.start_time.strftime('%H:%M')),
             'end': (self.date.strftime('%Y-%m-%d') + " " + self.end_time.strftime('%H:%M')),
-            'subscription': self.subscription.json() if self.subscription else None
+            'subscription': self.subscription.json()
         }
 
     def medical_doctors(self):
@@ -50,7 +55,7 @@ class GuardModel(db.Model):
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
-    
+
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
@@ -58,4 +63,3 @@ class GuardModel(db.Model):
     def delete_from_db(self):
         db.session.delete(self)
         db.session.commit()
-        

@@ -9,38 +9,39 @@ from models.guards_group import GuardsGroupModel
 import calendar
 from datetime import datetime
 
+
 class Guard(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('subscription_id',
-        type=int,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=int,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('zone_id',
-        type=int,
-        required=False,
-        help="This field cannot be left blank!"
-    )
+                        type=int,
+                        required=False,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('date',
-        type=inputs.date,#input date
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=inputs.date,  # input date
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('start_time',
-        type=str,#Time
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,  # Time
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('end_time',
-        type=str,#Time
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,  # Time
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('quantity',
-        type=str,
-        required=False,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=False,
+                        help="This field cannot be left blank!"
+                        )
 
     def __init__(self):
         pass
@@ -63,7 +64,8 @@ class Guard(Resource):
         quantity = data['quantity'] if data['quantity'] else 1
         guards = []
         for i in range(quantity):
-            guards.append(GuardModel(data['subscription_id'], data['date'], data['start_time'], data['end_time'], data['zone_id'], current_user.json()['institution']))
+            guards.append(GuardModel(data['subscription_id'], data['date'], data['start_time'],
+                          data['end_time'], data['zone_id'], current_user.json()['institution']))
 
         group = GuardsGroupModel(0, guards, current_user.json()['institution'])
 
@@ -92,11 +94,16 @@ class Guard(Resource):
             if guard is None:
                 return {'message': 'guard not exist'}, 500
             else:
-                if data['subscription_id'] is not None: guard.subscription_id = data['subscription_id']
-                if data['zone_id'] is not None: guard.zone_id = data['zone_id']
-                if data['date'] is not None: guard.date = data['date']
-                if data['start_time'] is not None: guard.start_time = data['start_time']
-                if data['end_time'] is not None: guard.end_time = data['end_time']
+                if data['subscription_id'] is not None:
+                    guard.subscription_id = data['subscription_id']
+                if data['zone_id'] is not None:
+                    guard.zone_id = data['zone_id']
+                if data['date'] is not None:
+                    guard.date = data['date']
+                if data['start_time'] is not None:
+                    guard.start_time = data['start_time']
+                if data['end_time'] is not None:
+                    guard.end_time = data['end_time']
 
             guard.save_to_db()
 
@@ -104,34 +111,35 @@ class Guard(Resource):
         else:
             return {'message': 'access denied'}, 401
 
+
 class GuardList(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('subscription_id',
-        type=int,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=int,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('zone_id',
-        type=int,
-        required=False,
-        help="This field cannot be left blank!"
-    )
+                        type=int,
+                        required=False,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('repeat',
-        type=[],#input date
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=[],  # input date
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('start_time',
-        type=str,#Time
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,  # Time
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('end_time',
-        type=str,#Time
-        required=True,
-        help="This field cannot be left blank!"
-    )
-    
+                        type=str,  # Time
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
+
     @jwt_required()
     def get(self):
         return {
@@ -151,8 +159,9 @@ class GuardList(Resource):
                             if date_guard > today:
                                 quantity = data['quantity'] if data['quantity'] else 1
                                 for i in range(quantity):
-                                    guards.append(GuardModel(data['subscription_id'], date_guard, data['start_time'], date['end_time'], data['zone_id'], current_user.json()['institution']))
-                                    #puede que falte guardar cada guardia
+                                    guards.append(GuardModel(data['subscription_id'], date_guard, data['start_time'],
+                                                  date['end_time'], data['zone_id'], current_user.json()['institution']))
+                                    # puede que falte guardar cada guardia
 
         group = GuardsGroupModel(0, guards, current_user.json()['institution'])
 

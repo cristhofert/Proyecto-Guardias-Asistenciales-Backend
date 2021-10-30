@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # standard python imports
 from flask import Flask
+
 from flask_restful import Api
 from flask_cors import CORS
 from config import mariadbConfig
@@ -21,10 +22,11 @@ from resources.login import Login
 from resources.user import User, UserList
 from resources.password import Password
 from resources.recover import Recover
-from resources.subscribe import Subscribe
+from resources.mailN import MailN
+from resources.superadmin import SuperAdmin
 from models.user import UserModel
 from models.institution import InstitutionModel
-from util.preset import preset_db
+from util.preset import preset, preset_db
 
 app = Flask(__name__)
 
@@ -32,8 +34,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = mariadbConfig
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_SECRET_KEY"] = "secret#jwt#g1"
 jwt = JWTManager(app)
-CORS(app)# CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
+# CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
+CORS(app)
 api = Api(app)
+
 
 @app.before_first_request
 def create_tables():
@@ -45,6 +49,8 @@ def create_tables():
 
 # Register a callback function that takes whatever object is passed in as the
 # identity when creating JWTs and converts it to a JSON serializable format.
+
+
 @jwt.user_identity_loader
 def user_identity_lookup(user):
     return user.id
@@ -53,17 +59,20 @@ def user_identity_lookup(user):
 # a protected route is accessed. This should return any python object on a
 # successful lookup, or None if the lookup failed for any reason (for example
 # if the user has been deleted from the database).
+
+
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return UserModel.query.filter_by(id=identity).one_or_none()
 
-#preset()
+# preset()
+
 
 api.add_resource(Administrator, '/administrator/<int:id>')
 api.add_resource(AdministratorList, '/administrators')
 api.add_resource(Audit, '/audit/<int:id>')
-api.add_resource(AuditList, '/audits')   
+api.add_resource(AuditList, '/audits')
 api.add_resource(Guard, '/guard/<int:id>')
 api.add_resource(GuardList, '/guards')
 api.add_resource(MedicalDoctor, '/medical_doctor/<int:id>')
@@ -76,13 +85,15 @@ api.add_resource(Subscription, '/subscription/<int:id>')
 api.add_resource(SubscriptionList, '/subscriptions')
 api.add_resource(Zone, '/zone/<int:id>')
 api.add_resource(ZoneList, '/zones')
-api.add_resource(Assignment, '/assignment/<int:medical_doctor_id>/<int:guard_id>')
+api.add_resource(
+    Assignment, '/assignment/<int:medical_doctor_id>/<int:guard_id>')
 api.add_resource(Login, '/login')
 api.add_resource(User, '/user')
 api.add_resource(UserList, '/users')
 api.add_resource(Password, '/password/<string:token>')
 api.add_resource(Recover, '/recover/')
-api.add_resource(Subscribe, '/subscribe/<int:medical_doctor_id>/<int:subscription_id>')
+api.add_resource(MailN, '/MailN')
+api.add_resource(SuperAdmin, '/superadmin/<int:id>')
 
 if __name__ == "__main__":
     app.run(debug=True)

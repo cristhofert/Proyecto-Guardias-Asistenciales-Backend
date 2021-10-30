@@ -9,7 +9,7 @@ from models.user import UserModel
 class User(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',
-        type=str,
+        type=int,
         required=True,
         help="This field cannot be left blank!"
     )
