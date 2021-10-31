@@ -32,8 +32,8 @@ class MailN(Resource):
         # print(email)
         try:
             sg = sendgrid.SendGridAPIClient(
-                api_key='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')
-            from_email = Email("federicoDn3@gmail.com")
+                api_key='000')
+            from_email = Email("000@gmail.com")
             to_email = To(email)
             # to_email = To("@") Esto en caso de prueba
             subject = "Bienvenido a GuardiasMedicas"
