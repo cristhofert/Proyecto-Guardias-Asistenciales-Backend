@@ -11,9 +11,12 @@ import calendar
 from datetime import datetime
 from pprint import pprint
 
+
 class MyGuards(Resource):
     @jwt_required()
     def get(self):
+        if current_user.type == 'administrator':
+            return {"message": "You are not authorized to access this resource."}, 401
         return {
-            'myguards': [x.json() for x in AssignmentModel.find_by_medical_doctor_id(current_user.id)]
-            }
+            'myguards': [guard.json() for guard in current_user.guards]
+        }
