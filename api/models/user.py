@@ -21,7 +21,7 @@ class UserModel(db.Model):
     }
 
     def __init__(self, id, name, password, type, institution_id=1):
-        self.id = id
+        self.id = str(id)
         self.name = name
         self.password = password
         self.type = type

@@ -15,7 +15,7 @@ class MedicalDoctorModel(UserModel):
     #zones = db.relationship('ZoneModel', back_populates='medical_doctors')
     subscriptions = relationship(
         'SubscriptionModel', secondary=subscription_medical_doctor_table, back_populates='medical_doctors')
-    assignment = relationship('AssignmentModel', back_populates='medical_doctor', uselist=False)
+    assignments = relationship('AssignmentModel', back_populates='medical_doctor')
     __mapper_args__ = {
         'polymorphic_identity': 'medical_doctor'
     }

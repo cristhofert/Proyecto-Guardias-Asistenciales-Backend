@@ -29,9 +29,11 @@ class Assignment(Resource):
         guard = GuardModel.find_by_id(guard_id)
         if medical_doctor and guard and (medical_doctor.json()['institution'] == current_user.json()['institution']) and (guard.json()['institution'] == current_user.json()['institution']):
             assignment = AssignmentModel(medical_doctor_id, guard_id, current_user.json()['institution'])
+            guard.current_assignment_id = assignment.id
 
             try:
                 assignment.save_to_db()
+                guard.save_to_db()
             except:
                 return {"message": "An error occurred inserting the assignment."}, 500
         return assignment.json(), 201
@@ -49,6 +51,12 @@ class Assignment(Resource):
     def get(self, medical_doctor_id=0, guard_id=0):
         if current_user.type == 'medical_doctor':
             return {"message": "You are not authorized to access this resource."}, 401
+
+        if medical_doctor_id > 0 and guard_id > 0:
+            assignment = AssignmentModel.find_by_ids(medical_doctor_id, guard_id)
+            if assignment and (assignment.json()['institution'] == current_user.json()['institution']):
+                return assignment.json(), 200
+            return {"message": "Medical doctor not found."}, 404
 
         if medical_doctor_id > 0:
             assignment = AssignmentModel.find_by_medical_doctor_id(medical_doctor_id)

@@ -14,12 +14,16 @@ class GuardModel(db.Model):
     end_time = db.Column(db.Time)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
     zone = relationship('ZoneModel')#?
-    assignment = relationship('AssignmentModel', back_populates='guard', uselist=False)
+    assignments = relationship('AssignmentModel', back_populates='guard')
+    current_assignment_id = db.Column(db.Integer, db.ForeignKey('assignment.id'))
+    current_assignment = relationship('AssignmentModel', back_populates='current_guard', uselist=False)
+    subscription = db.relationship('SubscriptionModel', back_populates='guards')
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
     subscription = db.relationship('SubscriptionModel', back_populates='guards')
     group_id = db.Column(db.Integer, db.ForeignKey('guards_group.id'), nullable=True)
     institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
+    
 
     def __init__(self, subscription_id, date, start_time, end_time, zone_id=None, institution_id=1):
         self.subscription_id = subscription_id
@@ -41,11 +45,15 @@ class GuardModel(db.Model):
             'zone': self.zone.json() if self.zone else None,
             'start': (self.date.strftime('%Y-%m-%d') + " " + self.start_time.strftime('%H:%M')),
             'end': (self.date.strftime('%Y-%m-%d') + " " + self.end_time.strftime('%H:%M')),
-            'subscription': self.subscription.json() if self.subscription else None
+            'subscription_name': self.subscription.json()['name'] if self.subscription else None,
+            'current_assignment': self.current_assignment.json() if self.current_assignment else None
         }
 
     def medical_doctors(self):
-        return [assignment.medical_doctor for assignment in self.assignment]
+        return [assignment.medical_doctor.json()['id'] for assignment in self.assignment] 
+
+    def medical_doctor(self):
+        return self. self.current_assignment.json()
 
     @classmethod
     def find_by_id(cls, _id):

@@ -24,6 +24,7 @@ from resources.recover import Recover
 from resources.subscribe import Subscribe
 from resources.mailN import MailN
 from resources.superadmin import SuperAdmin
+from resources.myguards import MyGuards
 from models.user import UserModel
 from models.institution import InstitutionModel
 from util.preset import preset_db
@@ -87,6 +88,7 @@ api.add_resource(Recover, '/recover/')
 api.add_resource(Subscribe, '/subscribe/<int:medical_doctor_id>/<int:subscription_id>')
 api.add_resource(MailN, '/MailN')
 api.add_resource(SuperAdmin, '/superadmin/<int:id>')
+api.add_resource(MyGuards, '/myguards/')
 
 if __name__ == "__main__":
     app.run(debug=True)

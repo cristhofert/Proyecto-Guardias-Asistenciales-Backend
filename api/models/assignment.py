@@ -5,10 +5,11 @@ from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 class AssignmentModel(db.Model):
     __tablename__ = 'assignment'
     
-    guard_id = db.Column(db.ForeignKey('guard.id'), primary_key=True)
-    guard = db.relationship("GuardModel", back_populates="assignment", uselist=False)#solucionar esta relacion
-    medical_doctor_id = db.Column(db.ForeignKey('medical_doctor.id'), primary_key=True)
-    medical_doctor = db.relationship('MedicalDoctorModel', back_populates='assignment', uselist=False)
+    id = db.Column(db.Integer, primary_key=True)
+    guard_id = db.Column(db.ForeignKey('guard.id'), unique=True)
+    guard = db.relationship("GuardModel", back_populates="assignments")
+    medical_doctor_id = db.Column(db.ForeignKey('medical_doctor.id'), unique=True)
+    medical_doctor = db.relationship('MedicalDoctorModel', back_populates='assignments')
     assignment_date= db.Column(db.DateTime, default=db.func.current_timestamp())
     institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
@@ -20,20 +21,20 @@ class AssignmentModel(db.Model):
 
     def json(self):
         return {
+            'id': str(self.medical_doctor_id) + '-' + str(self.guard_id),
             'guard': self.guard.json(),
             'medical_doctor': self.medical_doctor.json(),
-            'assignment_date': self.assignment_date,
-            'institution': self.institution_id
+            'assignment_date': str(self.assignment_date.strftime('%Y-%m-%d'))
         }
 
     @classmethod
-    def find_by_guard_id(cls, _id):
-        return cls.query.filter_by(guard_id=_id).order_by(Assignmentmodel.assignment_date).first()
-        
+    def find_by_guard_id(cls, _id):#retorna informacion de una asignacion de guardia(que medico tiene esa guardia)
+        return cls.query.filter_by(guard_id=_id).order_by(self.assignment_date).first()
+
     @classmethod
     def find_by_medical_doctor_id(cls, _id):
-        return cls.query.filter_by(medical_doctor_id=_id).order_by(Assignmentmodel.assignment_date).first()
-    
+        return cls.query.filter_by(medical_doctor_id=_id).order_by('assignment_date').all()
+	
     @classmethod
     def find_by_ids(cls, _medical_doctor_id, _guard_id):
         return cls.query.filter_by(medical_doctor_id=_medical_doctor_id, guard_id=_guard_id).order_by(Assignmentmodel.assignment_date).first()
