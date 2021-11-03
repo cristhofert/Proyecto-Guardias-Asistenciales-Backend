@@ -134,8 +134,14 @@ class GuardList(Resource):
     
     @jwt_required()
     def get(self):
-        return {
-            'guards': [guard.json() for guard in GuardModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
+        if current_user.type == 'administator':
+            return {
+                'guards': [guard.json() for guard in GuardModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
+        else:
+            return {
+                'guards': [subscription.disponible_guards_json() for subscription in current_user.subscriptions]
+                #falta eliminar guardias ya asignadasuj
+            }
 
     @jwt_required()
     def post(self):

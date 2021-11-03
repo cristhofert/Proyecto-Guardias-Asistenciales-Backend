@@ -37,6 +37,16 @@ class SubscriptionModel(db.Model):
             'name': self.service.json()['name'] + ' - ' + self.type
         }
 
+    def guards_json(self):
+        return [guard.json() for guard in self.guards]
+    
+    def disponible_guards_json(self):
+        guards = []
+        for guard in self.guards:
+            if guard.is_disponible():
+                guards.append(guard.json())
+        return guards
+
     @classmethod
     def find_by_channel_id(cls, channel_id):
         return cls.query.filter_by(channel_id=channel_id).first()

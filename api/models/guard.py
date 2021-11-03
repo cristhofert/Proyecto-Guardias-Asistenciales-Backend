@@ -53,24 +53,13 @@ class GuardModel(db.Model):
             'medical_doctor_id': self.medical_doctor_id if self.medical_doctor_id else None
         }
 
-    def medical_doctors(self):
-        return [assignment.medical_doctor.json()['id'] for assignment in self.assignment]
-
-    def medical_doctor(self):
-        return self.current_assignment.json()
+    def is_disponible(self):
+        return False if self.medical_doctor_id else True
 
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
 
-    @classmethod
-    def find_by_medical_doctor_id(cls, _id):
-        return cls.query.join('current_assignment').filter_by(medical_doctor_id=_id).all()
-        """ return (cls.query.join(AssignmentModel,
-                               self.current_assignment_id == AssignmentModel.id)
-                .filter_by(medical_doctor_id=_id)
-                .all()
-                ) """
 
     def save_to_db(self):
         db.session.add(self)
