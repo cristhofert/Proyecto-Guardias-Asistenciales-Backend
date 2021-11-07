@@ -15,7 +15,8 @@ class MedicalDoctorModel(UserModel):
     #zones = db.relationship('ZoneModel', back_populates='medical_doctors')
     subscriptions = relationship(
         'SubscriptionModel', secondary=subscription_medical_doctor_table, back_populates='medical_doctors')
-    assignment = relationship('AssignmentModel', back_populates='medical_doctor', uselist=False)
+    assignments = relationship('AssignmentModel', back_populates='medical_doctor')
+    guards = db.relationship('GuardModel', backref='medical_doctor', lazy=True)
     __mapper_args__ = {
         'polymorphic_identity': 'medical_doctor'
     }
@@ -36,6 +37,9 @@ class MedicalDoctorModel(UserModel):
             'institution': self.institution_id
             }
 
+    def assignments_json(self):
+        return [assignment.json() for assignment in self.assignments]
+        
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()

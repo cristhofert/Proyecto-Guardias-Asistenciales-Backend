@@ -6,11 +6,15 @@ from flask_jwt_extended import jwt_required, current_user
 from models.notification import NotificationModel
 #from app.util.logz import create_logger
 
+
 class Notification(Resource):
     parse = reqparse.RequestParser()
-    parse.add_argument('medical_doctor_id', type=str, required=True, help="This field cannot be left blank!")
-    parse.add_argument('message', type=str, required=True, help="This field cannot be left blank!")
-    parse.add_argument('read', type=bool, required=False, help="This field cannot be left blank!")
+    parse.add_argument('medical_doctor_id', type=str,
+                       required=True, help="This field cannot be left blank!")
+    parse.add_argument('message', type=str, required=True,
+                       help="This field cannot be left blank!")
+    parse.add_argument('read', type=bool, required=False,
+                       help="This field cannot be left blank!")
 
     def __init__(self):
         #self.logger = create_logger(__name__)
@@ -32,7 +36,8 @@ class Notification(Resource):
         if notification:
             return {'message': "An notification with id '{}' already exists.".format(id)}, 400
 
-        notification = NotificationModel(**data, institution_id=current_user.json()['institution'])
+        notification = NotificationModel(
+            **data, institution_id=current_user.json()['institution'])
 
         try:
             notification.save_to_db()
@@ -52,7 +57,8 @@ class Notification(Resource):
                 notification.read = data['read']
                 notification.message = data['message']
             else:
-                notification = NotificationModel(**data, institution_id=current_user.json()['institution'])
+                notification = NotificationModel(
+                    **data, institution_id=current_user.json()['institution'])
 
             notification.save_to_db()
 
@@ -67,6 +73,7 @@ class Notification(Resource):
             notification.delete_from_db()
             return {'message': 'Notification deleted'}
         return {'message': 'Notification not found'}, 404
+
 
 class NotificationList(Resource):
     @jwt_required()
