@@ -29,22 +29,22 @@ class MailN(Resource):
 
         data = self.parser.parse_args()
         email = data['email']
-        # print(email)
+        mail = Mail()
+        mail.from_email = Email("federicoDn3@gmail.com", "Guardias Medicas")
+        #to_email = To(email)
+        # Esto en caso de prueba
+        mail.to = To("federico.diaz@utec.edu.uy")
+        mail.subject = "Bienvenido a Guardias Medicas"
+        mail.template_id = TemplateId("d-ab9d3a52dc724b17a143c51ab1d55511")
+
         try:
             sg = sendgrid.SendGridAPIClient(
-                api_key='000')
-            from_email = Email("000@gmail.com")
-            to_email = To(email)
-            # to_email = To("@") Esto en caso de prueba
-            subject = "Bienvenido a GuardiasMedicas"
-            content = Content("text/plain", "Bienvenido")
-            mail = Mail(from_email, to_email, subject, content)
-            """print(mail)
+                api_key='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')
             response = sg.send(mail)
+            # print(mail)
             print(response.status_code)
             print(response.body)
-            print(response.headers) """
-
+            print(response.headers)
         except:
             return {"message": "An error occurred sending mail."}, 500
-        return 201
+        return response._status_code

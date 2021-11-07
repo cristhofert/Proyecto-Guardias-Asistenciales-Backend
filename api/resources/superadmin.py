@@ -4,21 +4,17 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
 from models.administrator import AdministratorModel
+import random
 
 
 class SuperAdmin(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',
-                        type=int,
-                        required=True,
-                        help="This field cannot be left blank!"
-                        )
-    parser.add_argument('name',
                         type=str,
                         required=True,
                         help="This field cannot be left blank!"
                         )
-    parser.add_argument('password',
+    parser.add_argument('name',
                         type=str,
                         required=True,
                         help="This field cannot be left blank!"
@@ -36,7 +32,7 @@ class SuperAdmin(Resource):
                 id)}, 400
 
         administrator = AdministratorModel(
-            data['id'], data['name'], data['password'], 1)
+            data['id'], data['name'], random.randrange(000000000, 999999999, 9), 1)
         try:
             administrator.save_to_db()
         except:

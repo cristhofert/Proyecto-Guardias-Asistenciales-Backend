@@ -1,6 +1,6 @@
 from db import db
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 
 
 class AssignmentModel(db.Model):
@@ -28,14 +28,15 @@ class AssignmentModel(db.Model):
 
     def json(self):
         return {
-            'id': str(self.medical_doctor_id) + '-' + str(self.guard_id),
+            'id': self.id,
             'guard': self.guard.json(),
             'medical_doctor': self.medical_doctor.json(),
-            'assignment_date': str(self.assignment_date.strftime('%Y-%m-%d'))
+            'assignment_date': str(self.assignment_date.strftime('%Y-%m-%d')),
+            'institution': self.institution_id
         }
 
+
     @classmethod
-    # retorna informacion de una asignacion de guardia(que medico tiene esa guardia)
     def find_by_guard_id(cls, _id):
         return cls.query.filter_by(guard_id=_id).order_by(self.assignment_date).first()
 
@@ -45,4 +46,12 @@ class AssignmentModel(db.Model):
 
     @classmethod
     def find_by_ids(cls, _medical_doctor_id, _guard_id):
-        return cls.query.filter_by(medical_doctor_id=_medical_doctor_id, guard_id=_guard_id).order_by(Assignmentmodel.assignment_date).first()
+        return cls.query.filter_by(medical_doctor_id=_medical_doctor_id, guard_id=_guard_id).order_by(AssignmentModel.assignment_date).first()
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
