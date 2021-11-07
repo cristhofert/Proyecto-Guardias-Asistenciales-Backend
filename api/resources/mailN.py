@@ -39,7 +39,7 @@ class MailN(Resource):
 
         try:
             sg = sendgrid.SendGridAPIClient(
-                api_key='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')
+            api_key='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')
             response = sg.send(mail)
             # print(mail)
             print(response.status_code)
