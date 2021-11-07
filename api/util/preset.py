@@ -6,12 +6,16 @@ from models.guard import GuardModel
 from models.subscription import SubscriptionModel
 from models.service import ServiceModel
 from models.assignment import AssignmentModel
+from models.zone import ZoneModel
+from models.guards_group import GuardsGroupModel
 from db import db
 
 
 def preset_db():
     db.session.add(InstitutionModel())
     db.session.add(InstitutionModel())
+    db.session.add(ZoneModel("z1"))
+    db.session.add(GuardsGroupModel([]))
     md = MedicalDoctorModel(
         1234562,  'Cristhofer Travieso',  'cris1234', 'md', '09785412', 'c@c.com', 1)
     db.session.add(md)

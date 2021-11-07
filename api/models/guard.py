@@ -24,7 +24,7 @@ class GuardModel(db.Model):
     subscription = db.relationship(
         'SubscriptionModel', back_populates='guards')
     group_id = db.Column(db.Integer, db.ForeignKey(
-        'guards_group.id'), nullable=True)
+        'guards_group.id'), default=1)
     institution_id = db.Column(db.Integer, db.ForeignKey(
         'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
@@ -37,6 +37,7 @@ class GuardModel(db.Model):
         self.institution_id = institution_id
         if zone_id:
             self.zone_id = zone_id
+        self.group_id = None
 
     def json(self):
         return {
