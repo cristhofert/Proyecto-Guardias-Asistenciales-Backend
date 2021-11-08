@@ -32,9 +32,11 @@ class Assignment(Resource):
         if medical_doctor and guard and (medical_doctor.json()['institution'] == current_user.json()['institution']) and (guard.json()['institution'] == current_user.json()['institution']):
             assignment = AssignmentModel(
                 medical_doctor_id, guard_id, current_user.json()['institution'])
+            guard.medical_doctor_id = medical_doctor_id
 
             try:
                 assignment.save_to_db()
+                guard.save_to_db()
             except:
                 return {"message": "An error occurred inserting the assignment."}, 500
         return assignment.json(), 201
@@ -42,8 +44,10 @@ class Assignment(Resource):
     @jwt_required()
     def delete(self, medical_doctor_id, guard_id):
         assignment = AssignmentModel.find_by_ids(medical_doctor_id, guard_id)
+        guard = GuardModel.find_by_id(guard_id)
         if assignment and (assignment.json()['institution'] == current_user.json()['institution']):
             assignment.delete_from_db()
+            guard.medical_doctor_id = None
             md = MedicalDoctorModel.find_by_id(medical_doctor_id)
             email = md.email
             telefono = 'whatsapp:+598'+md.phone

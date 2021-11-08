@@ -1,7 +1,6 @@
 from db import db
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueConstraint
 
 class AssignmentModel(db.Model):
     __tablename__ = 'assignment'
@@ -35,6 +34,8 @@ class AssignmentModel(db.Model):
             'institution': self.institution_id
         }
 
+    def get_assignment_date(self):
+        return self.assignment_date
 
     @classmethod
     def find_by_guard_id(cls, _id):

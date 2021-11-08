@@ -24,7 +24,7 @@ class Recover(Resource):
     def post(self):
         if current_user.type == 'medical_doctor':
             return {'message': 'You are not allowed to recover password'}, 401
-            
+
         data = self.parser.parse_args()
         id = data['id']
 
