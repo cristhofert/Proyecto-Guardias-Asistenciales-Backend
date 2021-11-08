@@ -24,7 +24,7 @@ class Reports(Resource):
             hours: 000 #tiempo promdedio en aceptar las guardias  
         }
         """
-        report = {'average assignment': []}
+        average_assignment = []
         for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json()['institution']).all():
             guards = []
             for guard in medical_doctor.guards:
@@ -32,6 +32,6 @@ class Reports(Resource):
                 ), guard.get_id()).get_assignment_date() - guard.get_created_at()
                 guards.append(
                     {**guard.json(), 'hours': dt.total_seconds() / 60 / 60})
-            report['a'].append({**medical_doctor.json(), 'guards': guards})
+            average_assignment.append({**medical_doctor.json(), 'guards': guards})
 
-        return report, 200
+        return  {'average assignment': average_assignment}, 200
