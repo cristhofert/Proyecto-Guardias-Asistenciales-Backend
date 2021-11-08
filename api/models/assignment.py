@@ -17,7 +17,7 @@ class AssignmentModel(db.Model):
     institution_id = db.Column(db.Integer, db.ForeignKey(
         'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
-    UniqueConstraint('guard_id', 'medical_doctor_id',
+    db.UniqueConstraint('guard_id', 'medical_doctor_id',
                      name='guard_medical_doctor_unique')
 
     def __init__(self, medical_doctor_id, guard_id, institution_id=1):
