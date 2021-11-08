@@ -37,6 +37,9 @@ class MedicalDoctorModel(UserModel):
             'institution': self.institution_id
             }
 
+    def get_id(self):
+        return self.id
+
     def assignments_json(self):
         return [assignment.json() for assignment in self.assignments]
         

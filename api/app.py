@@ -25,6 +25,7 @@ from resources.subscribe import Subscribe
 from resources.mailN import MailN
 from resources.superadmin import SuperAdmin
 from resources.myguards import MyGuards
+from resources.reports import Reports
 from models.user import UserModel
 from models.institution import InstitutionModel
 from util.preset import preset_db
@@ -89,6 +90,7 @@ api.add_resource(Subscribe, '/subscribe/<int:medical_doctor_id>/<int:subscriptio
 api.add_resource(MailN, '/MailN')
 api.add_resource(SuperAdmin, '/superadmin/<int:id>')
 api.add_resource(MyGuards, '/myguards/')
+api.add_resource(Reports, '/reports')
 
 if __name__ == "__main__":
     app.run(debug=True)

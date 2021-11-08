@@ -4,7 +4,6 @@ from sendgrid.helpers.mail import *
 import sendgrid
 from models.notification import NotificationModel
 
-
 def Notificaciones(email, telefono, id, gid, message):
 
     notification = NotificationModel(id, gid, message, institution_id=1)

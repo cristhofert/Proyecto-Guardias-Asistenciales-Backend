@@ -57,6 +57,16 @@ class GuardModel(db.Model):
     def is_disponible(self):
         return False if self.medical_doctor_id else True
 
+    def assignment_date(self):
+        #traer assisgment con esta guardia y medical docotor id y ver su fecha
+        return self.created_at #fecha de asignacion
+
+    def get_created_at(self):
+        return self.created_at
+
+    def get_id(self):
+        return self.id
+        
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
