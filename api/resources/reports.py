@@ -32,6 +32,6 @@ class Reports(Resource):
                 ), guard.get_id()).get_assignment_date() - guard.get_created_at()
                 guards.append(
                     {**guard.json(), 'hours': dt.total_seconds() / 60 / 60})
-            average_assignment.append({**medical_doctor.json(), 'guards': guards})
+            average_assignment.append({**medical_doctor.json(), 'count': len(guards), 'guards': guards})
 
         return  {'average assignment': average_assignment}, 200
