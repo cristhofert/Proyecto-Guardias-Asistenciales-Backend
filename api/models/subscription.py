@@ -15,7 +15,7 @@ class SubscriptionModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(80))
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
-    service = relationship('ServiceModel')
+    service = db.relationship('ServiceModel', backref=db.backref('subscriptions', lazy=True))
     medical_doctors = relationship(
         'MedicalDoctorModel', secondary=subscription_medical_doctor_table, back_populates='subscriptions')
     guards = db.relationship('GuardModel', back_populates='subscription')
