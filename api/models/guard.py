@@ -51,7 +51,8 @@ class GuardModel(db.Model):
             'start': (self.date.strftime('%Y-%m-%d') + " " + self.start_time.strftime('%H:%M')),
             'end': (self.date.strftime('%Y-%m-%d') + " " + self.end_time.strftime('%H:%M')),
             'subscription_name': self.subscription.json()['name'] if self.subscription else None,
-            'medical_doctor_id': self.medical_doctor_id if self.medical_doctor_id else None
+            'medical_doctor_id': self.medical_doctor_id if self.medical_doctor_id else None,
+            'institution': self.institution_id
         }
 
     def is_disponible(self):
