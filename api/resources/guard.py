@@ -157,7 +157,8 @@ class GuardList(Resource):
         else:
             guards = []
             for subscription in current_user.subscriptions:
-                guards.append(**subscription.disponible_guards_json())
+                for guard in subscription.disponible_guards_json():
+                    guards.append(guard)
             return {
                 'guards': guards
             }
