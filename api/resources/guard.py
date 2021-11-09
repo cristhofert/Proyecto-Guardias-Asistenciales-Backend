@@ -155,9 +155,11 @@ class GuardList(Resource):
             return {
                 'guards': [guard.json() for guard in GuardModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
         else:
+            guards = []
+            for subscription in current_user.subscriptions:
+                guards.append(**subscription.disponible_guards_json())
             return {
-                'guards': [subscription.disponible_guards_json() for subscription in current_user.subscriptions]
-                # falta eliminar guardias ya asignadasuj
+                'guards': guards
             }
 
     @jwt_required()
@@ -179,7 +181,8 @@ class GuardList(Resource):
                                     guards.append(GuardModel(data['subscription_id'], date_guard, data['start_time'],
                                                              data['end_time'], data['zone_id'], current_user.json()['institution']))
                         else:
-                            print('no es el dia', wday, "example ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']")
+                            print(
+                                'no es el dia', wday, "example ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']")
 
         group = GuardsGroupModel(guards, current_user.json()['institution'])
 
