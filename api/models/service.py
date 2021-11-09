@@ -19,6 +19,9 @@ class ServiceModel(db.Model):
     def json(self):
         return {'name': self.name, 'code': self.code, 'color': self.color, 'id': self.id}
 
+    def get_subscriptions(self):
+        return self.subscriptions
+
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()  # simple TOP 1 select
