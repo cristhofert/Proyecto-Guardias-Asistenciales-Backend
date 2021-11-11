@@ -8,6 +8,7 @@ from models.service import ServiceModel
 from models.assignment import AssignmentModel
 from models.zone import ZoneModel
 from models.guards_group import GuardsGroupModel
+from models.administrator import AdministratorModel
 from db import db
 
 
@@ -51,3 +52,5 @@ def preset_db():
 
     md.subscriptions.append(sub)
     md.save_to_db()
+    db.session.add(AdministratorModel(98765431, 'Juan Perez', 'jp123', 1))
+    db.session.commit()
