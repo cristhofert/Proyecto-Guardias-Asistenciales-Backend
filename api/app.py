@@ -36,14 +36,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = mariadbConfig
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_SECRET_KEY"] = "secret#jwt#g1"
 jwt = JWTManager(app)
-CORS(app)# CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
+#CORS(app)# CORS(app, resources={r"/foo": {"origins": "http://localhost:port"}})
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 api = Api(app)
 
 @app.before_first_request
 def create_tables():
     from db import db
     db.init_app(app)
-    db.drop_all()
+    #db.drop_all()
     db.create_all()
     preset_db()
 
