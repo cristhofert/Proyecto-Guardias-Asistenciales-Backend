@@ -34,7 +34,8 @@ class SubscriptionModel(db.Model):
             'type': self.type,
             'service_id': self.service_id,
             'service': self.service.json(),
-            'name': self.service.json()['name'] + ' - ' + self.type
+            'name': self.service.json()['name'] + ' - ' + self.type,
+            'institution': self.institution_id
         }
 
     def guards_json(self):

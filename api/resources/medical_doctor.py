@@ -82,21 +82,17 @@ class MedicalDoctor(Resource):
         # Create or Update
         data = self.parser.parse_args()
         medical_doctor = MedicalDoctorModel.find_by_id(id)
-        if medical_doctor.json()['institution'] == current_user.json()['institution']:
-            if medical_doctor is None:
-                medical_doctor = MedicalDoctorModel(
-                    id, data['name'], data['password'], data['speciality'], data['phone'], data['email'], current_user.json()['institution_id'])
-            else:
-                if date['name'] is not None:
-                    medical_doctor.name = data['name']
-                if date['password'] is not None:
-                    medical_doctor.password = data['password']
-                if date['speciality'] is not None:
-                    medical_doctor.speciality = data['speciality']
-                if date['phone'] is not None:
-                    medical_doctor.phone = data['phone']
-                if date['email'] is not None:
-                    medical_doctor.email = data['email']
+        if medical_doctor and medical_doctor.json()['institution'] == current_user.json()['institution']:
+            if date['name'] is not None:
+                medical_doctor.name = data['name']
+            if date['password'] is not None:
+                medical_doctor.password = data['password']
+            if date['speciality'] is not None:
+                medical_doctor.speciality = data['speciality']
+            if date['phone'] is not None:
+                medical_doctor.phone = data['phone']
+            if date['email'] is not None:
+                medical_doctor.email = data['email']
 
             medical_doctor.save_to_db()
 

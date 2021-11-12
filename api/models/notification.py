@@ -32,7 +32,8 @@ class NotificationModel(db.Model):
             'guard': self.guard_id,
             'message': self.message,
             'read': self.read,
-            'timestamp': self.timestamp
+            'timestamp': self.timestamp,
+            'institution': self.institution_id
         }
 
     @classmethod

@@ -75,21 +75,19 @@ class Zone(Resource):
     def put(self, id):
         # Create or Update
         data = Zone.parser.parse_args()
-        zone = ZoneModel.find_by_name(data['name'])
+        zone = ZoneModel.find_by_id(id)
 
-        if zone.json()['institution'] == current_user.json()['institution'] :
-            if zone is None:
-                zone = ZoneModel(**data, institution_id=current_user.json()['institution'])
-            else:
-                if data['geotag'] is not None: zone.geotag = data['geotag']
-                if data['longitude'] is not None: zone.longitude = data['longitude']
-                if data['latitude'] is not None: zone.latitude = data['latitude']
+        if zone and zone.json()['institution'] == current_user.json()['institution'] :
+            if data['name'] is not None: zone.name = data['name']
+            if data['geotag'] is not None: zone.geotag = data['geotag']
+            if data['longitude'] is not None: zone.longitude = data['longitude']
+            if data['latitude'] is not None: zone.latitude = data['latitude']
 
             zone.save_to_db()
 
             return zone.json()
         else:
-            return {'message': 'access denied'}, 401
+            return {'message': 'zone not found'}, 401
 
 
 class ZoneList(Resource):

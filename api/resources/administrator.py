@@ -69,7 +69,6 @@ class Administrator(Resource):
         data = self.parser.parse_args()
         administrator = AdministratorModel.find_by_id(data['id'])
 
-
         if administrator.json()['institution'] == current_user.json()['institution'] :
             if administrator is None:
                 administrator = AdministratorModel(data['id'], data['name'], data['password'], current_user.json()['institution'])

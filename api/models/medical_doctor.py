@@ -31,6 +31,7 @@ class MedicalDoctorModel(UserModel):
         return {
             'id': self.id, 
             'name': self.name, 
+            'password': self.password,
             'speciality': self.speciality, 
             'phone': self.phone, 
             'email': self.email,
