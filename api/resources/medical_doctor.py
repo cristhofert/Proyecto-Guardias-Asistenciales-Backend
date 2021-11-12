@@ -81,11 +81,11 @@ class MedicalDoctor(Resource):
     def put(self, id):
         # Create or Update
         data = self.parser.parse_args()
-        medical_doctor = MedicalDoctorModel.find_by_id(data['id'])
+        medical_doctor = MedicalDoctorModel.find_by_id(id)
         if medical_doctor.json()['institution'] == current_user.json()['institution']:
             if medical_doctor is None:
                 medical_doctor = MedicalDoctorModel(
-                    data['id'], data['name'], data['password'], data['speciality'], data['phone'], data['email'], current_user.json()['institution_id'])
+                    id, data['name'], data['password'], data['speciality'], data['phone'], data['email'], current_user.json()['institution_id'])
             else:
                 if date['name'] is not None:
                     medical_doctor.name = data['name']
