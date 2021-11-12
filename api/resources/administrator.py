@@ -61,6 +61,7 @@ class Administrator(Resource):
             administrator.delete_from_db()
 
             return {'message': 'administrator has been deleted'}
+        return {'message': 'this not found'}, 404
 
     @jwt_required()
     def put(self, id):

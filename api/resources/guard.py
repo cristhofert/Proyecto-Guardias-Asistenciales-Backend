@@ -86,6 +86,7 @@ class Guard(Resource):
             guard.delete_from_db()
 
             return {'message': 'guard has been deleted'}
+        return {'message': 'guard not found'}, 404
 
     @jwt_required()
     def put(self, id):

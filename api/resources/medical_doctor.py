@@ -70,13 +70,13 @@ class MedicalDoctor(Resource):
 
     @jwt_required()
     def delete(self, id):
-
         medical_doctor = MedicalDoctorModel.find_by_id(id)
         if medical_doctor and (medical_doctor.json()['institution'] == current_user.json()['institution']):
             medical_doctor.delete_from_db()
 
             return {'message': 'medical_doctor has been deleted'}
-
+        return {'message': 'medical_doctor not found'}, 404
+        
     @jwt_required()
     def put(self, id):
         # Create or Update

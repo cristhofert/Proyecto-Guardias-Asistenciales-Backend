@@ -75,6 +75,7 @@ class Service(Resource):
             service.delete_from_db()
 
             return {'message': 'service has been deleted'}
+        return {'message': 'service not found'}, 404
 
     @jwt_required()
     def put(self, id):
