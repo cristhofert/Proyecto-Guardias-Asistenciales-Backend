@@ -17,7 +17,7 @@ class Login(Resource):
 
     # only allow price changes, no name changes allowed
     parser = reqparse.RequestParser()
-    parser.add_argument('id', type=int, required=True,
+    parser.add_argument('id', type=str, required=True,
                         help='This field cannot be left blank')
     parser.add_argument('password', type=str, required=True,
                         help='This field cannot be left blank')
