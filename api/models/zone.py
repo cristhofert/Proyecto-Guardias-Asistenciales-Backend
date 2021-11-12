@@ -23,7 +23,8 @@ class ZoneModel(db.Model):
         'name': self.name,
         'geotag': self.geotag,
         'longitude': self.longitude,
-        'latitude': self.latitude
+        'latitude': self.latitude,
+        'institution': self.institution_id
         }
 
     @classmethod
