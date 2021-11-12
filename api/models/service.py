@@ -6,7 +6,7 @@ class ServiceModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True)
     code = db.Column(db.String(10), unique=True)
-    color = db.Column(db.String(10), unique=True)
+    color = db.Column(db.String(10))
     institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
 
@@ -25,6 +25,10 @@ class ServiceModel(db.Model):
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()  # simple TOP 1 select
+
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()  # simple TOP 1 select
 
     def save_to_db(self):  # Upserting data
         db.session.add(self)

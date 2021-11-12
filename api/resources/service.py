@@ -69,23 +69,24 @@ class Service(Resource):
             }, 201
 
     @jwt_required()
-    def delete(self, name):
-        service = ServiceModel.find_by_name(name)
+    def delete(self, id):
+        service = ServiceModel.find_by_id(id)
         if service and (service.json()['institution'] == current_user.json()['institution']):
             service.delete_from_db()
 
             return {'message': 'service has been deleted'}
 
     @jwt_required()
-    def put(self, name):
+    def put(self, id):
         # Create or Update
         data = Service.parser.parse_args()
-        service = ServiceModel.find_by_name(data['name'])
+        service = ServiceModel.find_by_id(id)
 
         if service.json()['institution'] == current_user.json()['institution'] :
             if service is None:
                 service = ServiceModel(data['name'], data['code'], date['color'])	
             else:
+                if data['name'] is not None: service.name = data['name']
                 if data['code'] is not None: service.code = data['code']
                 if data['color'] is not None: service.color = data['color']
 
