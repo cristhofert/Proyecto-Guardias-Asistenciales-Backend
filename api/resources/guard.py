@@ -151,10 +151,10 @@ class GuardList(Resource):
 
     @jwt_required()
     def get(self):
-        if current_user.type == 'administator':
+        if current_user.type == 'administrator':
             return {
                 'guards': [guard.json() for guard in GuardModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
-        else:
+        elif current_user.type == 'medical_doctor':
             guards = []
             for subscription in current_user.subscriptions:
                 for guard in subscription.disponible_guards_json():
@@ -162,6 +162,8 @@ class GuardList(Resource):
             return {
                 'guards': guards
             }
+        else:
+            return {message: 'access denied, you need be a medical_doctor or an administator'}, 401
 
     @jwt_required()
     def post(self):
