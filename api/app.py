@@ -44,7 +44,7 @@ api = Api(app)
 def create_tables():
     from db import db
     db.init_app(app)
-    #db.drop_all()
+    db.drop_all()
     db.create_all()
     preset_db()
 
@@ -62,8 +62,6 @@ def user_identity_lookup(user):
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return UserModel.query.filter_by(id=identity).one_or_none()
-
-#preset()
 
 api.add_resource(Administrator, '/administrator/<int:id>')
 api.add_resource(AdministratorList, '/administrators')

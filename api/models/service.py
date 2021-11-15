@@ -1,6 +1,6 @@
 from db import db
 from sqlalchemy.orm import relationship
-
+from util.query import QueryWithSoftDelete
 
 class ServiceModel(db.Model):
     __tablename__ = 'services'
@@ -10,7 +10,10 @@ class ServiceModel(db.Model):
     institution_id = db.Column(db.Integer, db.ForeignKey(
         'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
+    deleted = db.Column(db.Boolean(), default=False)
 
+    query_class = QueryWithSoftDelete
+    
     def __init__(self, name, code, institution_id=1):
         self.name = name
         self.code = code
@@ -39,5 +42,5 @@ class ServiceModel(db.Model):
         db.session.commit()  # Balla
 
     def delete_from_db(self):
-        db.session.delete(self)
+        self.deleted = True
         db.session.commit()

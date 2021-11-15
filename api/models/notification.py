@@ -1,5 +1,5 @@
 from db import db
-
+from util.query import QueryWithSoftDelete
 
 class NotificationModel(db.Model):
     __tablename__ = 'notifications'
@@ -17,6 +17,9 @@ class NotificationModel(db.Model):
     institution_id = db.Column(db.Integer, db.ForeignKey(
         'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
+    deleted = db.Column(db.Boolean(), default=False)
+
+    query_class = QueryWithSoftDelete
 
     def __init__(self, medical_doctor_id, guard_id, message, read=False, institution_id=1):
         self.medical_doctor_id = medical_doctor_id
@@ -49,5 +52,5 @@ class NotificationModel(db.Model):
         db.session.commit()
 
     def delete_from_db(self):
-        db.session.delete(self)
+        self.deleted = True
         db.session.commit()
