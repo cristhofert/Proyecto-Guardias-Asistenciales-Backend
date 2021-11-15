@@ -73,9 +73,9 @@ class Administrator(Resource):
             if administrator is None:
                 administrator = AdministratorModel(data['id'], data['name'], data['password'], current_user.json()['institution'])
             else:
-                if date['id'] is not None: administrator.id = data['id']
-                if date['name'] is not None: administrator.name = data['name']
-                if date['password'] is not None: administrator.password = data['password']
+                if data['id'] is not None: administrator.id = data['id']
+                if data['name'] is not None: administrator.name = data['name']
+                if data['password'] is not None: administrator.password = data['password']
                 
             administrator.save_to_db()
 

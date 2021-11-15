@@ -23,8 +23,8 @@ def preset_db():
         db.session.add(md)
         db.session.add(MedicalDoctorModel(4562123,  'Travieso Cristhofer ',
                     '1234cris', 'pedatria', '09748512', 'b@c.com', 1))
-        db.session.add(ServiceModel('Puerta de Emergencia', 'PE1', '#000000'))
-        db.session.add(ServiceModel('Puerta de Emergencia II', 'PE2', '#111111'))
+        db.session.add(ServiceModel('Puerta de Emergencia', 'PE1'))
+        db.session.add(ServiceModel('Puerta de Emergencia II', 'PE2'))
         sub = SubscriptionModel('lista', 1)
         db.session.add(sub)
         db.session.add(SubscriptionModel('lista', 2))
