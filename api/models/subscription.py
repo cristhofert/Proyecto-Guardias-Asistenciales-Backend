@@ -1,5 +1,4 @@
 from db import db
-from sqlalchemy.orm import relationship
 from pprint import pprint
 from util.query import QueryWithSoftDelete
 
@@ -17,7 +16,7 @@ class SubscriptionModel(db.Model):
     type = db.Column(db.String(80))
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
     service = db.relationship('ServiceModel', backref='subscriptions')
-    medical_doctors = relationship(
+    medical_doctors =db.relationship(
         'MedicalDoctorModel', secondary=subscription_medical_doctor_table, back_populates='subscriptions')
     guards = db.relationship('GuardModel', back_populates='subscription')
     institution_id = db.Column(db.Integer, db.ForeignKey(

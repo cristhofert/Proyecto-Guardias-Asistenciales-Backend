@@ -1,7 +1,6 @@
 from db import db
 from models.user import UserModel
 from models.subscription import subscription_medical_doctor_table
-from sqlalchemy.orm import relationship
 from util.query import QueryWithSoftDelete
 
 class MedicalDoctorModel(UserModel):
@@ -11,13 +10,12 @@ class MedicalDoctorModel(UserModel):
     speciality = db.Column(db.String(80))
     phone = db.Column(db.String(9))
     email = db.Column(db.String(80))
-    residence_zone = db.Column(db.Integer, db.ForeignKey('zone.id'),
-                               nullable=True)
-    #zones = db.relationship('ZoneModel', back_populates='medical_doctors')
-    subscriptions = relationship(
+    subscriptions =db.relationship(
         'SubscriptionModel', secondary=subscription_medical_doctor_table, back_populates='medical_doctors')
-    assignments = relationship('AssignmentModel', back_populates='medical_doctor')
+    assignments =db.relationship('AssignmentModel', back_populates='medical_doctor')
     guards = db.relationship('GuardModel', backref='medical_doctor', lazy=True)
+    zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
+    zone = db.relationship('ZoneModel', backref='medical_doctors')
 
     query_class = QueryWithSoftDelete
     
@@ -25,11 +23,12 @@ class MedicalDoctorModel(UserModel):
         'polymorphic_identity': 'medical_doctor'
     }
 
-    def __init__(self,  id, name, password, speciality, phone, email, institution_id=1):
+    def __init__(self,  id, name, password, speciality, phone, email, zone_id, institution_id=1):
         super().__init__(id, name, password, 'medical_doctor', institution_id)
         self.speciality = speciality
         self.phone = phone
         self.email = email
+        self.zone_id = zone_id
 
     def json(self):
         return {
@@ -39,7 +38,8 @@ class MedicalDoctorModel(UserModel):
             'speciality': self.speciality, 
             'phone': self.phone, 
             'email': self.email,
-            'institution': self.institution_id
+            'institution': self.institution_id,
+            'zone': self.zone.json() if self.zone else None,
             }
 
     def get_id(self):

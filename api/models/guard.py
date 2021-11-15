@@ -1,5 +1,4 @@
 from db import db
-from sqlalchemy.orm import relationship
 from pprint import pprint
 from datetime import datetime
 from models.assignment import AssignmentModel
@@ -16,8 +15,8 @@ class GuardModel(db.Model):
     start_time = db.Column(db.Time)
     end_time = db.Column(db.Time)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
-    zone = relationship('ZoneModel')  # ?
-    assignments = relationship(
+    zone =db.relationship('ZoneModel')  # ?
+    assignments =db.relationship(
         'AssignmentModel', back_populates='guard', primaryjoin=id == AssignmentModel.guard_id, lazy=True)
     medical_doctor_id = db.Column(db.String(80), db.ForeignKey('medical_doctor.id'))
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))

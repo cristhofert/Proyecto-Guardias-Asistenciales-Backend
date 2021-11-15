@@ -38,6 +38,11 @@ class MedicalDoctor(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
+    parser.add_argument('zone_id',
+                        type=int,
+                        required=False,
+                        help="This field cannot be left blank!"
+                        )
 
     def __init__(self):
         pass
@@ -60,7 +65,7 @@ class MedicalDoctor(Resource):
             return {'message': "An medical_doctor with name '{}' already exists.".format(
                 id)}, 400
         medical_doctor = MedicalDoctorModel(data['id'], data['name'], data['password'],
-                                            data['speciality'], data['phone'], data['email'], current_user.json()['institution'])
+                                            data['speciality'], data['phone'], data['email'], data['zone_id'], current_user.json()['institution'])
 
         try:
             medical_doctor.save_to_db()
@@ -93,6 +98,8 @@ class MedicalDoctor(Resource):
                 medical_doctor.phone = data['phone']
             if data['email'] is not None:
                 medical_doctor.email = data['email']
+            if data['zone_id'] is not None:
+                medical_doctor.zone_id = data['zone_id']
 
             medical_doctor.save_to_db()
 
