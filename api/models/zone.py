@@ -1,4 +1,5 @@
 from db import db
+from util.query import QueryWithSoftDelete
 
 class ZoneModel(db.Model):
     __tablename__ = 'zone'
@@ -10,7 +11,10 @@ class ZoneModel(db.Model):
     latitude = db.Column(db.String(80))
     institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
+    deleted = db.Column(db.Boolean(), default=False)
 
+    query_class = QueryWithSoftDelete
+    
     def __init__(self, name, geotag=0, longitude=0, latitude=0, institution_id=1):
         self.name = name
         self.geotag = geotag
@@ -40,5 +44,5 @@ class ZoneModel(db.Model):
         db.session.commit()
 
     def delete_from_db(self):
-        db.session.delete(self)
+        self.deleted = True
         db.session.commit()

@@ -1,6 +1,7 @@
 from db import db
 from sqlalchemy.orm import relationship
 from pprint import pprint
+from util.query import QueryWithSoftDelete
 
 subscription_medical_doctor_table = db.Table('subscription_medical_doctor_table', db.Model.metadata,
                                              db.Column('subscription_id', db.ForeignKey(
@@ -22,7 +23,10 @@ class SubscriptionModel(db.Model):
     institution_id = db.Column(db.Integer, db.ForeignKey(
         'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
+    deleted = db.Column(db.Boolean(), default=False)
 
+    query_class = QueryWithSoftDelete
+    
     def __init__(self, type, service_id, institution_id=1):
         self.type = type
         self.service_id = service_id
@@ -61,5 +65,5 @@ class SubscriptionModel(db.Model):
         db.session.commit()  # Balla
 
     def delete_from_db(self):
-        db.session.delete(self)
+        self.deleted = True
         db.session.commit()

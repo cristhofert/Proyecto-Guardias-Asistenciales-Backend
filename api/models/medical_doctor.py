@@ -2,6 +2,7 @@ from db import db
 from models.user import UserModel
 from models.subscription import subscription_medical_doctor_table
 from sqlalchemy.orm import relationship
+from util.query import QueryWithSoftDelete
 
 class MedicalDoctorModel(UserModel):
     __tablename__ = 'medical_doctor'
@@ -17,6 +18,9 @@ class MedicalDoctorModel(UserModel):
         'SubscriptionModel', secondary=subscription_medical_doctor_table, back_populates='medical_doctors')
     assignments = relationship('AssignmentModel', back_populates='medical_doctor')
     guards = db.relationship('GuardModel', backref='medical_doctor', lazy=True)
+
+    query_class = QueryWithSoftDelete
+    
     __mapper_args__ = {
         'polymorphic_identity': 'medical_doctor'
     }
@@ -53,5 +57,5 @@ class MedicalDoctorModel(UserModel):
         db.session.commit()
 
     def delete_from_db(self):
-        db.session.delete(self)
+        self.deleted = True
         db.session.commit()

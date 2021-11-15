@@ -1,11 +1,13 @@
 from db import db
 from models.user import UserModel
-
+from util.query import QueryWithSoftDelete
 
 class AdministratorModel(UserModel):
     __tablename__ = 'administrator'
 
     id = db.Column(db.String(80), db.ForeignKey('user.id'), primary_key=True)
+
+    query_class = QueryWithSoftDelete
     __mapper_args__ = {
         'polymorphic_identity': 'administrator'
     }
@@ -30,5 +32,5 @@ class AdministratorModel(UserModel):
         db.session.commit()
 
     def delete_from_db(self):
-        db.session.delete(self)
+        self.deleted = True
         db.session.commit()

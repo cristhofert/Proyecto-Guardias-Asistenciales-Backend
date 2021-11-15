@@ -3,6 +3,7 @@
 # standard python imports
 from db import db
 from werkzeug.security import hmac
+from util.query import QueryWithSoftDelete
 
 class UserModel(db.Model):
     __tablename__ = 'user'
@@ -13,7 +14,10 @@ class UserModel(db.Model):
     type = db.Column(db.String(80))
     institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
+    deleted = db.Column(db.Boolean(), default=False)
 
+    query_class = QueryWithSoftDelete
+    
     __mapper_args__ = {
         'polymorphic_identity': 'user',
         'polymorphic_on': type,
@@ -47,5 +51,5 @@ class UserModel(db.Model):
         db.session.commit()
 
     def delete_from_db(self):
-        db.session.delete(self)
+        self.deleted = True
         db.session.commit()
