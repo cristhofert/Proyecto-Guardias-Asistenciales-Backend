@@ -59,7 +59,6 @@ return {
         'service': {
             'name': 'Puerta de Emergencia I',
             'code': 'E1',
-            'color': '#55555',
             'id': 1
             },
         'name': 'Puerta de Emergencia I - lista'
@@ -94,7 +93,6 @@ return {
 return {
     'name': 'Puerta de Emergencia I',
     'code': 'E1',
-    'color': '#55555',
     'id': 1
     }
 [GET/PUT/DELETE/POST]   /subscription/<int:id>
@@ -105,7 +103,6 @@ return {
     'service': {
         'name': 'Puerta de Emergencia I',
         'code': 'E1',
-        'color': '#55555',
         'id': 1
         },
     'name': 'Puerta de Emergencia I - lista'

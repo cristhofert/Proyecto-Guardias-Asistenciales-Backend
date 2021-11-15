@@ -20,11 +20,6 @@ class Service(Resource):
         required=True,
         help="This field cannot be left blank!"
     )
-    parser.add_argument('color',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
 
     def __init__(self):
         pass
@@ -46,7 +41,7 @@ class Service(Resource):
         if ServiceModel.find_by_name(data['name']):
             return {'message': "An service with name '{}' already exists.".format(
                 data['name'])}, 400
-        service = ServiceModel(data['name'], data['code'], data['color'], current_user.json()['institution'])
+        service = ServiceModel(data['name'], data['code'], current_user.json()['institution'])
         try:
             service.save_to_db()
         except:
@@ -85,11 +80,10 @@ class Service(Resource):
 
         if service.json()['institution'] == current_user.json()['institution'] :
             if service is None:
-                service = ServiceModel(data['name'], data['code'], date['color'])	
+                service = ServiceModel(data['name'], data['code'])	
             else:
                 if data['name'] is not None: service.name = data['name']
                 if data['code'] is not None: service.code = data['code']
-                if data['color'] is not None: service.color = data['color']
 
             service.save_to_db()
 

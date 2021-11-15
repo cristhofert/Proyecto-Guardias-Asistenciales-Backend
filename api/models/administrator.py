@@ -17,7 +17,9 @@ class AdministratorModel(UserModel):
         return {'id': self.id,
                 'name': self.name,
                 'institution': self.institution_id,
-                'type': self.type}
+                'type': self.type,
+                'password': self.password
+                }
 
     @classmethod
     def find_by_id(cls, _id):

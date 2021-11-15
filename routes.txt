@@ -41,7 +41,6 @@ return {
         'service': {
             'name': 'Puerta de Emergencia I',
             'code': 'E1',
-            'color': '#55555',
             'id': 1
             },
         'name': 'Puerta de Emergencia I - lista'
@@ -79,7 +78,6 @@ GET
 return {
     'name': 'Puerta de Emergencia I',
     'code': 'E1',
-    'color': '#55555',
     'id': 1
 }
 
@@ -92,7 +90,6 @@ return {
     'service': {
         'name': 'Puerta de Emergencia I',
         'code': 'E1',
-        'color': '#55555',
         'id': 1
         },
     'name': 'Puerta de Emergencia I - lista'
@@ -174,8 +171,7 @@ POST
 /service/1
 {
     'name': 'Puerta de Emergencia I',
-    'code': 'E1',
-    'color': '#55555'
+    'code': 'E1'
     }
 POST  
 /subscription/1
