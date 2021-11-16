@@ -52,8 +52,8 @@ class SubscriptionModel(db.Model):
         return guards
 
     @classmethod
-    def find_by_channel_id(cls, channel_id):
-        return cls.query.filter_by(channel_id=channel_id).first()
+    def find_by_service_id_type(cls, _service_id, _type):
+        return cls.query.filter_by(service_id=_service_id, type=_type).first()
 
     @classmethod
     def find_by_id(cls, id):

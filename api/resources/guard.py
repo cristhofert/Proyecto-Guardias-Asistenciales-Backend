@@ -92,7 +92,7 @@ class Guard(Resource):
     def put(self, id):
         # Create or Update
         data = self.parser.parse_args()
-        guard = GuardModel.find_by_id(data['id'])
+        guard = GuardModel.find_by_id(id)
 
         if guard.json()['institution'] == current_user.json()['institution']:
             if guard is None:
