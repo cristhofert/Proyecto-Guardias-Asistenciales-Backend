@@ -9,10 +9,8 @@ from flask_jwt_extended import JWTManager
 import json
 
 from resources.administrator import Administrator, AdministratorList
-from resources.audit import Audit, AuditList
 from resources.guard import Guard, GuardList
 from resources.medical_doctor import MedicalDoctor, MedicalDoctorList
-from resources.notification import Notification, NotificationList
 from resources.service import Service, ServiceList
 from resources.subscription import Subscription, SubscriptionList
 from resources.zone import Zone, ZoneList
@@ -20,7 +18,6 @@ from resources.assignment import Assignment
 from resources.login import Login
 from resources.user import User, UserList
 from resources.password import Password
-from resources.recover import Recover
 from resources.subscribe import Subscribe
 from resources.mailN import MailN
 from resources.superadmin import SuperAdmin
@@ -64,15 +61,11 @@ def user_lookup_callback(_jwt_header, jwt_data):
     return UserModel.query.filter_by(id=identity).one_or_none()
 
 api.add_resource(Administrator, '/administrator/<int:id>')
-api.add_resource(AdministratorList, '/administrators')
-api.add_resource(Audit, '/audit/<int:id>')
-api.add_resource(AuditList, '/audits')   
+api.add_resource(AdministratorList, '/administrators') 
 api.add_resource(Guard, '/guard/<int:id>')
 api.add_resource(GuardList, '/guards')
 api.add_resource(MedicalDoctor, '/medical_doctor/<string:id>')
 api.add_resource(MedicalDoctorList, '/medical_doctors')
-api.add_resource(Notification, '/notification/<int:id>')
-api.add_resource(NotificationList, '/notifications')
 api.add_resource(Service, '/service/<int:id>')
 api.add_resource(ServiceList, '/services')
 api.add_resource(Subscription, '/subscription/<int:id>')
@@ -84,7 +77,6 @@ api.add_resource(Login, '/login')
 api.add_resource(User, '/user')
 api.add_resource(UserList, '/users')
 api.add_resource(Password, '/password/<string:token>')
-api.add_resource(Recover, '/recover/')
 api.add_resource(Subscribe, '/subscribe/<int:medical_doctor_id>/<int:subscription_id>')
 api.add_resource(MailN, '/MailN')
 api.add_resource(SuperAdmin, '/superadmin/<int:id>')
