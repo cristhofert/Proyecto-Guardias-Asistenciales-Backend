@@ -4,8 +4,33 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
 from models.medical_doctor import MedicalDoctorModel
+from cerberus import Validator
 
+schema = {
+    'id': {'type': 'string'},
+    'name': {'type': 'string'},
+    'password': {'type': 'string'},
+    'speciality': {'type': 'string'},
+    'phone': {'type': 'string'},
+    'email': {'type': 'string'},
+    'zone_id': {'type': 'integer', 'required': False}
+}
+md = Validator(schema)
 
+class Create:
+    def create(self, data):
+        if MedicalDoctorModel.find_by_id(data['id']):
+            return {'message': "An medical_doctor with name '{}' already exists.".format(
+                id)}, 400
+        medical_doctor = MedicalDoctorModel(data['id'], data['name'], data['password'],
+                                            data['speciality'], data['phone'], data['email'], data['zone_id'], current_user.json()['institution'])
+
+        try:
+            medical_doctor.save_to_db()
+        except:
+            return {"message": "An error occurred inserting the medical_doctor."}, 500
+        return medical_doctor.json(), 201
+        
 class MedicalDoctor(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',
@@ -61,17 +86,8 @@ class MedicalDoctor(Resource):
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
         data = self.parser.parse_args()
-        if MedicalDoctorModel.find_by_id(data['id']):
-            return {'message': "An medical_doctor with name '{}' already exists.".format(
-                id)}, 400
-        medical_doctor = MedicalDoctorModel(data['id'], data['name'], data['password'],
-                                            data['speciality'], data['phone'], data['email'], data['zone_id'], current_user.json()['institution'])
-
-        try:
-            medical_doctor.save_to_db()
-        except:
-            return {"message": "An error occurred inserting the medical_doctor."}, 500
-        return medical_doctor.json(), 201
+        c = Create()
+        return c.create(data)
 
     @jwt_required()
     def delete(self, id):
@@ -81,7 +97,7 @@ class MedicalDoctor(Resource):
 
             return {'message': 'medical_doctor has been deleted'}
         return {'message': 'medical_doctor not found'}, 404
-        
+
     @jwt_required()
     def put(self, id):
         # Create or Update
@@ -109,8 +125,30 @@ class MedicalDoctor(Resource):
 
 
 class MedicalDoctorList(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument("MDs", 
+        type=dict, 
+        action="append", 
+        default=[],        
+        required=False,
+        help="This field cannot be left blank!")
+
     @jwt_required()
     def get(self):
         return {
             'medical_doctors': [medical_doctor.json() for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}
         # return {'medical_doctors': list(map(lambda x: x.json(), MedicalDoctorModel.query.all()))} #Alternate Lambda way
+
+    @jwt_required()
+    def post(self):
+        data = self.parser.parse_args()
+        MDs = []
+        for medical_doctor in data['MDs']:
+            if medical_doctor!={} and md.validate(medical_doctor):
+                if not medical_doctor.get('zone_id'):
+                    medical_doctor['zone_id'] = 1
+                c = Create()
+                MDs.append(c.create(medical_doctor))
+            else:
+                MDs.append(md.errors)
+        return {'MDs': MDs}
