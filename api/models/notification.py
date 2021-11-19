@@ -10,6 +10,7 @@ class NotificationModel(db.Model):
     medical_doctor = db.relationship(
         'MedicalDoctorModel', backref='notifications', lazy=True)
     guard_id = db.Column(db.Integer, db.ForeignKey('guard.id'), nullable=False)
+    guard = db.relationship('GuardModel', backref='notifications', lazy=True)
     message = db.Column(db.String(128), nullable=False)
     read = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, nullable=False,
@@ -32,10 +33,10 @@ class NotificationModel(db.Model):
         return {
             'id': self.id,
             'medical_doctor': self.medical_doctor.json(),
-            'guard': self.guard_id,
+            'guard': self.guard.json() if self.guard_id else None,
             'message': self.message,
             'read': self.read,
-            'timestamp': self.timestamp,
+            'timestamp': str(self.timestamp.strftime('%Y-%m-%d %H:%M:%S')),
             'institution': self.institution_id
         }
 
@@ -45,7 +46,7 @@ class NotificationModel(db.Model):
 
     @classmethod
     def find_by_user_id(cls, user_id):
-        return cls.query.filter_by(user_id=user_id).all()
+        return cls.query.filter_by(medical_doctor_id=user_id).all()
 
     def save_to_db(self):
         db.session.add(self)
