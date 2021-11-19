@@ -4,6 +4,7 @@ from datetime import datetime
 from models.assignment import AssignmentModel
 from util.query import QueryWithSoftDelete
 
+
 class GuardModel(db.Model):
     __tablename__ = 'guard'
 
@@ -15,10 +16,12 @@ class GuardModel(db.Model):
     start_time = db.Column(db.Time)
     end_time = db.Column(db.Time)
     zone_id = db.Column(db.Integer, db.ForeignKey('zone.id'))
-    zone =db.relationship('ZoneModel')  # ?
-    assignments =db.relationship(
+    zone = db.relationship('ZoneModel')  # ?
+    lock = db.Column(db.Boolean(), default=False)
+    assignments = db.relationship(
         'AssignmentModel', back_populates='guard', primaryjoin=id == AssignmentModel.guard_id, lazy=True)
-    medical_doctor_id = db.Column(db.String(80), db.ForeignKey('medical_doctor.id'))
+    medical_doctor_id = db.Column(
+        db.String(80), db.ForeignKey('medical_doctor.id'))
     subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'))
     subscription = db.relationship(
         'SubscriptionModel', back_populates='guards')
@@ -29,7 +32,7 @@ class GuardModel(db.Model):
     institution = db.relationship("InstitutionModel")
     deleted = db.Column(db.Boolean(), default=False)
     query_class = QueryWithSoftDelete
-    
+
     def __init__(self, subscription_id, date, start_time, end_time, zone_id=None, institution_id=1):
         self.subscription_id = subscription_id
         self.date = date
@@ -49,6 +52,7 @@ class GuardModel(db.Model):
             'start_time': str(self.start_time.strftime('%H:%M')),
             'end_time': str(self.end_time.strftime('%H:%M')),
             'zone': self.zone.json() if self.zone else None,
+            'lock': self.lock,
             'start': (self.date.strftime('%Y-%m-%d') + " " + self.start_time.strftime('%H:%M')),
             'end': (self.date.strftime('%Y-%m-%d') + " " + self.end_time.strftime('%H:%M')),
             'subscription_name': self.subscription.json()['name'] if self.subscription else None,
@@ -61,19 +65,18 @@ class GuardModel(db.Model):
         return False if self.medical_doctor_id else True
 
     def assignment_date(self):
-        #traer assisgment con esta guardia y medical docotor id y ver su fecha
-        return self.created_at #fecha de asignacion
+        # traer assisgment con esta guardia y medical docotor id y ver su fecha
+        return self.created_at  # fecha de asignacion
 
     def get_created_at(self):
         return self.created_at
 
     def get_id(self):
         return self.id
-        
+
     @classmethod
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
-
 
     def save_to_db(self):
         db.session.add(self)

@@ -29,10 +29,11 @@ class Assignment(Resource):
     def post(self, medical_doctor_id, guard_id):
         medical_doctor = MedicalDoctorModel.find_by_id(medical_doctor_id)
         guard = GuardModel.find_by_id(guard_id)
-        if medical_doctor and guard and (medical_doctor.json()['institution'] == current_user.json()['institution']) and (guard.json()['institution'] == current_user.json()['institution']):
+        if medical_doctor and guard and (medical_doctor.json()['institution'] == current_user.json()['institution']) and (guard.json()['institution'] == current_user.json()['institution']) and (guard.json()['lock'] == False):
             assignment = AssignmentModel(
                 medical_doctor_id, guard_id, current_user.json()['institution'])
             guard.medical_doctor_id = medical_doctor_id
+            guard.lock = True
 
             try:
                 assignment.save_to_db()
@@ -48,6 +49,7 @@ class Assignment(Resource):
         if assignment and (assignment.json()['institution'] == current_user.json()['institution']):
             assignment.delete_from_db()
             guard.medical_doctor_id = None
+            guard.lock = False
             md = MedicalDoctorModel.find_by_id(medical_doctor_id)
             email = md.email
             telefono = 'whatsapp:+598'+md.phone
