@@ -23,6 +23,7 @@ from resources.mailN import MailN
 from resources.superadmin import SuperAdmin
 from resources.myguards import MyGuards
 from resources.reports import Reports
+from resources.notification import Notification
 from models.user import UserModel
 from models.institution import InstitutionModel
 from util.preset import preset_db
@@ -82,6 +83,7 @@ api.add_resource(MailN, '/MailN')
 api.add_resource(SuperAdmin, '/superadmin/<int:id>')
 api.add_resource(MyGuards, '/myguards/')
 api.add_resource(Reports, '/reports')
+api.add_resource(Notification, '/notifications')
 
 if __name__ == "__main__":
     app.run(debug=True)
