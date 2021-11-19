@@ -3,6 +3,9 @@
 # standard python imports
 from flask_restful import Resource, reqparse, inputs, fields
 from flask_jwt_extended import jwt_required, current_user
+from util.notifications import Notificaciones
+from models.medical_doctor import MedicalDoctorModel
+from models.subscription import SubscriptionModel
 from models.guard import GuardModel
 from models.guards_group import GuardsGroupModel
 #from app.util.logz import create_logger
@@ -69,9 +72,16 @@ class Guard(Resource):
 
         group = GuardsGroupModel(guards, current_user.json()['institution'])
 
+        sm = SubscriptionModel.find_by_id(data['subscription_id'])
+        ml = sm.medical_doctors_get()
+        message = "Guardia Liberada"
         try:
             for g in guards:
                 g.save_to_db()
+                for m in ml:
+                    print(m)
+                    Notificaciones(m.email, 'whatsapp:+598' +
+                                   m.phone, m.id, g.id, message)
             group.save_to_db()
         except BaseException as err:
             print(err)
@@ -189,10 +199,16 @@ class GuardList(Resource):
                                 'no es el dia', wday, "example ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']")
 
         group = GuardsGroupModel(guards, current_user.json()['institution'])
-
+        sm = SubscriptionModel.find_by_id(data['subscription_id'])
+        ml = sm.medical_doctors_get()
+        message = "Guardia Liberada"
         try:
             for g in guards:
                 g.save_to_db()
+                for m in ml:
+                    print(m)
+                    Notificaciones(m.email, 'whatsapp:+598' +
+                                   m.phone, m.id, g.id, message)
             group.save_to_db()
         except:
             return {"message": "An error occurred inserting the guard."}, 500
