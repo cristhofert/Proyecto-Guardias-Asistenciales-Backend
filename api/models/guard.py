@@ -4,7 +4,6 @@ from datetime import datetime
 from models.assignment import AssignmentModel
 from util.query import QueryWithSoftDelete
 
-
 class GuardModel(db.Model):
     __tablename__ = 'guard'
 

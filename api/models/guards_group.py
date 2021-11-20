@@ -1,16 +1,18 @@
 from db import db
 from util.query import QueryWithSoftDelete
 
+
 class GuardsGroupModel(db.Model):
     __tablename__ = 'guards_group'
 
     id = db.Column(db.Integer, primary_key=True)
     guards = db.relationship("GuardModel", backref="group", lazy=True)
-    institution_id = db.Column(db.Integer, db.ForeignKey('institutions.id'), nullable=False, default=1)
+    institution_id = db.Column(db.Integer, db.ForeignKey(
+        'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
     quantity = db.Column(db.Integer, nullable=False, default=1)
     deleted = db.Column(db.Boolean(), default=False)
-    
+
     query_class = QueryWithSoftDelete
 
     def __init__(self, guards, institution_id=1, quantity=1):
@@ -21,8 +23,13 @@ class GuardsGroupModel(db.Model):
     def json(self):
         return {
             'id': self.id,
-            'guards': [guard.json() for guard in self.guards ],
+            **(self.guards[0].json() if self.guards[0] else {}),
             'institution': self.institution_id
+        }
+
+    def guards_json(self):
+        return {
+            'guards': [guard.json() for guard in self.guards]
             }
 
     @classmethod
