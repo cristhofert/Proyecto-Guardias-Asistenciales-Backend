@@ -14,6 +14,12 @@ class Reports(Resource):
         pass
 
     parser = reqparse.RequestParser()
+    parser.add_argument('month',
+        type=int,
+        help='This field cannot be left blank')
+    parser.add_argument('year',
+        type=int,
+        help='This field cannot be left blank')
 
     @jwt_required()
     def get(self):
@@ -25,18 +31,24 @@ class Reports(Resource):
             hours: 000 #tiempo promdedio en aceptar las guardias
         }
         """
+        data = self.parser.parse_args()
         average_assignment = []
         for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json()['institution']).all():
             guards = []
+            avg = 0
             for guard in medical_doctor.guards:
                 assignment = AssignmentModel.find_by_ids(medical_doctor.get_id(
                 ), guard.get_id())
                 if assignment:
-                    dt = assignment.get_assignment_date() - guard.get_created_at()
-                    guards.append(
-                        {**guard.json(), 'hours': dt.total_seconds() / 60 / 60})
+                    if assignment.get_assignment_date().month == data['month'] and assignment.get_assignment_date().year == data['year']:
+                        dt = assignment.get_assignment_date() - guard.get_created_at()
+                        guards.append(
+                            {**guard.json(), 'hours': dt.total_seconds() / 60 / 60})
+                        avg += dt.total_seconds() / 60 / 60
+            if len(guards) > 0:
+                avg = avg / len(guards)
             average_assignment.append(
-                {**medical_doctor.json(), 'count': len(guards), 'guards': guards})
+                {**medical_doctor.json(), 'count': len(guards), 'avg':avg, 'guards': guards})
 
         services = []
         for service in ServiceModel.query.filter_by(institution_id=current_user.json()['institution']).all():
