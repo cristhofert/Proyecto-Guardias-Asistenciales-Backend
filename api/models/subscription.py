@@ -51,6 +51,9 @@ class SubscriptionModel(db.Model):
                 guards.append(guard.json())
         return guards
 
+    def medical_doctors_get(self):
+        return [md for md in self.medical_doctors]
+
     @classmethod
     def find_by_service_id_type(cls, _service_id, _type):
         return cls.query.filter_by(service_id=_service_id, type=_type).first()
