@@ -40,6 +40,7 @@ class MedicalDoctorModel(UserModel):
             'email': self.email,
             'institution': self.institution_id,
             'zone': self.zone.json() if self.zone else None,
+            'subscriptions': [subscription.json()['id'] for subscription in self.subscriptions]
             }
 
     def get_id(self):
