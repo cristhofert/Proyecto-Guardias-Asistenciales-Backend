@@ -25,4 +25,9 @@ class GuardsGroupList(Resource):
 
     @jwt_required()
     def get(self):
-        return {'guards': [guard.json() for guard in GuardsGroupModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}
+        guards = []
+        for guard in GuardsGroupModel.query.filter_by(institution_id=current_user.json()['institution']).all():
+            if guard.get_id() is not 1:
+                guards.append(guard.json())
+                
+        return {'guards': guards}

@@ -22,8 +22,8 @@ class GuardsGroupModel(db.Model):
 
     def json(self):
         return {
+            **(self.guards[0].json() if self.guards else {}),
             'id': self.id,
-            **(self.guards[0].json() if self.guards[0] else {}),
             'institution': self.institution_id
         }
 
@@ -31,6 +31,9 @@ class GuardsGroupModel(db.Model):
         return {
             'guards': [guard.json() for guard in self.guards]
             }
+
+    def get_id(self):
+        return self.id
 
     @classmethod
     def find_by_id(cls, id):

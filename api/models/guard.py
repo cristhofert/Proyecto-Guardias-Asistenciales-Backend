@@ -40,7 +40,6 @@ class GuardModel(db.Model):
         self.institution_id = institution_id
         if zone_id:
             self.zone_id = zone_id
-        self.group_id = None
 
     def json(self):
         return {
