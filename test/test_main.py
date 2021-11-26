@@ -50,11 +50,11 @@ def test_create_admin(id, name, password):
     [
         (12942562, 'weqhlg43.!', 'cris12#@!;34',
          'sd;jah438@#%^%&()', '0932342', 'lasjdh@asd.cas', 1),
-        (1234000090090000000000000000062, 'ljih73jhg',
-         'nñcris12345', '][\[d22sa', '0932372732', 'ew3][=', 1),
+        (4984164, 'ljih73jhg',
+         'nñcris12345', 'd22sa', '0932372732', 'ew3', 1),
         (997, 'asldjhfl', 'cr232is123456', 'dsafsd343f',
          '091283232', 'caseeas@asdasd.com', 1),
-        (122999562, 'l;ajdshfn', 'cris12#@!;34',
+        (78945612, 'l;ajdshfn', 'cris12#@!;34',
          'sdff3fcsdsd', '09216321', 'qwe@dscsva.com', 1),
         (1294062, 'khdsafgldsa', 'nñcris12345',
          'sdfdsf3ds', '092133424', 'cre@asd.com', 1),
@@ -125,7 +125,7 @@ def test_create_assignment(medical_doctor_id, guard_id):
     assert response.status_code == 201
 
 
-@pytest.mark.parametrize('subscription_id, zone_id, date, start_time, end_time, quantity',
+@pytest.mark.parametrize('name, code',
                          [
                              ('Policlinica I', 'PI'),
                              ('Policlinica II', 'P2'),
