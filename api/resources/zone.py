@@ -67,7 +67,7 @@ class Zone(Resource):
         zone = ZoneModel.find_by_id(id)
         if zone and (zone.json()['institution'] == current_user.json()['institution']):
             zone.delete_from_db()
-            return {'message': 'zone has been deleted'}, 200
+            return {'message': 'zone has been deleted'}, 201
         else:
             return {'message': 'zone not found'}, 404
 
