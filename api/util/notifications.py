@@ -35,4 +35,8 @@ def Notificaciones(email, telefono, id, gid, message):
         )
         print(message.sid)
     except Exception as e:
+<<<<<<< HEAD
         print(e)
+=======
+        print(e)
+>>>>>>> main

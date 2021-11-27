@@ -4,6 +4,7 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
 from models.medical_doctor import MedicalDoctorModel
+from models.subscription import SubscriptionModel
 from cerberus import Validator
 
 schema = {
@@ -13,7 +14,8 @@ schema = {
     'speciality': {'type': 'string'},
     'phone': {'type': 'string'},
     'email': {'type': 'string'},
-    'zone_id': {'type': 'integer', 'required': False}
+    'zone_id': {'type': 'integer', 'required': False},
+    'subscriptions': {'type': 'list', 'required': False}
 }
 md = Validator(schema)
 
@@ -24,6 +26,11 @@ class Create:
                 id)}, 400
         medical_doctor = MedicalDoctorModel(data['id'], data['name'], data['password'],
                                             data['speciality'], data['phone'], data['email'], data['zone_id'], current_user.json()['institution'])
+
+        if data['subscriptions'] is not None:
+            for subscription in data['subscriptions']:
+                subscription = SubscriptionModel.find_by_id(subscription)
+                medical_doctor.subscriptions.append(subscription)
 
         try:
             medical_doctor.save_to_db()
@@ -66,6 +73,12 @@ class MedicalDoctor(Resource):
     parser.add_argument('zone_id',
                         type=int,
                         required=False,
+                        help="This field cannot be left blank!"
+                        )
+    parser.add_argument('subscriptions',
+                        type=int,
+                        required=False,
+                        action='append',
                         help="This field cannot be left blank!"
                         )
 
@@ -116,6 +129,11 @@ class MedicalDoctor(Resource):
                 medical_doctor.email = data['email']
             if data['zone_id'] is not None:
                 medical_doctor.zone_id = data['zone_id']
+            if data['subscriptions'] is not None:
+                medical_doctor.subscriptions = []
+                for subscription in data['subscriptions']:
+                    subscription = SubscriptionModel.find_by_id(subscription)
+                    medical_doctor.subscriptions.append(subscription)
 
             medical_doctor.save_to_db()
 

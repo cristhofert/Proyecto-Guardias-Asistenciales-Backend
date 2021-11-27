@@ -36,6 +36,8 @@ def preset_db():
         g2.save_to_db()
         g3.save_to_db()
         g4.save_to_db()
+        db.session.add(GuardsGroupModel([g1, g2, g3]))
+        db.session.add(GuardsGroupModel([g4]))
         db.session.add(AssignmentModel(4562123, 1, 1))
         db.session.commit()
         g1.medical_doctor_id = 4562123
