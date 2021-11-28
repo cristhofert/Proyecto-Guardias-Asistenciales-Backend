@@ -37,25 +37,9 @@ class User(Resource):
     def get(self, id):
         user = UserModel.find_by_id(id)
         #self.logger.info(f'returning user: {user.json()}')
-        if user and (subscription.json()['institution'] == current_user.json()['institution']):
-            return user.json()
+        if user and (user.json()['institution'] == current_user.json()['institution']):
+            return user.json(), 201
         return {'message': 'this not found'}, 404
-
-    @jwt_required()
-    def post(self, id):
-        #self.logger.info(f'parsed args: {self.parser.parse_args()}')
-
-        if UserModel.find_by_id(id):
-            return {'message': "An user with id '{}' already exists.".format(
-                id)}, 400
-        data = self.parser.parse_args()
-        user = UserModel(data['id'], data['name'], data['password'], data['institution_id'], current_user.json()['institution'])
-
-        try:
-            user.save_to_db()
-        except:
-            return {"message": "An error occurred inserting the user."}, 500
-        return user.json(), 201
 
     @jwt_required()
     def delete(self, id):
@@ -80,7 +64,7 @@ class User(Resource):
 
             user.save_to_db()
 
-            return user.json()
+            return user.json(), 201
         else:
             return {'message': 'access denied'}, 401
 
@@ -88,5 +72,4 @@ class UserList(Resource):
     @jwt_required()
     def get(self):
         return {
-            'users': [user.json() for user in UserModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
-        ##return {'users': list(map(lambda x: x.json(), UserModel.query.all()))} #Alternate Lambda way
+            'users': [user.json() for user in UserModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}, 201

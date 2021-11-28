@@ -22,8 +22,8 @@ md = Validator(schema)
 class Create:
     def create(self, data):
         if MedicalDoctorModel.find_by_id(data['id']):
-            return {'message': "An medical_doctor with name '{}' already exists.".format(
-                id)}, 400
+            return {'message': "An medical_doctor with id '{}' already exists.".format(
+                data['id'])}, 400
         medical_doctor = MedicalDoctorModel(data['id'], data['name'], data['password'],
                                             data['speciality'], data['phone'], data['email'], data['zone_id'], current_user.json()['institution'])
 
@@ -34,8 +34,8 @@ class Create:
 
         try:
             medical_doctor.save_to_db()
-        except:
-            return {"message": "An error occurred inserting the medical_doctor."}, 500
+        except BaseException as err:
+            return {"message": f"An error occurred inserting the medical_doctor. {err}"}, 500
         return medical_doctor.json(), 201
         
 class MedicalDoctor(Resource):
@@ -91,7 +91,7 @@ class MedicalDoctor(Resource):
         medical_doctor = MedicalDoctorModel.find_by_id(id)
         #self.logger.info(f'returning medical_doctor: {medical_doctor.json()}')
         if medical_doctor and (medical_doctor.json()['institution'] == current_user.json()['institution']):
-            return medical_doctor.json()
+            return medical_doctor.json(), 201
         return {'message': 'this not found'}, 404
 
     @jwt_required()
@@ -137,7 +137,7 @@ class MedicalDoctor(Resource):
 
             medical_doctor.save_to_db()
 
-            return medical_doctor.json()
+            return medical_doctor.json(), 201
         else:
             return {'message': 'access denied'}, 401
 
@@ -154,8 +154,7 @@ class MedicalDoctorList(Resource):
     @jwt_required()
     def get(self):
         return {
-            'medical_doctors': [medical_doctor.json() for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}
-        # return {'medical_doctors': list(map(lambda x: x.json(), MedicalDoctorModel.query.all()))} #Alternate Lambda way
+            'medical_doctors': [medical_doctor.json() for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}, 201
 
     @jwt_required()
     def post(self):
@@ -169,4 +168,4 @@ class MedicalDoctorList(Resource):
                 MDs.append(c.create(medical_doctor))
             else:
                 MDs.append(md.errors)
-        return {'MDs': MDs}
+        return {'MDs': MDs}, 201

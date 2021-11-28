@@ -35,14 +35,12 @@ class Zone(Resource):
         pass
         ##self.logger = create_logger()
 
-    @jwt_required()  # Requires dat token
+    @jwt_required() 
     def get(self, id):
-        print(f'GetZone args: {self.args}')
         zone = ZoneModel.find_by_id(id)
 
-        #self.logger.info(f'returning zone: {zone.json()}')
         if zone and (zone.json()['institution'] == current_user.json()['institution']):
-            return zone.json()
+            return zone.json(), 201
         return {'message': 'Zone not found'}, 404
 
     @jwt_required()
@@ -85,7 +83,7 @@ class Zone(Resource):
 
             zone.save_to_db()
 
-            return zone.json()
+            return zone.json(), 201
         else:
             return {'message': 'zone not found'}, 401
 
@@ -94,5 +92,4 @@ class ZoneList(Resource):
     @jwt_required()
     def get(self):
         return {
-            'zones': [zone.json() for zone in ZoneModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
-        ##return {'zones': list(map(lambda x: x.json(), ZoneModel.query.all()))} #Alternate Lambda way
+            'zones': [zone.json() for zone in ZoneModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}, 201

@@ -26,11 +26,11 @@ class Service(Resource):
         ##self.logger = create_logger()
 
     @jwt_required()  # Requires dat token
-    def get(self, name):
-        service = ServiceModel.find_by_name(name)
+    def get(self, id):
+        service = ServiceModel.find_by_id(id)
         #self.logger.info(f'returning service: {service.json()}')
-        if service and (notification.json()['institution'] == current_user.json()['institution']):
-            return service.json()
+        if service and (service.json()['institution'] == current_user.json()['institution']):
+            return service.json(), 201
         return {'message': 'Service not found'}, 404
 
     @jwt_required()
@@ -87,7 +87,7 @@ class Service(Resource):
 
             service.save_to_db()
 
-            return service.json()
+            return service.json(), 201
         else:
             return {'message': 'access denied'}, 401
 
@@ -95,5 +95,4 @@ class ServiceList(Resource):
     @jwt_required()
     def get(self):
         return {
-            'services': [service.json() for service in ServiceModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
-        ##return {'services': list(map(lambda x: x.json(), ServiceModel.query.all()))} #Alternate Lambda way
+            'services': [service.json() for service in ServiceModel.query.filter_by(institution_id=current_user.json()['institution']).all()]} , 201

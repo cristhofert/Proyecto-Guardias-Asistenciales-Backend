@@ -13,7 +13,7 @@ class SubscriptionModel(db.Model):
     __tablename__ = 'subscriptions'
 
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(80))
+    type = db.Column(db.String(11), db.CheckConstraint('type in ("dispersión", "lista")'))	
     service_id = db.Column(db.Integer, db.ForeignKey('services.id'))
     service = db.relationship('ServiceModel', backref='subscriptions')
     medical_doctors =db.relationship(

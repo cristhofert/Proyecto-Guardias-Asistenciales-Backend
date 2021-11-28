@@ -19,4 +19,4 @@ class MyGuards(Resource):
             return {"message": "You are not authorized to access this resource."}, 401
         return {
             'myguards': [guard.json() for guard in current_user.guards]
-        }
+        }, 201
