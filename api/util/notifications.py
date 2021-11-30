@@ -9,7 +9,7 @@ def Notificaciones(email, telefono, id, gid, message):
     notification = NotificationModel(id, gid, message, institution_id=1)
 
     notification.save_to_db()
-
+""" 
     try:
         # print(email)
         mail = Mail()
@@ -36,3 +36,4 @@ def Notificaciones(email, telefono, id, gid, message):
         print(message.sid)
     except Exception as e:
         print(e)
+ """
