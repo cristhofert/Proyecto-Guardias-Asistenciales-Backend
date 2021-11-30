@@ -10,37 +10,37 @@ from models.guard import GuardModel
 
 
 class Assignment(Resource):
-    parser = reqparse.RequestParser()
-    parser.add_argument('medical_doctor_id',
-                        type=int,
-                        required=True,
-                        help="This field cannot be left blank!"
-                        )
-    parser.add_argument('guard_id',
-                        type=False,
-                        required=True,
-                        help="This field cannot be left blank!"
-                        )
 
     def __init__(self):
         pass
 
     @jwt_required()
     def post(self, medical_doctor_id, guard_id):
-        medical_doctor = MedicalDoctorModel.find_by_id(medical_doctor_id)
+        if current_user.type == 'medical_doctor':
+            medical_doctor = current_user
+            medical_doctor_id = medical_doctor.get_id()
+        else: 
+            medical_doctor = MedicalDoctorModel.find_by_id(medical_doctor_id)
         guard = GuardModel.find_by_id(guard_id)
-        if medical_doctor and guard and (medical_doctor.json()['institution'] == current_user.json()['institution']) and (guard.json()['institution'] == current_user.json()['institution']) and (guard.json()['lock'] == False):
-            assignment = AssignmentModel(
-                medical_doctor_id, guard_id, current_user.json()['institution'])
-            guard.medical_doctor_id = medical_doctor_id
-            guard.lock = True
+        if medical_doctor:
+            if guard:
+                if (medical_doctor.json()['institution'] == current_user.json()['institution']) and (guard.json()['institution'] == current_user.json()['institution']):
+                    if (guard.json()['lock'] == False):
+                        assignment = AssignmentModel(
+                            medical_doctor_id, guard_id, current_user.json()['institution'])
+                        guard.medical_doctor_id = medical_doctor_id
+                        guard.lock = True
 
-            try:
-                assignment.save_to_db()
-                guard.save_to_db()
-            except:
-                return {"message": "An error occurred inserting the assignment."}, 500
-        return assignment.json(), 201
+                        try:
+                            assignment.save_to_db()
+                            guard.save_to_db()
+                        except BaseException as err:
+                            return {"message": f"An error occurred inserting the assignment. {err}"}, 500
+                        return assignment.json(), 201
+                    return {"message": "It's lock"}, 500
+                return {"message": "Incorrect Institution"}, 500
+            return {"message": "Guard not exist"}, 500
+        return {"message": "Medical Doctor not exist"}, 500
 
     @jwt_required()
     def delete(self, medical_doctor_id, guard_id):

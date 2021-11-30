@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, current_user
 from models.medical_doctor import MedicalDoctorModel
 from models.assignment import AssignmentModel
 from models.service import ServiceModel
-
+import datetime
 
 class Reports(Resource):
     def __init__(self):
@@ -23,15 +23,12 @@ class Reports(Resource):
 
     @jwt_required()
     def get(self):
-        # if current_user.type == 'medical_doctor':
-        #    return {'message': 'You are not allowed to the reports'}, 401
-        """
-        {
-            medical_doctor_id: 12345,
-            hours: 000 #tiempo promdedio en aceptar las guardias
-        }
-        """
         data = self.parser.parse_args()
+        today = datetime.date.today()
+        if data['year'] > today.year:
+            return {'message': 'Invalid future year'}, 400
+        if data['year'] == today.year and data['month'] > today.month:
+            return {'message': 'Invalid future month'}, 400
         average_assignment = []
         for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json()['institution']).all():
             guards = []
