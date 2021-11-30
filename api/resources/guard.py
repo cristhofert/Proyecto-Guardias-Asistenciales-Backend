@@ -159,6 +159,11 @@ class GuardList(Resource):
                         required=False,
                         help="This field cannot be left blank!"
                         )
+    parser.add_argument('date',
+                        type=inputs.date,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
 
     @jwt_required()
     def get(self):
@@ -177,27 +182,33 @@ class GuardList(Resource):
             return {message: 'access denied, you need be a medical_doctor or an administator'}, 401
 
     @jwt_required()
-    def post(self):
+    def post(self):#mes actual
         guards = []
         data = self.parser.parse_args()
         print(data['repeat'])
         today = date.today()
-        for tuple in calendar.Calendar().monthdays2calendar(today.year, today.month):
+        start_date = data['date'].date()
+        if start_date < today:
+            return {'message': 'date must be today or future'}, 400
+        for tuple in calendar.Calendar().monthdays2calendar(start_date.year, start_date.month):
             for week in tuple:
                 day, weekday = week
-                if(day != 0):
+                if(day > 0):
+                    print(day, calendar.day_name[weekday])
                     for wday in data['repeat']:
                         if wday == calendar.day_name[weekday]:
-                            date_guard = date(today.year, today.month, day)
+                            print("Day: ", wday)
+                            print("CDay: ", calendar.day_name[weekday])
+                            date_guard = date(start_date.year, start_date.month, day)
+                            print(date_guard, " ", today)
                             if date_guard > today:
                                 quantity = data['quantity'] if data['quantity'] else 1
                                 for i in range(quantity):
                                     guards.append(GuardModel(data['subscription_id'], date_guard, data['start_time'],
                                                              data['end_time'], data['zone_id'], current_user.json()['institution']))
-                        else:
-                            print(
-                                'no es el dia', wday, "example ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']")
 
+        if guards == []:
+            return {"message": f"No hay dias disponible en este mes {start_date.month} del {start_date.year}"}, 400
         group = GuardsGroupModel(guards, current_user.json()['institution'])
         sm = SubscriptionModel.find_by_id(data['subscription_id'])
         ml = sm.medical_doctors_get()
