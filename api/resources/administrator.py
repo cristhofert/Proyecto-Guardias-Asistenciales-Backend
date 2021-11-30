@@ -33,7 +33,7 @@ class Administrator(Resource):
         administrator = AdministratorModel.find_by_id(id)
         #self.logger.info(f'returning administrator: {administrator.json()}')
         if administrator and (administrator.json()['institution'] == current_user.json()['institution']):
-            return administrator.json()
+            return administrator.json(), 201
         return {'message': 'this not found'}, 404
 
     @jwt_required()
@@ -79,7 +79,7 @@ class Administrator(Resource):
                 
             administrator.save_to_db()
 
-            return administrator.json()
+            return administrator.json(), 201
         else:
             return {'message': 'access denied'}, 401
 
@@ -87,5 +87,4 @@ class AdministratorList(Resource):
     @jwt_required()
     def get(self):
         return {
-            'administrators': [administrator.json() for administrator in AdministratorModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
-        ##return {'administrators': list(map(lambda x: x.json(), AdministratorModel.query.all()))} #Alternate Lambda way
+            'administrators': [administrator.json() for administrator in AdministratorModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}, 201

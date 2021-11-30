@@ -55,7 +55,7 @@ class Guard(Resource):
         guard = GuardModel.find_by_id(id)
         #self.logger.info(f'returning guard: {guard.json()}')
         if guard and (guard.json()['institution'] == current_user.json()['institution']):
-            return guard.json()
+            return guard.json(), 201
         return {'message': 'this not found'}, 404
 
     @jwt_required()
@@ -121,7 +121,7 @@ class Guard(Resource):
 
             guard.save_to_db()
 
-            return guard.json()
+            return guard.json(), 201
         else:
             return {'message': 'access denied'}, 401
 
@@ -164,7 +164,7 @@ class GuardList(Resource):
     def get(self):
         if current_user.type == 'administrator':
             return {
-                'guards': [guard.json() for guard in GuardModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}  # More pythonic
+                'guards': [guard.json() for guard in GuardModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}, 201
         elif current_user.type == 'medical_doctor':
             guards = []
             for subscription in current_user.subscriptions:
@@ -172,7 +172,7 @@ class GuardList(Resource):
                     guards.append(guard)
             return {
                 'guards': guards
-            }
+            }, 201
         else:
             return {message: 'access denied, you need be a medical_doctor or an administator'}, 401
 

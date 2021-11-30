@@ -37,7 +37,7 @@ class Password(Resource):
                 current_user.save_to_db()
             except:
                 return {"message": "An error occurred inserting the user."}, 500
-            return {"message": "User password updated successfully."}, 200
+            return {"message": "User password updated successfully."}, 201
         else:
             return {"message": "Old password is incorrect."}, 400
 
@@ -51,4 +51,4 @@ class Password(Resource):
             user.save_to_db()
         except:
             return {"message": "An error occurred inserting the user."}, 500
-        return {"message": "User password updated successfully."}, 200
+        return {"message": "User password updated successfully."}, 201

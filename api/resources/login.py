@@ -33,15 +33,10 @@ class Login(Resource):
         # Notice that we are passing in the actual sqlalchemy user object here
         access_token = create_access_token(
             identity=user)
-        return jsonify(access_token=access_token)
+        return {"access_token": access_token}, 201
 
     @jwt_required()  # Requires dat token
     def get(self):
         print("GET login")
         # We can now access our sqlalchemy User object via `current_user`.
-        return jsonify(
-            id=current_user.id, 
-            name=current_user.name,
-            institution_id=current_user.institution_id,
-            type=current_user.type
-            )
+        return current_user.json(), 201

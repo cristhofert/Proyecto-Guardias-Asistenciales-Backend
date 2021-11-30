@@ -65,4 +65,4 @@ class Reports(Resource):
 
             services.append({**service.json(), 'medical_doctors': medical_doctors})
 
-        return {'average_assignment': average_assignment, 'services': services}, 200
+        return {'average_assignment': average_assignment, 'services': services}, 201

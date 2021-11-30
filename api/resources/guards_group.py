@@ -27,7 +27,7 @@ class GuardsGroupList(Resource):
     def get(self):
         guards = []
         for guard in GuardsGroupModel.query.filter_by(institution_id=current_user.json()['institution']).all():
-            if guard.get_id() is not 1:
+            if guard.get_id() > 1:
                 guards.append(guard.json())
                 
-        return {'guards': guards}
+        return {'guards': guards}, 201

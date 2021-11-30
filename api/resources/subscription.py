@@ -20,16 +20,16 @@ class Subscription(Resource):
         subscription = SubscriptionModel.find_by_id(id)
         #self.logger.info("Subscription get: {}".format(subscription))
         if subscription and (subscription.json()['institution'] == current_user.json()['institution']):
-            return subscription.json()
+            return subscription.json(), 201
         return {'message': 'Subscription not found'}, 404
 
     @jwt_required()
     def post(self, id):
         data = Subscription.parse.parse_args()
-        subscription = SubscriptionModel.find_by_service_id_type(data['service_id', data['type']])
+        subscription = SubscriptionModel.find_by_service_id_type(data['service_id'], data['type'])
 
         if subscription:
-            return {'message': "An subscription with id '{}' already exists.".format(id)}, 400
+            return {'message': f"An subscription with service_id '{data['service_id']}' and '{data['type']}' already exists."}, 400
 
         subscription = SubscriptionModel(**data, institution_id=current_user.json()['institution'])
 
@@ -54,8 +54,7 @@ class Subscription(Resource):
 
             subscription.save_to_db()
 
-            return subscription.json()
-
+            return subscription.json(), 201
         else:
             return {'message': 'access denied'}, 401
 
@@ -70,4 +69,4 @@ class Subscription(Resource):
 class SubscriptionList(Resource):
     @jwt_required()
     def get(self):
-        return {'subscriptions': [subscription.json() for subscription in SubscriptionModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}
+        return {'subscriptions': [subscription.json() for subscription in SubscriptionModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}, 201

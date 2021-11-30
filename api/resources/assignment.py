@@ -70,13 +70,13 @@ class Assignment(Resource):
             assignment = AssignmentModel.find_by_medical_doctor_id(
                 medical_doctor_id)
             if assignment and (assignment.json()['institution'] == current_user.json()['institution']):
-                return assignment.json(), 200
+                return assignment.json(), 201
             return {"message": "Medical doctor not found."}, 404
 
         if guard_id > 0:
             assignment = AssignmentModel.find_by_guard_id(guard_id)
             if assignment and (assignment.json()['institution'] == current_user.json()['institution']):
-                return assignment.json(), 200
+                return assignment.json(), 201
             return {"message": "Medical doctor not found."}, 404
 
         return {"message": "Not found."}, 404
