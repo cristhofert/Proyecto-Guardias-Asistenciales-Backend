@@ -44,15 +44,19 @@ class Assignment(Resource):
 
     @jwt_required()
     def delete(self, medical_doctor_id, guard_id):
+        if current_user.type == 'medical_doctor':
+            medical_doctor = current_user
+            medical_doctor_id = medical_doctor.get_id()
+        else: 
+            medical_doctor = MedicalDoctorModel.find_by_id(medical_doctor_id)
         assignment = AssignmentModel.find_by_ids(medical_doctor_id, guard_id)
         guard = GuardModel.find_by_id(guard_id)
         if assignment and (assignment.json()['institution'] == current_user.json()['institution']):
             assignment.delete_from_db()
             guard.medical_doctor_id = None
             guard.lock = False
-            md = MedicalDoctorModel.find_by_id(medical_doctor_id)
-            email = md.email
-            telefono = 'whatsapp:+598'+md.phone.lstrip("0")
+            email = medical_doctor.email
+            telefono = 'whatsapp:+598'+medical_doctor.phone.lstrip("0")
             message = "Guardia Liberada"
             print(email)
             print(telefono)
