@@ -16,9 +16,11 @@ class Reports(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('month',
         type=int,
+        required=True,
         help='This field cannot be left blank')
     parser.add_argument('year',
         type=int,
+        required=True,
         help='This field cannot be left blank')
 
     @jwt_required()
