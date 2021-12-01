@@ -24,7 +24,7 @@ class Reports(Resource):
         help='This field cannot be left blank')
 
     @jwt_required()
-    def get(self):
+    def post(self):
         data = self.parser.parse_args()
         today = datetime.date.today()
         if data['year'] > today.year:
