@@ -106,20 +106,19 @@ class Guard(Resource):
         data = self.parser.parse_args()
         guard = GuardModel.find_by_id(id)
 
+        if guard is None:
+            return {'message': 'guard not exist'}, 500
         if guard.json()['institution'] == current_user.json()['institution']:
-            if guard is None:
-                return {'message': 'guard not exist'}, 500
-            else:
-                if data['subscription_id'] is not None:
-                    guard.subscription_id = data['subscription_id']
-                if data['zone_id'] is not None:
-                    guard.zone_id = data['zone_id']
-                if data['date'] is not None:
-                    guard.date = data['date']
-                if data['start_time'] is not None:
-                    guard.start_time = data['start_time']
-                if data['end_time'] is not None:
-                    guard.end_time = data['end_time']
+            if data['subscription_id'] is not None:
+                guard.subscription_id = data['subscription_id']
+            if data['zone_id'] is not None:
+                guard.zone_id = data['zone_id']
+            if data['date'] is not None:
+                guard.date = data['date']
+            if data['start_time'] is not None:
+                guard.start_time = data['start_time']
+            if data['end_time'] is not None:
+                guard.end_time = data['end_time']
 
             guard.save_to_db()
 

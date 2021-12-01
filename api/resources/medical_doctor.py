@@ -27,6 +27,8 @@ class Create:
         if MedicalDoctorModel.find_by_id(data['id']):
             return {'message': "An medical_doctor with id '{}' already exists.".format(
                 data['id'])}, 400
+        hashed = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+        data['password'] = hashed
         medical_doctor = MedicalDoctorModel(data['id'], data['name'], data['password'],
                                             data['speciality'], data['phone'], data['email'], data['zone_id'], current_user.json()['institution'])
 
@@ -103,9 +105,6 @@ class MedicalDoctor(Resource):
     def post(self, id):
         access.administor(current_user)
         data = self.parser.parse_args()
-        hashed = bcrypt.hashpw(
-            data['password'].encode('utf-8'), bcrypt.gensalt())
-        data['password'] = hashed
         c = Create()
         return c.create(data)
 
@@ -116,7 +115,7 @@ class MedicalDoctor(Resource):
         if medical_doctor and (medical_doctor.json()['institution'] == current_user.json()['institution']):
             medical_doctor.delete_from_db()
 
-            return {'message': 'medical_doctor has been deleted'}
+            return {'message': 'medical_doctor has been deleted'}, 201
         return {'message': 'medical_doctor not found'}, 404
 
     @jwt_required()
@@ -172,9 +171,6 @@ class MedicalDoctorList(Resource):
     def post(self):
         access.administor(current_user)
         data = self.parser.parse_args()
-        hashed = bcrypt.hashpw(
-            data['password'].encode('utf-8'), bcrypt.gensalt())
-        data['password'] = hashed
         MDs = []
         for medical_doctor in data['MDs']:
             if medical_doctor != {} and md.validate(medical_doctor):
