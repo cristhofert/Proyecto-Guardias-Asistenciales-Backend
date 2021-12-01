@@ -16,7 +16,6 @@ from resources.subscription import Subscription, SubscriptionList
 from resources.zone import Zone, ZoneList
 from resources.assignment import Assignment
 from resources.login import Login
-from resources.user import User, UserList
 from resources.password import Password
 from resources.subscribe import Subscribe
 from resources.mailN import MailN
@@ -76,8 +75,6 @@ api.add_resource(Zone, '/zone/<int:id>')
 api.add_resource(ZoneList, '/zones')
 api.add_resource(Assignment, '/assignment/<int:medical_doctor_id>/<int:guard_id>')
 api.add_resource(Login, '/login')
-api.add_resource(User, '/user/<int:id>')
-api.add_resource(UserList, '/users')
 api.add_resource(Password, '/password/<string:token>')
 api.add_resource(Subscribe, '/subscribe/<int:medical_doctor_id>/<int:subscription_id>')
 api.add_resource(MailN, '/MailN')
