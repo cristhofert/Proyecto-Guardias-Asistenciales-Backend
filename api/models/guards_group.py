@@ -24,7 +24,9 @@ class GuardsGroupModel(db.Model):
         return {
             **(self.guards[0].json() if self.guards else {}),
             'id': self.id,
-            'institution': self.institution_id
+            'institution': self.institution_id,
+            'quantity': self.quantity,
+            'assinged': len(self.guards)
         }
 
     def guards_json(self):
