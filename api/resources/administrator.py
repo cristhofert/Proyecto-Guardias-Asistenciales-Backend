@@ -63,7 +63,8 @@ class Administrator(Resource):
         administrator = AdministratorModel.find_by_id(id)
         if administrator and (administrator.json()['institution'] == current_user.json()['institution']):
 
-            administrator.delete_from_db()
+            if administrator.delete_from_db() == 'Cannot delete superadmin':
+                return {'message': 'cannot delete superadmin'}, 404
 
             return {'message': 'administrator has been deleted'}
         return {'message': 'this not found'}, 404

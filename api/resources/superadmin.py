@@ -39,7 +39,7 @@ class SuperAdmin(Resource):
             passw = str(random.randrange(000000000, 999999999, 9))
             hashed = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
             administrator = AdministratorModel(
-                data['id'], data['name'], hashed, Ins.id)
+                data['id'], data['name'], hashed, Ins.id, superadmin=True)
             administrator.save_to_db()
 
         except BaseException as err:
