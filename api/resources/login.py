@@ -9,6 +9,7 @@ from models.user import UserModel
 from util.encoder import AlchemyEncoder
 import json
 from util.logz import create_logger
+import bcrypt
 
 
 class Login(Resource):
@@ -28,12 +29,16 @@ class Login(Resource):
         password = data['password']
 
         user = UserModel.query.filter_by(id=id).one_or_none()
-        if not user or not user.check_password(password):
-            return {'message': 'Wrong id or password.'}, 401
-        # Notice that we are passing in the actual sqlalchemy user object here
-        access_token = create_access_token(
-            identity=user)
-        return {"access_token": access_token}, 201
+        if not user:
+            return 'Invalid Login Info!', 400
+        if bcrypt.checkpw(password.encode('utf-8'), user.json()["password"].encode('utf8')):
+
+            access_token = create_access_token(
+                identity=user)
+
+            return {"access_token": access_token}, 201
+        else:
+            return 'Invalid Login Info!', 400
 
     @jwt_required()  # Requires dat token
     def get(self):

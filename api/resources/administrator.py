@@ -4,25 +4,27 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
 from models.administrator import AdministratorModel
+import bcrypt
 #from app.util.logz import create_logger
+
 
 class Administrator(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('name',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
     parser.add_argument('password',
-        type=str,
-        required=True,
-        help="This field cannot be left blank!"
-    )
+                        type=str,
+                        required=True,
+                        help="This field cannot be left blank!"
+                        )
 
     def __init__(self):
         pass
@@ -41,10 +43,13 @@ class Administrator(Resource):
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
         data = self.parser.parse_args()
+        hashed = bcrypt.hashpw(
+            data['password'].encode('utf-8'), bcrypt.gensalt())
         if AdministratorModel.find_by_id(data['id']):
             return {'message': "An administrator with id '{}' already exists.".format(
                 id)}, 400
-        administrator = AdministratorModel(data['id'], data['name'], data['password'], current_user.json()['institution'])
+        administrator = AdministratorModel(
+            data['id'], data['name'], hashed, current_user.json()['institution'])
 
         try:
             administrator.save_to_db()
@@ -67,21 +72,28 @@ class Administrator(Resource):
     def put(self, id):
         # Create or Update
         data = self.parser.parse_args()
+        hashed = bcrypt.hashpw(
+            data['password'].encode('utf-8'), bcrypt.gensalt())
         administrator = AdministratorModel.find_by_id(data['id'])
 
-        if administrator.json()['institution'] == current_user.json()['institution'] :
+        if administrator.json()['institution'] == current_user.json()['institution']:
             if administrator is None:
-                administrator = AdministratorModel(data['id'], data['name'], data['password'], current_user.json()['institution'])
+                administrator = AdministratorModel(
+                    data['id'], data['name'], hashed, current_user.json()['institution'])
             else:
-                if data['id'] is not None: administrator.id = data['id']
-                if data['name'] is not None: administrator.name = data['name']
-                if data['password'] is not None: administrator.password = data['password']
-                
+                if data['id'] is not None:
+                    administrator.id = data['id']
+                if data['name'] is not None:
+                    administrator.name = data['name']
+                if data['password'] is not None:
+                    administrator.password = hashed
+
             administrator.save_to_db()
 
             return administrator.json(), 201
         else:
             return {'message': 'access denied'}, 401
+
 
 class AdministratorList(Resource):
     @jwt_required()

@@ -4,12 +4,13 @@ from sendgrid.helpers.mail import *
 import sendgrid
 from models.notification import NotificationModel
 
+
 def Notificaciones(email, telefono, id, gid, message):
 
     notification = NotificationModel(id, gid, message, institution_id=1)
 
     notification.save_to_db()
-""" 
+
     try:
         # print(email)
         mail = Mail()
@@ -31,9 +32,8 @@ def Notificaciones(email, telefono, id, gid, message):
         message = client.messages.create(
             from_='whatsapp:+14155238886',
             body='Hay nuevas guardias disponibles, revisa tu cuenta para mas informacion.',
-            to=telefono
+            to=telefono.lstrip("0")
         )
         print(message.sid)
     except Exception as e:
         print(e)
- """

@@ -10,6 +10,7 @@ from models.zone import ZoneModel
 from models.guards_group import GuardsGroupModel
 from models.administrator import AdministratorModel
 from db import db
+import bcrypt
 
 
 def preset_db():
@@ -18,11 +19,15 @@ def preset_db():
         db.session.add(InstitutionModel())
         db.session.add(ZoneModel("z1"))
         db.session.add(GuardsGroupModel([]))
+        passw = 'cris1234'
+        hashed = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
         md = MedicalDoctorModel(
-            1234562,  'Cristhofer Travieso',  'cris1234', 'md', '09785412', 'c@c.com', 1)
+            1234562,  'Cristhofer Travieso',  hashed, 'md', '09785412', 'c@c.com', 1)
         db.session.add(md)
+        passw = '1234cris'
+        hashed2 = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
         db.session.add(MedicalDoctorModel(4562123,  'Travieso Cristhofer ',
-                    '1234cris', 'pedatria', '09748512', 'b@c.com', 1))
+                                          hashed2, 'pedatria', '09748512', 'b@c.com', 1))
         db.session.add(ServiceModel('Puerta de Emergencia', 'PE1'))
         db.session.add(ServiceModel('Puerta de Emergencia II', 'PE2'))
         sub = SubscriptionModel('lista', 1)
@@ -45,7 +50,7 @@ def preset_db():
         db.session.add(AssignmentModel(1234562, 1, 1))
         db.session.commit()
         g1.medical_doctor_id = 1234562
-        g1.save_to_db() 
+        g1.save_to_db()
         db.session.add(AssignmentModel(1234562, 2, 1))
         db.session.commit()
         g2.medical_doctor_id = 1234562
@@ -55,7 +60,9 @@ def preset_db():
 
         md.subscriptions.append(sub)
         md.save_to_db()
-        db.session.add(AdministratorModel(98765431, 'Juan Perez', 'jp123', 1))
+        passw = 'jp123'
+        hashed3 = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
+        db.session.add(AdministratorModel(98765431, 'Juan Perez', hashed3, 1))
         db.session.commit()
     except Exception as e:
         print(e)

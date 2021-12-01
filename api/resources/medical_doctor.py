@@ -6,6 +6,8 @@ from flask_jwt_extended import jwt_required, current_user
 from models.medical_doctor import MedicalDoctorModel
 from models.subscription import SubscriptionModel
 from cerberus import Validator
+import bcrypt
+
 
 schema = {
     'id': {'type': 'string'},
@@ -18,6 +20,7 @@ schema = {
     'subscriptions': {'type': 'list', 'required': False}
 }
 md = Validator(schema)
+
 
 class Create:
     def create(self, data):
@@ -37,7 +40,8 @@ class Create:
         except BaseException as err:
             return {"message": f"An error occurred inserting the medical_doctor. {err}"}, 500
         return medical_doctor.json(), 201
-        
+
+
 class MedicalDoctor(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',
@@ -99,6 +103,9 @@ class MedicalDoctor(Resource):
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
 
         data = self.parser.parse_args()
+        hashed = bcrypt.hashpw(
+            data['password'].encode('utf-8'), bcrypt.gensalt())
+        data['password'] = hashed
         c = Create()
         return c.create(data)
 
@@ -115,12 +122,14 @@ class MedicalDoctor(Resource):
     def put(self, id):
         # Create or Update
         data = self.parser.parse_args()
+        hashed = bcrypt.hashpw(
+            data['password'].encode('utf-8'), bcrypt.gensalt())
         medical_doctor = MedicalDoctorModel.find_by_id(id)
         if medical_doctor and medical_doctor.json()['institution'] == current_user.json()['institution']:
             if data['name'] is not None:
                 medical_doctor.name = data['name']
             if data['password'] is not None:
-                medical_doctor.password = data['password']
+                medical_doctor.password = hashed
             if data['speciality'] is not None:
                 medical_doctor.speciality = data['speciality']
             if data['phone'] is not None:
@@ -144,12 +153,12 @@ class MedicalDoctor(Resource):
 
 class MedicalDoctorList(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument("MDs", 
-        type=dict, 
-        action="append", 
-        default=[],        
-        required=False,
-        help="This field cannot be left blank!")
+    parser.add_argument("MDs",
+                        type=dict,
+                        action="append",
+                        default=[],
+                        required=False,
+                        help="This field cannot be left blank!")
 
     @jwt_required()
     def get(self):
@@ -159,9 +168,12 @@ class MedicalDoctorList(Resource):
     @jwt_required()
     def post(self):
         data = self.parser.parse_args()
+        hashed = bcrypt.hashpw(
+            data['password'].encode('utf-8'), bcrypt.gensalt())
+        data['password'] = hashed
         MDs = []
         for medical_doctor in data['MDs']:
-            if medical_doctor!={} and md.validate(medical_doctor):
+            if medical_doctor != {} and md.validate(medical_doctor):
                 if not medical_doctor.get('zone_id'):
                     medical_doctor['zone_id'] = 1
                 c = Create()
