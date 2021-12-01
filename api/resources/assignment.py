@@ -52,7 +52,7 @@ class Assignment(Resource):
             guard.lock = False
             md = MedicalDoctorModel.find_by_id(medical_doctor_id)
             email = md.email
-            telefono = 'whatsapp:+598'+md.phone
+            telefono = 'whatsapp:+598'+md.phone.lstrip("0")
             message = "Guardia Liberada"
             print(email)
             print(telefono)

@@ -81,7 +81,7 @@ class Guard(Resource):
                 for m in ml:
                     print(m)
                     Notificaciones(m.email, 'whatsapp:+598' +
-                                   m.phone, m.id, g.id, message)
+                                   m.phone.lstrip("0"), m.id, g.id, message)
             group.save_to_db()
         except BaseException as err:
             print(err)
@@ -179,7 +179,7 @@ class GuardList(Resource):
                 'guards': guards
             }, 201
         else:
-            return {message: 'access denied, you need be a medical_doctor or an administator'}, 401
+            return {'message': 'access denied, you need be a medical_doctor or an administator'}, 401
 
     @jwt_required()
     def post(self):#mes actual
@@ -219,7 +219,7 @@ class GuardList(Resource):
                 for m in ml:
                     print(m)
                     Notificaciones(m.email, 'whatsapp:+598' +
-                                   m.phone, m.id, g.id, message)
+                                   m.phone.lstrip("0"), m.id, g.id, message)
             group.save_to_db()
         except:
             return {"message": "An error occurred inserting the guard."}, 500

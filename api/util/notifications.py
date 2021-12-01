@@ -32,7 +32,7 @@ def Notificaciones(email, telefono, id, gid, message):
         message = client.messages.create(
             from_='whatsapp:+14155238886',
             body='Hay nuevas guardias disponibles, revisa tu cuenta para mas informacion.',
-            to=telefono.lstrip("0")
+            to=telefono
         )
         print(message.sid)
     except Exception as e:
