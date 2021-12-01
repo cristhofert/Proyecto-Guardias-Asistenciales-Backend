@@ -10,7 +10,6 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import *
 import sendgrid
 
-
 class SuperAdmin(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('id',

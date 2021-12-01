@@ -8,6 +8,7 @@ from models.medical_doctor import MedicalDoctorModel
 from models.assignment import AssignmentModel
 from models.service import ServiceModel
 import datetime
+from util import access
 
 class Reports(Resource):
     def __init__(self):
@@ -25,6 +26,7 @@ class Reports(Resource):
 
     @jwt_required()
     def post(self):
+        access.administor(current_user)
         data = self.parser.parse_args()
         today = datetime.date.today()
         if data['year'] > today.year:

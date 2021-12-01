@@ -2,6 +2,7 @@ from models.medical_doctor import MedicalDoctorModel
 from models.subscription import SubscriptionModel
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, current_user
+from util import access
 
 class Subscribe(Resource):
     def __init__(self):
@@ -9,6 +10,7 @@ class Subscribe(Resource):
 
     @jwt_required()
     def post(self, medical_doctor_id, subscription_id):
+        access.administor(current_user)
         medical_doctor = MedicalDoctorModel.find_by_id(medical_doctor_id)
         subscription = SubscriptionModel.find_by_id(subscription_id)
 
@@ -24,6 +26,7 @@ class Subscribe(Resource):
 
     @jwt_required()
     def delete(self, medical_doctor_id, subscription_id):
+        access.administor(current_user)
         medical_doctor = MedicalDoctorModel.find_by_id(medical_doctor_id)
         subscription = SubscriptionModel.find_by_id(subscription_id)
 

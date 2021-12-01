@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, current_user
 from models.medical_doctor import MedicalDoctorModel
 from models.assignment import AssignmentModel
 from models.guard import GuardModel
-
+from util import access
 
 class Assignment(Resource):
 
@@ -67,8 +67,7 @@ class Assignment(Resource):
 
     @jwt_required()
     def get(self, medical_doctor_id=0, guard_id=0):
-        if current_user.type == 'medical_doctor':
-            return {"message": "You are not authorized to access this resource."}, 401
+        access.medical_doctor()
 
         if medical_doctor_id > 0:
             assignment = AssignmentModel.find_by_medical_doctor_id(

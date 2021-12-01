@@ -7,7 +7,7 @@ from models.medical_doctor import MedicalDoctorModel
 from models.subscription import SubscriptionModel
 from cerberus import Validator
 import bcrypt
-
+from util import access
 
 schema = {
     'id': {'type': 'string'},
@@ -92,6 +92,7 @@ class MedicalDoctor(Resource):
 
     @jwt_required()  # Requires dat token
     def get(self, id):
+        access.administor(current_user)
         medical_doctor = MedicalDoctorModel.find_by_id(id)
         #self.logger.info(f'returning medical_doctor: {medical_doctor.json()}')
         if medical_doctor and (medical_doctor.json()['institution'] == current_user.json()['institution']):
@@ -100,8 +101,7 @@ class MedicalDoctor(Resource):
 
     @jwt_required()
     def post(self, id):
-        #self.logger.info(f'parsed args: {self.parser.parse_args()}')
-
+        access.administor(current_user)
         data = self.parser.parse_args()
         hashed = bcrypt.hashpw(
             data['password'].encode('utf-8'), bcrypt.gensalt())
@@ -111,6 +111,7 @@ class MedicalDoctor(Resource):
 
     @jwt_required()
     def delete(self, id):
+        access.administor(current_user)
         medical_doctor = MedicalDoctorModel.find_by_id(id)
         if medical_doctor and (medical_doctor.json()['institution'] == current_user.json()['institution']):
             medical_doctor.delete_from_db()
@@ -120,6 +121,7 @@ class MedicalDoctor(Resource):
 
     @jwt_required()
     def put(self, id):
+        access.administor(current_user)
         # Create or Update
         data = self.parser.parse_args()
         hashed = bcrypt.hashpw(
@@ -162,11 +164,13 @@ class MedicalDoctorList(Resource):
 
     @jwt_required()
     def get(self):
+        access.administor(current_user)
         return {
             'medical_doctors': [medical_doctor.json() for medical_doctor in MedicalDoctorModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}, 201
 
     @jwt_required()
     def post(self):
+        access.administor(current_user)
         data = self.parser.parse_args()
         hashed = bcrypt.hashpw(
             data['password'].encode('utf-8'), bcrypt.gensalt())

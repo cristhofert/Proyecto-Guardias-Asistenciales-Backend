@@ -10,13 +10,12 @@ from models.assignment import AssignmentModel
 import calendar
 from datetime import datetime
 from pprint import pprint
-
+from util import access
 
 class MyGuards(Resource):
     @jwt_required()
     def get(self):
-        if current_user.type == 'administrator':
-            return {"message": "You are not authorized to access this resource."}, 401
+        access.medical_doctor(current_user)
         return {
             'myguards': [guard.json() for guard in current_user.guards]
         }, 201

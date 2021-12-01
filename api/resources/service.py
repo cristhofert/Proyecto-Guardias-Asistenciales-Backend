@@ -6,7 +6,7 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
 from models.service import ServiceModel
 from models.subscription import SubscriptionModel
-#from app.util.logz import create_logger
+from util import access
 
 class Service(Resource):
     parser = reqparse.RequestParser()
@@ -27,6 +27,7 @@ class Service(Resource):
 
     @jwt_required()  # Requires dat token
     def get(self, id):
+        access.administor(current_user)
         service = ServiceModel.find_by_id(id)
         #self.logger.info(f'returning service: {service.json()}')
         if service and (service.json()['institution'] == current_user.json()['institution']):
@@ -35,6 +36,7 @@ class Service(Resource):
 
     @jwt_required()
     def post(self, id):
+        access.administor(current_user)
         #self.logger.info(f'parsed args: {Service.parser.parse_args()}')
         data = Service.parser.parse_args()
 
@@ -65,6 +67,7 @@ class Service(Resource):
 
     @jwt_required()
     def delete(self, id):
+        access.administor(current_user)
         service = ServiceModel.find_by_id(id)
         if service and (service.json()['institution'] == current_user.json()['institution']):
             service.delete_from_db()
@@ -74,6 +77,7 @@ class Service(Resource):
 
     @jwt_required()
     def put(self, id):
+        access.administor(current_user)
         # Create or Update
         data = Service.parser.parse_args()
         service = ServiceModel.find_by_id(id)
@@ -94,5 +98,6 @@ class Service(Resource):
 class ServiceList(Resource):
     @jwt_required()
     def get(self):
+        access.administor(current_user)
         return {
             'services': [service.json() for service in ServiceModel.query.filter_by(institution_id=current_user.json()['institution']).all()]} , 201

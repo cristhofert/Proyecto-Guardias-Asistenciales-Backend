@@ -8,12 +8,12 @@ from models.notification import NotificationModel
 import calendar
 from datetime import datetime
 from pprint import pprint
-
+from util import access
 
 class Notification(Resource):
     @jwt_required()
     def get(self):
-        if current_user.type == 'medical_doctor':
-            notifications = NotificationModel.find_by_user_id(current_user.id)
-            return [notification.json() for notification in notifications], 201
-        return {"message": "You are not authorized to access this resource."}, 401
+        access.medical_doctor(current_user)
+        notifications = NotificationModel.find_by_user_id(current_user.id)
+        return [notification.json() for notification in notifications], 201
+

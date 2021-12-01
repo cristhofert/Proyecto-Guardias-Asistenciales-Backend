@@ -4,7 +4,7 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
 from models.zone import ZoneModel
-#from app.util.logz import create_logger
+from util import access
 
 class Zone(Resource):
     parser = reqparse.RequestParser()
@@ -37,6 +37,7 @@ class Zone(Resource):
 
     @jwt_required() 
     def get(self, id):
+        access.administor(current_user)
         zone = ZoneModel.find_by_id(id)
 
         if zone and (zone.json()['institution'] == current_user.json()['institution']):
@@ -45,8 +46,7 @@ class Zone(Resource):
 
     @jwt_required()
     def post(self, id):
-        #self.logger.info(f'parsed args: {Zone.parser.parse_args()}')
-
+        access.administor(current_user)
         data = Zone.parser.parse_args()
         if ZoneModel.find_by_name(data['name']):
             return {'message': "An zone with name '{}' already exists.".format(
@@ -61,7 +61,7 @@ class Zone(Resource):
 
     @jwt_required()
     def delete(self, id):
-
+        access.administor(current_user)
         zone = ZoneModel.find_by_id(id)
         if zone and (zone.json()['institution'] == current_user.json()['institution']):
             zone.delete_from_db()
@@ -71,6 +71,7 @@ class Zone(Resource):
 
     @jwt_required()
     def put(self, id):
+        access.administor(current_user)
         # Create or Update
         data = Zone.parser.parse_args()
         zone = ZoneModel.find_by_id(id)
@@ -91,5 +92,6 @@ class Zone(Resource):
 class ZoneList(Resource):
     @jwt_required()
     def get(self):
+        access.administor(current_user)
         return {
             'zones': [zone.json() for zone in ZoneModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}, 201

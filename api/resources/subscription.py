@@ -4,7 +4,7 @@
 from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
 from models.subscription import SubscriptionModel
-#from app.util.logz import create_logger
+from util import access
 
 class Subscription(Resource):
     parse = reqparse.RequestParser()
@@ -17,6 +17,7 @@ class Subscription(Resource):
 
     @jwt_required()
     def get(self, id):
+        access.administor(current_user)
         subscription = SubscriptionModel.find_by_id(id)
         #self.logger.info("Subscription get: {}".format(subscription))
         if subscription and (subscription.json()['institution'] == current_user.json()['institution']):
@@ -25,6 +26,7 @@ class Subscription(Resource):
 
     @jwt_required()
     def post(self, id):
+        access.administor(current_user)
         data = Subscription.parse.parse_args()
         subscription = SubscriptionModel.find_by_service_id_type(data['service_id'], data['type'])
 
@@ -42,6 +44,7 @@ class Subscription(Resource):
 
     @jwt_required()
     def put(self, id):
+        access.administor(current_user)
         data = Subscription.parse.parse_args()
         subscription = SubscriptionModel.find_by_id(id)
 
@@ -60,6 +63,7 @@ class Subscription(Resource):
 
     @jwt_required()
     def delete(self, id):
+        access.administor(current_user)
         subscription = SubscriptionModel.find_by_id(id)
         if subscription and (subscription.json()['institution'] == current_user.json()['institution']):
             subscription.delete_from_db()
@@ -69,4 +73,5 @@ class Subscription(Resource):
 class SubscriptionList(Resource):
     @jwt_required()
     def get(self):
+        access.administor(current_user)
         return {'subscriptions': [subscription.json() for subscription in SubscriptionModel.query.filter_by(institution_id=current_user.json()['institution']).all()]}, 201

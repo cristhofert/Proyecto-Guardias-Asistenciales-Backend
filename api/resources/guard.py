@@ -4,6 +4,7 @@
 from flask_restful import Resource, reqparse, inputs, fields
 from flask_jwt_extended import jwt_required, current_user
 from util.notifications import Notificaciones
+from util import access
 from models.medical_doctor import MedicalDoctorModel
 from models.subscription import SubscriptionModel
 from models.guard import GuardModel
@@ -11,7 +12,6 @@ from models.guards_group import GuardsGroupModel
 #from app.util.logz import create_logger
 import calendar
 from datetime import date
-
 
 class Guard(Resource):
     parser = reqparse.RequestParser()
@@ -60,6 +60,7 @@ class Guard(Resource):
 
     @jwt_required()
     def post(self, id):
+        access.administor(current_user)
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
         data = self.parser.parse_args()
 
@@ -100,6 +101,7 @@ class Guard(Resource):
 
     @jwt_required()
     def put(self, id):
+        access.administor(current_user)
         # Create or Update
         data = self.parser.parse_args()
         guard = GuardModel.find_by_id(id)
@@ -183,6 +185,7 @@ class GuardList(Resource):
 
     @jwt_required()
     def post(self):#mes actual
+        access.administor(current_user)
         guards = []
         data = self.parser.parse_args()
         print(data['repeat'])
