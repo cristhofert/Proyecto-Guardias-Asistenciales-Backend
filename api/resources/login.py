@@ -42,6 +42,9 @@ class Login(Resource):
 
     @jwt_required()  # Requires dat token
     def get(self):
-        print("GET login")
-        # We can now access our sqlalchemy User object via `current_user`.
-        return current_user.json(), 201
+        return jsonify(
+            id=current_user.id, 
+            name=current_user.name,
+            institution_id=current_user.institution_id,
+            type=current_user.type
+            )
