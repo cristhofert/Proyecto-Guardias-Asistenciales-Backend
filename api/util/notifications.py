@@ -3,7 +3,7 @@ from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import *
 import sendgrid
 from models.notification import NotificationModel
-
+import threading
 
 def Notificaciones(email, telefono, id, gid, message):
 
@@ -11,6 +11,9 @@ def Notificaciones(email, telefono, id, gid, message):
 
     notification.save_to_db()
 
+    threading.Thread(target=notificar, args=(email, telefono, message)).start()
+
+def notificar(email, telefono, message):
     try:
         # print(email)
         mail = Mail()
