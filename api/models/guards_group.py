@@ -30,9 +30,13 @@ class GuardsGroupModel(db.Model):
         }
 
     def guards_json(self):
+        guards = []
+        for guard in self.guards:
+            if not guard.deleted:
+                guards.append(guard.json())
         return {
-            'guards': [guard.json() for guard in self.guards]
-            }
+            'guards': guards
+        }
 
     def get_id(self):
         return self.id

@@ -30,6 +30,7 @@ class GuardModel(db.Model):
         'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
     deleted = db.Column(db.Boolean(), default=False)
+    
     query_class = QueryWithSoftDelete
 
     def __init__(self, subscription_id, date, start_time, end_time, zone_id=None, institution_id=1):

@@ -91,12 +91,12 @@ class Guard(Resource):
 
     @jwt_required()
     def delete(self, id):
-
+        access.administor(current_user)
         guard = GuardModel.find_by_id(id)
         if guard and (guard.json()['institution'] == current_user.json()['institution']):
             guard.delete_from_db()
 
-            return {'message': 'guard has been deleted'}
+            return {'message': 'guard has been deleted'}, 201
         return {'message': 'guard not found'}, 404
 
     @jwt_required()
