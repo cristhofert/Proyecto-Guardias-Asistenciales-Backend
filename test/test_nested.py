@@ -35,7 +35,6 @@ def gets(url_api, token):
     'zones',
     'subscriptions',
     'groups',
-    'users',
     'notifications'
 ])
 def test_gets(token, route):
@@ -115,8 +114,7 @@ def get(url_api, token):
     ('service', 1),
     ('zone', 1),
     ('subscription', 1),
-    ('group', 1),
-    ('user', 997)
+    ('group', 1)
 ])
 def test_get(token, route, id):
     url_api = 'http://localhost:5000'
@@ -126,10 +124,10 @@ def test_get(token, route, id):
 @pytest.mark.parametrize("month, year", [
     (11, 2021)
 ])
-def test_get_reports(token, month, year):
+def test_post_reports(token, month, year):
     url_api = 'http://localhost:5000/reports'
 
-    response = requests.get(f'{url_api}', json={'month': month, 'year': year}, headers={
+    response = requests.post(f'{url_api}', json={'month': month, 'year': year}, headers={
     'Authorization': f'Bearer {token}', 'Content-Type': 'application/json'})
     print(response.text)
     assert response.status_code == 201
@@ -177,8 +175,7 @@ def delete(url_api, token):
     ('service', 1),
     ('zone', 1),
     ('subscription', 1),
-    ('group', 1),
-    ('user', 997)
+    ('group', 1)
 ])
 def test_delete(token, route, id):
     url_api = 'http://localhost:5000'

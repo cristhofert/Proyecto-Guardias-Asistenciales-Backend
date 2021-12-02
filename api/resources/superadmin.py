@@ -61,4 +61,4 @@ class SuperAdmin(Resource):
         except:
             return {"message": "An error occurred sending mail."}, 500
 
-        return 201
+        return {'message': "Super Administrator created successfully."}, 201
