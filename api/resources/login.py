@@ -10,7 +10,7 @@ from util.encoder import AlchemyEncoder
 import json
 from util.logz import create_logger
 import bcrypt
-
+from datetime import timedelta
 
 class Login(Resource):
     def __init__(self):
@@ -34,7 +34,7 @@ class Login(Resource):
         if bcrypt.checkpw(password.encode('utf-8'), user.json()["password"].encode('utf8')):
 
             access_token = create_access_token(
-                identity=user)
+                identity=user, expires_delta=timedelta(hours=24))
 
             return {"access_token": access_token}, 201
         else:

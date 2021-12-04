@@ -5,9 +5,9 @@ from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS
 from config import mariadbConfig
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity, get_jwt, set_access_cookies
 import json
-
+from datetime import timedelta, datetime, timezone
 from resources.administrator import Administrator, AdministratorList
 from resources.guard import Guard, GuardList
 from resources.medical_doctor import MedicalDoctor, MedicalDoctorList
@@ -45,6 +45,21 @@ def create_tables():
     db.drop_all()
     db.create_all()
     preset_db()
+# Using an `after_request` callback, we refresh any token that is within 30
+# minutes of expiring. Change the timedeltas to match the needs of your application.
+@app.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            set_access_cookies(response, access_token)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original respone
+        return response
 
 # Register a callback function that takes whatever object is passed in as the
 # identity when creating JWTs and converts it to a JSON serializable format.
