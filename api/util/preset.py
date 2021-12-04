@@ -12,7 +12,6 @@ from models.administrator import AdministratorModel
 from db import db
 import bcrypt
 
-
 def preset_db():
     # Open the .sql file
     sql_file = open('api/util/data.sql', 'r', encoding='utf-8') 
