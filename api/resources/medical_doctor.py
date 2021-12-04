@@ -8,6 +8,7 @@ from models.subscription import SubscriptionModel
 from cerberus import Validator
 import bcrypt
 from util import access
+from util.ci import CedulaUruguaya
 
 schema = {
     'id': {'type': 'string'},
@@ -21,9 +22,11 @@ schema = {
 }
 md = Validator(schema)
 
-
 class Create:
+    ci = CedulaUruguaya()
     def create(self, data):
+        if not self.ci.validate_ci(int(data['id'])):
+            return {'message': 'ci not valid'}, 401
         if MedicalDoctorModel.find_by_id(data['id']):
             return {'message': "An medical_doctor with id '{}' already exists.".format(
                 data['id'])}, 400
@@ -42,7 +45,6 @@ class Create:
         except BaseException as err:
             return {"message": f"An error occurred inserting the medical_doctor. {err}"}, 500
         return medical_doctor.json(), 201
-
 
 class MedicalDoctor(Resource):
     parser = reqparse.RequestParser()
