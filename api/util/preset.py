@@ -1,4 +1,4 @@
-from sqlalchemy import event
+from sqlalchemy import event, text
 from models.institution import InstitutionModel
 from models.user import UserModel
 from models.medical_doctor import MedicalDoctorModel
@@ -62,9 +62,8 @@ def preset_db():
         md.save_to_db()
         passw = 'jp123'
         hashed3 = bcrypt.hashpw(passw.encode('utf-8'), bcrypt.gensalt())
-        db.session.add(AdministratorModel(98765431, 'Juan Perez', hashed3, 1))
+        db.session.add(AdministratorModel(98765431, 'Juan Perez', hashed3, 1, True))
         db.session.commit()
     except Exception as e:
         print(e)
         db.session.rollback()
-        return False

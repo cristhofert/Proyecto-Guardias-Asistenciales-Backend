@@ -22,7 +22,8 @@ class AdministratorModel(UserModel):
                 'name': self.name,
                 'institution': self.institution_id,
                 'type': self.type,
-                'password': self.password
+                'password': self.password,
+                'superadmin': self.superadmin
                 }
 
     @classmethod
