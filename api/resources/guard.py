@@ -16,12 +16,12 @@ from datetime import date
 class Guard(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('subscription_id',
-                        type=int,
+                        type=inputs.positive,
                         required=True,
                         help="This field cannot be left blank!"
                         )
     parser.add_argument('zone_id',
-                        type=int,
+                        type=inputs.positive,
                         required=False,
                         help="This field cannot be left blank!"
                         )
@@ -41,7 +41,7 @@ class Guard(Resource):
                         help="This field cannot be left blank!"
                         )
     parser.add_argument('quantity',
-                        type=int,
+                        type=inputs.positive,
                         required=False,
                         help="This field cannot be left blank!"
                         )
@@ -65,7 +65,7 @@ class Guard(Resource):
         data = self.parser.parse_args()
 
         #self.logger.info(f'parsed args: {data}')
-        quantity = data['quantity'] if data['quantity'] else 1
+        quantity = data['quantity'] if data['quantity'] and data['quantity'] > 0 and data['quantity'] < 50 else 1
         guards = []
         for i in range(quantity):
             guards.append(GuardModel(data['subscription_id'], data['date'], data['start_time'],
@@ -130,12 +130,12 @@ class Guard(Resource):
 class GuardList(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('subscription_id',
-                        type=int,
+                        type=inputs.positive,
                         required=True,
                         help="This field cannot be left blank!"
                         )
     parser.add_argument('zone_id',
-                        type=int,
+                        type=inputs.positive,
                         required=False,
                         help="This field cannot be left blank!"
                         )

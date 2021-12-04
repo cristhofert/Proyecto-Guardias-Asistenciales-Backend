@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # standard python imports
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, inputs
 from flask_jwt_extended import jwt_required, current_user
 from models.medical_doctor import MedicalDoctorModel
 from models.subscription import SubscriptionModel
@@ -79,12 +79,12 @@ class MedicalDoctor(Resource):
                         help="This field cannot be left blank!"
                         )
     parser.add_argument('zone_id',
-                        type=int,
+                        type=inputs.positive,
                         required=False,
                         help="This field cannot be left blank!"
                         )
     parser.add_argument('subscriptions',
-                        type=int,
+                        type=inputs.positive,
                         required=False,
                         action='append',
                         help="This field cannot be left blank!"

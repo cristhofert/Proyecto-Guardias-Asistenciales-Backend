@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # standard python imports
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, inputs
 from flask import jsonify
 from flask_jwt_extended import jwt_required, current_user
 from models.medical_doctor import MedicalDoctorModel
@@ -18,9 +18,10 @@ class Reports(Resource):
     parser.add_argument('month',
         type=int,
         required=True,
+        choices=(1,2,3,4,5,6,7,8,9,10,11,12),
         help='This field cannot be left blank')
     parser.add_argument('year',
-        type=int,
+        type=inputs.positive,
         required=True,
         help='This field cannot be left blank')
 
