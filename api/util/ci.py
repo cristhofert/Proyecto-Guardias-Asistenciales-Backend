@@ -31,8 +31,8 @@ class CedulaUruguaya:
 		a = 0
 		i = 0
 		if len(str(ci)) <= 6:
-			for i in range(len(ci), 7):
-				ci = '0' + ci
+			for i in range(len(str(ci)), 7):
+				ci = '0' + str(ci)
 				i = i + 1
 
 		for i in range(0,7):
@@ -57,3 +57,11 @@ class CedulaUruguaya:
 	def random_ci(self):
 		ci = random.randint(0000000,9999999)
 		return int(str(ci) + str(self.get_validation_digit(ci)))
+
+	def min_ci(self, cant):
+		for i in range(0, cant):
+			ci = (int(str(i) + str(self.get_validation_digit(i))))
+			try:
+				print(str(ci) + " - " + str(self.validate_ci(ci)))
+			except:
+				pass
