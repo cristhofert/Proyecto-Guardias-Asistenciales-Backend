@@ -46,5 +46,6 @@ class Login(Resource):
             id=current_user.id, 
             name=current_user.name,
             institution_id=current_user.institution_id,
+            institution=current_user.institution_id,
             type=current_user.type
             )
