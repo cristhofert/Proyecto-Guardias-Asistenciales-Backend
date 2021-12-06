@@ -8,7 +8,7 @@ class MedicalDoctorModel(UserModel):
 
     id = db.Column(db.String(80), db.ForeignKey('user.id'), primary_key=True)
     speciality = db.Column(db.String(80))
-    phone = db.Column(db.String(9))
+    phone = db.Column(db.String(9), db.CheckConstraint('phone LIKE \'%09%\''))
     email = db.Column(db.String(80))
     subscriptions =db.relationship(
         'SubscriptionModel', secondary=subscription_medical_doctor_table, back_populates='medical_doctors')
