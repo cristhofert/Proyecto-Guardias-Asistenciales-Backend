@@ -5,6 +5,7 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
 from models.subscription import SubscriptionModel
 from util import access
+from util.is_empty import is_empty
 
 class Subscription(Resource):
     parse = reqparse.RequestParser()
@@ -28,6 +29,8 @@ class Subscription(Resource):
     def post(self, id):
         access.administor(current_user)
         data = Subscription.parse.parse_args()
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         subscription = SubscriptionModel.find_by_service_id_type(data['service_id'], data['type'])
 
         if subscription:
@@ -46,6 +49,8 @@ class Subscription(Resource):
     def put(self, id):
         access.administor(current_user)
         data = Subscription.parse.parse_args()
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         subscription = SubscriptionModel.find_by_id(id)
 
         if subscription.json()['institution'] == current_user.json()['institution'] :

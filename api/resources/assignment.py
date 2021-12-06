@@ -8,6 +8,7 @@ from models.medical_doctor import MedicalDoctorModel
 from models.assignment import AssignmentModel
 from models.guard import GuardModel
 from util import access
+from util.is_empty import is_empty
 
 class Assignment(Resource):
 

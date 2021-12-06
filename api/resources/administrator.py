@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required, current_user
 from models.administrator import AdministratorModel
 from util import access
 from util.ci import CedulaUruguaya
+from util.is_empty import is_empty
 import bcrypt
 #from app.util.logz import create_logger
 
@@ -46,7 +47,9 @@ class Administrator(Resource):
     def post(self, id):
         access.administor(current_user)
         data = self.parser.parse_args()
-        if not self.ci.validate_ci(int(data['id'])):
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
+        if not self.ci.validate_ci(str(data['id'])):
             return {'message': 'ci not valid'}, 401
         hashed = bcrypt.hashpw(
             data['password'].encode('utf-8'), bcrypt.gensalt())
@@ -80,6 +83,8 @@ class Administrator(Resource):
         # Create or Update
         access.administor(current_user)
         data = self.parser.parse_args()
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         if not self.ci.validate_ci(int(data['id'])):
             return {'message': 'ci not valid'}, 401
         hashed = bcrypt.hashpw(

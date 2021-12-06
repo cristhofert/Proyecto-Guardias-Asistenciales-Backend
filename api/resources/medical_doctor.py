@@ -9,6 +9,7 @@ from cerberus import Validator
 import bcrypt
 from util import access
 from util.ci import CedulaUruguaya
+from util.is_empty import is_empty
 
 schema = {
     'id': {'type': 'string'},
@@ -25,7 +26,7 @@ md = Validator(schema)
 class Create:
     ci = CedulaUruguaya()
     def create(self, data):
-        if not self.ci.validate_ci(int(data['id'])):
+        if not self.ci.validate_ci(str(data['id'])):
             return {'message': 'ci not valid'}, 401
         if MedicalDoctorModel.find_by_id(data['id']):
             return {'message': "An medical_doctor with id '{}' already exists.".format(
@@ -107,6 +108,8 @@ class MedicalDoctor(Resource):
     def post(self, id):
         access.administor(current_user)
         data = self.parser.parse_args()
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         c = Create()
         return c.create(data)
 
@@ -125,6 +128,8 @@ class MedicalDoctor(Resource):
         access.administor(current_user)
         # Create or Update
         data = self.parser.parse_args()
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         hashed = bcrypt.hashpw(
             data['password'].encode('utf-8'), bcrypt.gensalt())
         medical_doctor = MedicalDoctorModel.find_by_id(id)
@@ -173,6 +178,8 @@ class MedicalDoctorList(Resource):
     def post(self):
         access.administor(current_user)
         data = self.parser.parse_args()
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         MDs = []
         for medical_doctor in data['MDs']:
             if medical_doctor != {} and md.validate(medical_doctor):

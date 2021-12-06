@@ -5,13 +5,14 @@ from flask_restful import Resource, reqparse
 from flask_jwt_extended import jwt_required, current_user
 from models.zone import ZoneModel
 from util import access
+from util.is_empty import is_empty
 
 class Zone(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('name',
         type=str,
         required=True,
-        help="This field cannot be left blank!"
+        help="This field cannot be left blank!",
     )
     parser.add_argument('geotag',
         type=str,
@@ -48,6 +49,8 @@ class Zone(Resource):
     def post(self, id):
         access.administor(current_user)
         data = Zone.parser.parse_args()
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         if ZoneModel.find_by_name(data['name']):
             return {'message': "An zone with name '{}' already exists.".format(
                 data['name'])}, 400
@@ -74,6 +77,8 @@ class Zone(Resource):
         access.administor(current_user)
         # Create or Update
         data = Zone.parser.parse_args()
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         zone = ZoneModel.find_by_id(id)
 
         if zone and zone.json()['institution'] == current_user.json()['institution'] :

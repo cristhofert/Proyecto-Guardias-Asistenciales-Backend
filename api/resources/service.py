@@ -7,6 +7,7 @@ from flask_jwt_extended import jwt_required, current_user
 from models.service import ServiceModel
 from models.subscription import SubscriptionModel
 from util import access
+from util.is_empty import is_empty
 
 class Service(Resource):
     parser = reqparse.RequestParser()
@@ -39,7 +40,8 @@ class Service(Resource):
         access.administor(current_user)
         #self.logger.info(f'parsed args: {Service.parser.parse_args()}')
         data = Service.parser.parse_args()
-
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         if ServiceModel.find_by_name(data['name']):
             return {'message': "An service with name '{}' already exists.".format(
                 data['name'])}, 400
@@ -80,6 +82,8 @@ class Service(Resource):
         access.administor(current_user)
         # Create or Update
         data = Service.parser.parse_args()
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         service = ServiceModel.find_by_id(id)
 
         if service.json()['institution'] == current_user.json()['institution'] :
@@ -89,7 +93,10 @@ class Service(Resource):
                 if data['name'] is not None: service.name = data['name']
                 if data['code'] is not None: service.code = data['code']
 
-            service.save_to_db()
+            try:
+                service.save_to_db()
+            except BaseException as err:
+                return {"message": f"An error occurred inserting the service. ERROR: {err}"}, 500
 
             return service.json(), 201
         else:
