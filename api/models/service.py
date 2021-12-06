@@ -4,12 +4,15 @@ from util.query import QueryWithSoftDelete
 class ServiceModel(db.Model):
     __tablename__ = 'services'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True)
-    code = db.Column(db.String(10), unique=True)
+    name = db.Column(db.String(100))
+    code = db.Column(db.String(10))
     institution_id = db.Column(db.Integer, db.ForeignKey(
         'institutions.id'), nullable=False, default=1)
     institution = db.relationship("InstitutionModel")
     deleted = db.Column(db.Boolean(), default=False)
+
+    db.UniqueConstraint('name', 'institution_id', name='unique_service_name')
+    db.UniqueConstraint('code', 'institution_id', name='unique_service_code')
 
     query_class = QueryWithSoftDelete
     
