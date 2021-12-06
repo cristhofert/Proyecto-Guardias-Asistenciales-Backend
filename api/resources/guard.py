@@ -12,6 +12,14 @@ from models.guards_group import GuardsGroupModel
 #from app.util.logz import create_logger
 import calendar
 from datetime import date
+from util.is_empty import is_empty
+from datetime import datetime
+
+def time(value):
+    try:
+        return datetime.strptime(value, "%H:%M:%S").time()
+    except:
+        raise ValueError('Invalid time format')
 
 class Guard(Resource):
     parser = reqparse.RequestParser()
@@ -31,12 +39,12 @@ class Guard(Resource):
                         help="This field cannot be left blank!"
                         )
     parser.add_argument('start_time',
-                        type=str,  # Time
+                        type=time,  # Time
                         required=True,
                         help="This field cannot be left blank!"
                         )
     parser.add_argument('end_time',
-                        type=str,  # Time
+                        type=time,  # Time
                         required=True,
                         help="This field cannot be left blank!"
                         )
@@ -63,7 +71,12 @@ class Guard(Resource):
         access.administor(current_user)
         #self.logger.info(f'parsed args: {self.parser.parse_args()}')
         data = self.parser.parse_args()
-
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
+        today = date.today()
+        start_date = data['date'].date()
+        if start_date < today:
+            return {'message': 'date must be today or future'}, 401
         #self.logger.info(f'parsed args: {data}')
         quantity = data['quantity'] if data['quantity'] and data['quantity'] > 0 and data['quantity'] < 50 else 1
         guards = []
@@ -105,7 +118,12 @@ class Guard(Resource):
         # Create or Update
         data = self.parser.parse_args()
         guard = GuardModel.find_by_id(id)
-
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
+        today = date.today()
+        start_date = data['date'].date()
+        if start_date < today:
+            return {'message': 'date must be today or future'}, 401
         if guard is None:
             return {'message': 'guard not exist'}, 500
         if guard.json()['institution'] == current_user.json()['institution']:
@@ -187,11 +205,12 @@ class GuardList(Resource):
         access.administor(current_user)
         guards = []
         data = self.parser.parse_args()
-        print(data['repeat'])
+        if is_empty(data):
+            return {'menssage': 'The field is required'}, 401
         today = date.today()
         start_date = data['date'].date()
         if start_date < today:
-            return {'message': 'date must be today or future'}, 400
+            return {'message': 'date must be today or future'}, 401
         for tuple in calendar.Calendar().monthdays2calendar(start_date.year, start_date.month):
             for week in tuple:
                 day, weekday = week
