@@ -22,7 +22,12 @@ class Subscribe(Resource):
             except:
                 return {"message": "An error occurred inserting the subs."}, 500
 
-        return {'medical_doctor_id': medical_doctor_id, 'subscription_id': subscription_id}, 201
+            return {'medical_doctor_id': medical_doctor_id, 'subscription_id': subscription_id}, 201
+        return {
+            'message': 'Medical doctor or subscription not found.', 
+            'subscription': subscription.json() if subscription else subscription_id,
+            'medical_doctor': medical_doctor.json() if medical_doctor else medical_doctor_id
+        }, 404
 
     @jwt_required()
     def delete(self, medical_doctor_id, subscription_id):
