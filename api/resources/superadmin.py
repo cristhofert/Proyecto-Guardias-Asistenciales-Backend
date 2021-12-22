@@ -51,14 +51,13 @@ class SuperAdmin(Resource):
         email = data['id']
         mail = Mail()
         mail.from_email = Email("federicoDn3@gmail.com", "Guardias Medicas")
-        mail.to = To("federico.diaz@utec.edu.uy")
-        #mail.to = To(email)
+        mail.to = To(email)
         mail.subject = "Bienvenido a Guardias Medicas"
-        mail.template_id = TemplateId("d-f9ff4ed2b9864d219dc8082453483d3f")
+        mail.template_id = TemplateId("")#Usar Template Id de Sendgrid
         mail.dynamic_template_data = {"User": data['id'], "Pass": passw}
         try:
             sg = sendgrid.SendGridAPIClient(
-                api_key='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')
+                api_key='')#Usar Api key de Sendgrid
             response = sg.send(mail) 
             print(response)
             pass

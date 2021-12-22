@@ -17,23 +17,21 @@ def notificar(email, telefono, message):
     try:
         # print(email)
         mail = Mail()
-        mail.from_email = Email("federicoDn3@gmail.com", "Guardias Medicas")
-        #to_email = To(email)
-        # Esto en caso de prueba
+        mail.from_email = Email("", "Guardias Medicas")#Usar email seleccionado para sendgrid
         mail.to = To(email)
         mail.subject = "Nuevas Guardias Publicadas"
-        mail.template_id = TemplateId("d-983dd4b5e34a4b4ba99130f61ca97feb")
+        mail.template_id = TemplateId("") #Usar Template Id de twilio 
 
         sg = sendgrid.SendGridAPIClient(
-            api_key='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')
+            api_key='')#Usar la api key de sendgrid
         sg.send(mail)
 
-        account_sid = 'ACf75fba9132de9b7c1ff453096fdac4a3'
-        auth_token = 'a3bb005cfade74f07bb36438edb5fa51'
+        account_sid = ''#Usar la sid key de sendgrid
+        auth_token = ''#Usar la token de sendgrid
         client = Client(account_sid, auth_token)
 
         message = client.messages.create(
-            from_='whatsapp:+14155238886',
+            from_='',#Usar tel asignado por twilio 
             body='Hay nuevas guardias disponibles, revisa tu cuenta para mas informacion.',
             to=telefono
         )

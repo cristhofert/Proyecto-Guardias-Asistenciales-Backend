@@ -59,8 +59,6 @@ class Assignment(Resource):
             email = medical_doctor.email
             telefono = 'whatsapp:+598'+medical_doctor.phone.lstrip("0")
             message = "Guardia Liberada"
-            print(email)
-            print(telefono)
             Notificaciones(email, telefono, medical_doctor_id,
                            guard_id, message)
             return {'message': 'Assignment deleted'}
